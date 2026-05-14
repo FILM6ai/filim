@@ -1,0 +1,171 @@
+@import url('https://fonts.googleapis.com/css2?family=Fjord+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: Fjord One, sans-serif;
+  /* font-weight: 400; */
+  
+}
+h1,h2,h3,h4,h5,h6{
+  font-family: Fjord One, sans-serif;
+  /* font-weight: 400; */
+}
+
+.Mycontainer{
+  width: 90%;
+  max-width: 1400px;
+  margin: auto;
+  box-sizing: border-box;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+
+.ql-editor strong {
+  font-weight: bold;
+}
+
+.ql-editor em {
+  font-style: italic;
+}
+
+.ql-editor u {
+  text-decoration: underline;
+}
+
+.ql-editor s {
+  text-decoration: line-through;
+}
+
+/* Inline styles ko kaam karne do - font weight, style, family sab */
+/* .ql-editor span {
+  font-weight: inherit;
+  font-style: inherit;
+  font-family: inherit;
+} */
+
+/* Yeh sabse zaroori hai - inline style override fix */
+/* .ql-editor [style] {
+  font-weight: unset;
+  font-style: unset;
+  font-family: unset;
+} */
+
+.ql-editor h1 {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  display: block;
+}
+
+.ql-editor h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  display: block;
+}
+
+.ql-editor h3 {
+  font-size: 1.17em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  display: block;
+}
+
+.ql-editor h4 {
+  font-size: 1em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  display: block;
+}
+
+.ql-editor h5 {
+  font-size: 0.83em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  display: block;
+}
+
+.ql-editor h6 {
+  font-size: 0.67em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  display: block;
+}
+
+.ql-editor p {
+  font-size: 1rem;
+  line-height: 1.8;
+  margin-bottom: 0.75em;
+  color: #333;
+}
+
+.ql-editor ol {
+  list-style-type: decimal;
+  padding-left: 1.5em;
+  margin-bottom: 0.75em;
+}
+
+.ql-editor ul {
+  list-style-type: disc;
+  padding-left: 1.5em;
+  margin-bottom: 0.75em;
+}
+
+.ql-editor li {
+  margin-bottom: 0.25em;
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.ql-editor a {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.ql-editor .ql-align-center {
+  text-align: center;
+}
+
+.ql-editor .ql-align-right {
+  text-align: right;
+}
+
+.ql-editor .ql-align-justify {
+  text-align: justify;
+}
+
+/* Article ke andar images ka size fix */
+.ql-editor img {
+  max-width: 60% !important;
+  width: 60% !important;
+  height: auto !important;
+  display: block !important;
+  margin: 1em auto !important;
+  object-fit: contain !important;
+  border-radius: 8px !important;
+}
+
+.ql-editor iframe {
+  max-width: 100% !important;
+}
