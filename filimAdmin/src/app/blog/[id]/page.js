@@ -6,6 +6,8 @@ import dynamic from "next/dynamic";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "quill/dist/quill.snow.css";
+import { validateBlogFile } from "@/utils/fileValidation";
+
 
 // Dynamically import ReactQuill to avoid SSR issues
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
@@ -83,7 +85,7 @@ const Page = () => {
   const handleMainImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      const result = validateFile(file);
+      const result = validateBlogFile(file);
       if (!result.valid) {
         alert(result.message);
         return;

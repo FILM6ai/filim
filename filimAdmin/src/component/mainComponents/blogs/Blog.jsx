@@ -8,7 +8,7 @@ import axios from "axios";
 import BlogsGetData from "./BlogsGetData";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { validateFile } from "@/utils/fileValidation";
+import { validateBlogFile } from "@/utils/fileValidation";
 
 // Dynamically import React-Quill to disable SSR
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
@@ -108,13 +108,13 @@ const Blog = () => {
                   />
                 </svg>
                 <span className="text-gray-600 font-medium">Upload file</span>
-                <span className="text-xs text-gray-600">Max Size:20MB</span>
+                <span className="text-xs text-gray-600">Max Size:10MB</span>
               </label>
               <input
                 // onChange={(e) => setImage(e.target.files[0])}
                 onChange={(e) => {
                   const file = e.target.files[0];
-                  const result = validateFile(file);
+                  const result = validateBlogFile(file);
                   if (!result.valid) {
                     alert(result.message);
                     return;

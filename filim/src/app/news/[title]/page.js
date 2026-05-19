@@ -85,7 +85,7 @@ const BlogDetail = () => {
           setImage(homeData.bgImage || "");
           setAlt(homeData.alt || "News background image");
         }
-      } catch (error) {}
+      } catch (error) { }
     };
 
     fetchData();
@@ -140,7 +140,7 @@ const BlogDetail = () => {
             description: meta.news?.description || "",
           });
         }
-      } catch (error) {}
+      } catch (error) { }
     };
 
     fetchMetaData();
@@ -163,7 +163,7 @@ const BlogDetail = () => {
 
       <Hero
         image={[{ type: "video", value: image }]}
-        title1={title2 || "Frames Gen-3"}
+        title1={title2}
         alt={alt}
       />
 
@@ -226,7 +226,7 @@ const BlogDetail = () => {
                 return (
                   <>
                     <div
-                      className="blog-content"
+                      className="blog-content ql-editor"
                       dangerouslySetInnerHTML={{ __html: first }}
                     />
 
@@ -248,7 +248,7 @@ const BlogDetail = () => {
                     </div>
 
                     <div
-                      className="blog-content"
+                      className="blog-content ql-editor"
                       dangerouslySetInnerHTML={{ __html: second }}
                     />
                   </>
@@ -256,7 +256,7 @@ const BlogDetail = () => {
               })()
             ) : (
               <div
-                className="blog-content"
+                className="blog-content ql-editor"
                 dangerouslySetInnerHTML={{ __html: singleBlog.content }}
               />
             )}

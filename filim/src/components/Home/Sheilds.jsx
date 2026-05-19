@@ -59,7 +59,7 @@ const Sheilds = ({mainTitle, cards}) => {
           />
           <div className='text-white text-left'>
             <h2 className='text-2xl  mb-1'>{card.title}</h2>
-            <p className='text-sm font-normal '>{card.description}</p>
+            <p className='text-[16px] font-normal '>{card.description}</p>
           </div>
         </motion.div>
       ))}
