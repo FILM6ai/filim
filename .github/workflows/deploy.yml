@@ -1,0 +1,19 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches:
+      - testing-latest
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Admin
+        run: curl -X POST "https://api.vercel.com/v1/integrations/deploy/prj_cuxdJ1b7dFhhOhVK2ZqW8ts0vmwt/41bGIsF27e"
+
+      - name: Deploy Website
+        run: curl -X POST "https://api.vercel.com/v1/integrations/deploy/prj_9zu25nvzSfLhs0Ow63sTLrpVL2NG/jLhYJlRGkH"
+
+      - name: Deploy Backend
+        run: curl -X POST "https://api.vercel.com/v1/integrations/deploy/prj_ZlWW8r9xyCzk18LBul1dfw5yDi8i/KSDE9iPYEi"
