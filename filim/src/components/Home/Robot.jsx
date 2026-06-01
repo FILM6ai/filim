@@ -7,6 +7,28 @@ import { motion } from "framer-motion";
 import Button2 from "./Button2";
 
 const Robot = ({ title, description, button, image, alt, link, youtubeUrl }) => {
+  const convertToEmbedUrl = (url) => {
+    if (!url) return "";
+    if (url.includes("youtube.com/embed/")) {
+      const match = url.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/);
+      return match ? `https://www.youtube.com/embed/${match[1]}` : url;
+    }
+    if (url.includes("youtu.be/")) {
+      const match = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+      return match ? `https://www.youtube.com/embed/${match[1]}` : url;
+    }
+    if (url.includes("youtube.com/watch")) {
+      const match = url.match(/[?&]v=([a-zA-Z0-9_-]+)/);
+      return match ? `https://www.youtube.com/embed/${match[1]}` : url;
+    }
+    if (url.includes("<iframe")) {
+      const match = url.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/);
+      return match ? `https://www.youtube.com/embed/${match[1]}` : "";
+    }
+    return "";
+  };
+
+  const embedUrl = convertToEmbedUrl(youtubeUrl);
   return (
     <div className="overflow-hidden max-md:mt-14 grid grid-cols-[60%,40%] max-md:flex max-md:flex-col-reverse  bg-black text-white items-center ">
       <motion.div
@@ -31,9 +53,9 @@ const Robot = ({ title, description, button, image, alt, link, youtubeUrl }) => 
         viewport={{ once: true, amount: 0.4 }}
         className="md:ml-auto w-full h-full"
       >
-        {youtubeUrl ? (
+        {embedUrl ? (
           <iframe
-            src={youtubeUrl}
+            src={embedUrl}
             className="w-full aspect-video h-full"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen

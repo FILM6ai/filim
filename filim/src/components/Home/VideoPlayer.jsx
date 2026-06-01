@@ -53,6 +53,22 @@ const VideoPlayer = ({ video, title, description, youtubeUrl }) => {
     };
   }, []);
 
+  const convertToEmbedUrl = (url) => {
+    if (!url) return "";
+    if (url.includes("youtube.com/embed/")) return url;
+    if (url.includes("youtu.be/")) {
+      const match = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+      return match ? `https://www.youtube.com/embed/${match[1]}` : "";
+    }
+    if (url.includes("youtube.com/watch")) {
+      const match = url.match(/[?&]v=([a-zA-Z0-9_-]+)/);
+      return match ? `https://www.youtube.com/embed/${match[1]}` : "";
+    }
+    return "";
+  };
+
+  const embedUrl = convertToEmbedUrl(youtubeUrl);
+
   return (
     <div className='bg-black py-8 md:py-12 max-md:mt-12 px-4  md:px-20  '>
       <div className='  flex flex-col items-center justify-center text-center  '>
@@ -60,10 +76,10 @@ const VideoPlayer = ({ video, title, description, youtubeUrl }) => {
         <p className='text-xs sm:text-lg text-white pb-6'>{description}</p>
       </div>
       <div className='mt-0 relative group'>
-        {youtubeUrl ? (
+        {embedUrl ? (
           /* YouTube embed */
           <iframe
-            src={`${youtubeUrl}?rel=0&controls=1`}
+            src={`${embedUrl}?rel=0&controls=1`}
             className="w-full rounded-xl shadow-lg aspect-video"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen

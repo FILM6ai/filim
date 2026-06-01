@@ -48,8 +48,6 @@ const page = () => {
     fetchMetaData();
   }, [metaData]);
 
-  // META API CALL
-
   useEffect(() => {
     const fetchHeroData = async () => {
       try {
@@ -92,6 +90,7 @@ const page = () => {
           title2={advanceData?.title2}
           description={advanceData?.description}
           image={advanceData?.bgImage}
+          youtubeUrl={advanceData?.youtubeUrl}
           color="bg-[#F8F8F8]"
           alt={advanceData?.alt}
         />
@@ -104,6 +103,7 @@ const page = () => {
             ? toplist.bgImage[toplist.bgImage.length - 1]
             : toplist?.bgImage
         }
+        youtubeUrl={toplist?.youtubeUrl}
         button={toplist?.button}
         alt={toplist?.alt}
         link={toplist?.link}
@@ -116,6 +116,7 @@ const page = () => {
             ? robot.bgImage[robot.bgImage.length - 1]
             : robot?.bgImage
         }
+        youtubeUrl={robot?.youtubeUrl}
         button={robot?.button}
         alt={robot?.alt}
         link={robot?.link}
@@ -130,6 +131,7 @@ const page = () => {
               ? competate.bgImage[competate.bgImage.length - 1]
               : competate?.bgImage
           }
+          youtubeUrl={competate?.youtubeUrl}
           button={competate?.button}
           order="reverse"
           link={competate?.link}
@@ -143,6 +145,7 @@ const page = () => {
             ? runway.bgImage[runway.bgImage.length - 1]
             : runway?.bgImage
         }
+        youtubeUrl={runway?.youtubeUrl}
         button={runway?.button}
         alt={runway?.alt}
         link={runway?.link}

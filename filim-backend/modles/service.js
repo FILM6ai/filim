@@ -10,6 +10,7 @@ const ServicePageSchema = new mongoose.Schema({
   advance: {
     alt: { type: String },
     bgImage: [{ type: String }],
+    youtubeUrl: { type: String },
     title: { type: String },
     title2: { type: String },
     description: { type: String },
@@ -17,6 +18,7 @@ const ServicePageSchema = new mongoose.Schema({
   toplist: {
     alt: { type: String },
     bgImage: [{ type: String }],
+    youtubeUrl: { type: String },
     title: { type: String },
     description: { type: String },
     button: { type: String },
@@ -25,6 +27,7 @@ const ServicePageSchema = new mongoose.Schema({
   robot: {
     alt: { type: String },
     bgImage: [{ type: String }],
+    youtubeUrl: { type: String },
     title: { type: String },
     description: { type: String },
     button: { type: String },
@@ -33,6 +36,7 @@ const ServicePageSchema = new mongoose.Schema({
   competate: {
     alt: { type: String },
     bgImage: [{ type: String }],
+    youtubeUrl: { type: String },
     title: { type: String },
     description: { type: String },
     button: { type: String },
@@ -41,6 +45,7 @@ const ServicePageSchema = new mongoose.Schema({
   runway: {
     alt: { type: String },
     bgImage: [{ type: String }],
+    youtubeUrl: { type: String },
     title: { type: String },
     button: { type: String },
     link: { type: String },

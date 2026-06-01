@@ -3,6 +3,21 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 
 const CategoriesFestival = ({ index = 0, description, img, youtubeUrl }) => {
+  const convertToEmbedUrl = (url) => {
+    if (!url) return "";
+    if (url.includes("youtube.com/embed/")) return url;
+    if (url.includes("youtu.be/")) {
+      const match = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+      return match ? `https://www.youtube.com/embed/${match[1]}` : "";
+    }
+    if (url.includes("youtube.com/watch")) {
+      const match = url.match(/[?&]v=([a-zA-Z0-9_-]+)/);
+      return match ? `https://www.youtube.com/embed/${match[1]}` : "";
+    }
+    return "";
+  };
+
+  const embedUrl = convertToEmbedUrl(youtubeUrl);
   return (
     <div>
       <motion.div
@@ -17,10 +32,10 @@ const CategoriesFestival = ({ index = 0, description, img, youtubeUrl }) => {
         }}
       >
         <div>
-          {youtubeUrl ? (
+          {embedUrl ? (
             <div className="relative w-full h-64">
               <iframe
-                src={`${youtubeUrl}?rel=0`}
+                src={`${embedUrl}?rel=0`}
                 title={description}
                 className="w-full h-full"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

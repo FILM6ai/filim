@@ -20,6 +20,27 @@ const Robot = ({
     setRobot((data) => ({ ...data, [name]: value }));
   };
 
+  const convertToEmbedUrl = (url) => {
+    if (!url) return "";
+    if (url.includes("youtube.com/embed/")) {
+      const match = url.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/);
+      return match ? `https://www.youtube.com/embed/${match[1]}` : url;
+    }
+    if (url.includes("youtu.be/")) {
+      const match = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+      return match ? `https://www.youtube.com/embed/${match[1]}` : url;
+    }
+    if (url.includes("youtube.com/watch")) {
+      const match = url.match(/[?&]v=([a-zA-Z0-9_-]+)/);
+      return match ? `https://www.youtube.com/embed/${match[1]}` : url;
+    }
+    if (url.includes("<iframe")) {
+      const match = url.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/);
+      return match ? `https://www.youtube.com/embed/${match[1]}` : "";
+    }
+    return "";
+  };
+
   console.log(robot, "hthfhfhfh");
 
   return (
@@ -180,6 +201,23 @@ const Robot = ({
                 onChange={onChangeHandler}
                 name="link"
               />
+            </div>
+            <div className="mb-4">
+              <h1 className="text-black">YOUTUBE URL (optional)</h1>
+              <input
+                type="text"
+                placeholder="https://www.youtube.com/embed/VIDEO_ID"
+                className="border border-black px-3 py-2 mt-2 outline-0 w-full"
+                value={robot.youtubeUrl || ""}
+                onChange={(e) => {
+                  const converted = convertToEmbedUrl(e.target.value);
+                  setRobot((data) => ({ ...data, youtubeUrl: converted }));
+                }}
+                name="youtubeUrl"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                If a YouTube URL is provided, the image will be hidden.
+              </p>
             </div>
           </div>
         </form>

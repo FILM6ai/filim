@@ -21,6 +21,29 @@ const TopListing = ({
   link,
   youtubeUrl, 
 }) => {
+  const convertToEmbedUrl = (url) => {
+    if (!url) return "";
+    if (url.includes("youtube.com/embed/")) {
+      const match = url.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/);
+      return match ? `https://www.youtube.com/embed/${match[1]}` : url;
+    }
+    if (url.includes("youtu.be/")) {
+      const match = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+      return match ? `https://www.youtube.com/embed/${match[1]}` : url;
+    }
+    if (url.includes("youtube.com/watch")) {
+      const match = url.match(/[?&]v=([a-zA-Z0-9_-]+)/);
+      return match ? `https://www.youtube.com/embed/${match[1]}` : url;
+    }
+    if (url.includes("<iframe")) {
+      const match = url.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/);
+      return match ? `https://www.youtube.com/embed/${match[1]}` : "";
+    }
+    return "";
+  };
+
+  const embedUrl = convertToEmbedUrl(youtubeUrl);
+
   return (
     <div className=" overflow-hidden  mt-20 relative grid md:grid-cols-2 grid-cols-1 justify-center items-center gap-4">
       {/* Image Block */}
@@ -45,9 +68,9 @@ const TopListing = ({
               : "md:ml-20 ml-8 mb-24 max-sm:mb-4"
           }`}
         >
-          {youtubeUrl ? (
+          {embedUrl ? (
             <iframe
-              src={youtubeUrl}
+              src={embedUrl}
               className="w-full aspect-video"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen

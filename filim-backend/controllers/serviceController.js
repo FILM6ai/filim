@@ -56,6 +56,7 @@ export const createServicePage = async (req, res) => {
       },
       advance: {
         bgImage: advanceImage?.secure_url,
+        youtubeUrl: advance1.youtubeUrl || "",
         title: advance1.title,
         title2: advance1.title2,
         description: advance1.description,
@@ -63,6 +64,7 @@ export const createServicePage = async (req, res) => {
       },
       toplist: {
         bgImage: toplistImage?.secure_url,
+        youtubeUrl: topList1.youtubeUrl || "",
         title: topList1.title,
         description: topList1.description,
         button: topList1.button,
@@ -71,6 +73,7 @@ export const createServicePage = async (req, res) => {
       },
       robot: {
         bgImage: robotImage?.secure_url,
+        youtubeUrl: robot1.youtubeUrl || "",
         title: robot1.title,
         description: robot1.description,
         button: robot1.button,
@@ -79,6 +82,7 @@ export const createServicePage = async (req, res) => {
       },
       competate: {
         bgImage: competateImage?.secure_url,
+        youtubeUrl: competate1.youtubeUrl || "",
         title: competate1.title,
         description: competate1.description,
         button: competate1.button,
@@ -87,6 +91,7 @@ export const createServicePage = async (req, res) => {
       },
       runway: {
         bgImage: runwayImage?.secure_url,
+        youtubeUrl: runway1.youtubeUrl || "",
         title: runway1.title,
         button: runway1.button,
         alt: runway1.alt,
@@ -177,6 +182,8 @@ export const updateServicePage = async (req, res) => {
       } else {
         advanceData.bgImage = existingService.advance?.bgImage || [];
       }
+      advanceData.youtubeUrl =
+        advanceData.youtubeUrl ?? existingService.advance?.youtubeUrl ?? "";
       updates.advance = advanceData;
     }
 
@@ -199,6 +206,8 @@ export const updateServicePage = async (req, res) => {
       } else {
         toplistData.bgImage = existingService.toplist?.bgImage || [];
       }
+      toplistData.youtubeUrl =
+        toplistData.youtubeUrl ?? existingService.toplist?.youtubeUrl ?? "";
       updates.toplist = toplistData;
     }
 
@@ -215,6 +224,8 @@ export const updateServicePage = async (req, res) => {
       } else {
         robotData.bgImage = existingService.robot?.bgImage || [];
       }
+      robotData.youtubeUrl =
+        robotData.youtubeUrl ?? existingService.robot?.youtubeUrl ?? "";
       updates.robot = robotData;
     }
 
@@ -238,6 +249,8 @@ export const updateServicePage = async (req, res) => {
       } else {
         competateData.bgImage = existingService.competate?.bgImage || [];
       }
+      competateData.youtubeUrl =
+        competateData.youtubeUrl ?? existingService.competate?.youtubeUrl ?? "";
       updates.competate = competateData;
     }
 
@@ -257,6 +270,8 @@ export const updateServicePage = async (req, res) => {
       } else {
         runwayData.bgImage = existingService.runway?.bgImage || [];
       }
+      runwayData.youtubeUrl =
+        runwayData.youtubeUrl ?? existingService.runway?.youtubeUrl ?? "";
       updates.runway = runwayData;
     }
 

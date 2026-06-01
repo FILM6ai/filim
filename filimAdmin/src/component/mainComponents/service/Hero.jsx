@@ -24,6 +24,7 @@ const Hero = () => {
     title: "",
     title2: "",
     description: "",
+    youtubeUrl: "",
   });
 
   const [advanceImage, setAdvanceImage] = useState(false);
@@ -34,6 +35,7 @@ const Hero = () => {
     description: "",
     button: "",
     link: "",
+    youtubeUrl: "",
   });
 
   const [toplistImage, setToplistImage] = useState(false);
@@ -44,6 +46,7 @@ const Hero = () => {
     description: "",
     button: "",
     link: "",
+    youtubeUrl: "",
   });
 
   const [robotImage, setRobotImage] = useState(false);
@@ -54,6 +57,7 @@ const Hero = () => {
     title: "",
     button: "",
     link: "",
+    youtubeUrl: "",
   });
 
   const [competateImage, setCompetateImage] = useState(false);
@@ -63,6 +67,7 @@ const Hero = () => {
     title: "",
     button: "",
     link: "",
+    youtubeUrl: "",
   });
 
   const [runwayImage, setRunwayImage] = useState(false);

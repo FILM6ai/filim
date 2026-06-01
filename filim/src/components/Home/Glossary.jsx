@@ -42,14 +42,14 @@ const Glossary = ({ mainTitle, subtitle, items }) => {
                             className="w-full flex items-center justify-between py-5 text-left group"
                         >
                             <div className="flex items-center gap-6">
-                                <span className="text-[#c9a84c] text-sm font-semibold w-8 shrink-0">
+                                <span className="text-[#2ec3f5] text-sm font-semibold w-8 shrink-0">
                                     {String(index + 1).padStart(2, "0")}
                                 </span>
-                                <span className="text-white text-lg font-semibold group-hover:text-[#c9a84c] transition-colors">
+                                <span className="text-white text-lg font-semibold group-hover:text-[#2ec3f5] transition-colors">
                                     {item.term}
                                 </span>
                             </div>
-                            <span className="text-[#c9a84c] text-2xl font-light ml-4 shrink-0">
+                            <span className="text-[#2ec3f5] text-2xl font-light ml-4 shrink-0">
                                 {openIndex === index ? "−" : "+"}
                             </span>
                         </button>

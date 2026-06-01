@@ -5,7 +5,22 @@ import runway1 from "../../assets/images/runway.png";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
-const Runway = ({ margin, title, image, button, alt, link }) => {
+const Runway = ({ margin, title, image, button, alt, link, youtubeUrl }) => {
+  const convertToEmbedUrl = (url) => {
+    if (!url) return "";
+    if (url.includes("youtube.com/embed/")) return url;
+    if (url.includes("youtu.be/")) {
+      const match = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+      return match ? `https://www.youtube.com/embed/${match[1]}` : "";
+    }
+    if (url.includes("youtube.com/watch")) {
+      const match = url.match(/[?&]v=([a-zA-Z0-9_-]+)/);
+      return match ? `https://www.youtube.com/embed/${match[1]}` : "";
+    }
+    return "";
+  };
+
+  const embedUrl = convertToEmbedUrl(youtubeUrl);
   return (
     <div
       className={` overflow-hidden ${
@@ -13,17 +28,26 @@ const Runway = ({ margin, title, image, button, alt, link }) => {
       } relative w-full h-[400px] max-sm:h-[300px]  flex items-center justify-center text-center text-white`}
     >
       <div className="absolute inset-0 w-full h-full">
-        <Image
-          src={
-            (Array.isArray(image) && image.length > 0
-              ? image[image.length - 1]
-              : image) || runway1
-          }
-          alt={alt || "Runway"}
-          layout="fill"
-          objectFit="cover"
-          className="brightness-50 w-full"
-        />
+        {embedUrl ? (
+          <iframe
+            src={embedUrl}
+            className="w-full h-full"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        ) : (
+          <Image
+            src={
+              (Array.isArray(image) && image.length > 0
+                ? image[image.length - 1]
+                : image) || runway1
+            }
+            alt={alt || "Runway"}
+            layout="fill"
+            objectFit="cover"
+            className="brightness-50 w-full"
+          />
+        )}
       </div>
 
       {/* Text Content */}
