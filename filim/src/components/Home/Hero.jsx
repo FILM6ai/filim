@@ -23,6 +23,8 @@ const Hero = ({
   link,
   arrowLeft,
   arrowRight,
+  buttonText,
+  buttonLink,
 }) => {
   const swiperRef = useRef(null);
   const videoRefs = useRef([]);
@@ -212,6 +214,18 @@ const Hero = ({
               </div>
             </motion.div>
           </div>
+          {buttonText && buttonLink && (
+            <div className="absolute bottom-6 sm:bottom-10 left-1/2 -translate-x-1/2 z-20 whitespace-nowrap">
+              <a
+                href={buttonLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-40 sm:w-52 md:w-60 py-1.5 sm:py-2 text-xs sm:text-sm md:text-base flex items-center justify-center rounded-md text-white bg-black border border-white hover:bg-[#00a4c2] hover:scale-105 hover:text-white duration-300 transition-all tracking-widest uppercase font-medium"
+               >
+                {buttonText}
+              </a>
+            </div>
+          )}
           <>
             <style>{`
   .swiper-pagination {

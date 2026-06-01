@@ -11,6 +11,9 @@ export const createFestivalPage = async (req, res) => {
     const competate1 = JSON.parse(competate);
     const runway1 = JSON.parse(runway);
     const cardSection1 = JSON.parse(cardSection);
+    const glossary1 = req.body.glossary ? JSON.parse(req.body.glossary) : { mainTitle: '', subtitle: '', items: [] };
+    const gallery1 = req.body.gallery ? JSON.parse(req.body.gallery) : { mainTitle: '', images: [] };
+    const jurors1 = req.body.jurors ? JSON.parse(req.body.jurors) : { mainTitle: '', items: [] };
 
     let heroVideoPath = req.files?.heroImage[0]?.path;
     let advanceImage = req.files?.advanceImage[0]?.path;
@@ -18,10 +21,18 @@ export const createFestivalPage = async (req, res) => {
     let robotImage = req.files?.robotImage[0]?.path;
     let competateImage = req.files?.competateImage[0]?.path;
     let runwayImage = req.files?.runwayImage[0]?.path;
+    let galleryImagePaths = [];
+    if (req.files) {
+      let i = 0;
+      while (req.files[`galleryImage${i}`]?.[0]?.path) {
+        galleryImagePaths.push(req.files[`galleryImage${i}`][0].path);
+        i++;
+      }
+    }
 
     let cardImages = [];
     const totalCards = cardSection1.cards.length;
-for (let i = 0; i < totalCards; i++) {
+    for (let i = 0; i < totalCards; i++) {
       const file = req.files?.[`cardImage${i}`]?.[0]?.path;
       if (file) {
         const uploaded = await uploadOnCloudinary(file);
@@ -57,6 +68,26 @@ for (let i = 0; i < totalCards; i++) {
     if (runwayImage) {
       runwayImage = await uploadOnCloudinary(runwayImage);
     }
+    let uploadedGalleryImages = [];
+    for (const imgPath of galleryImagePaths) {
+      const uploaded = await uploadOnCloudinary(imgPath);
+      if (uploaded?.secure_url) uploadedGalleryImages.push(uploaded.secure_url);
+    }
+
+    let jurorImagePaths = [];
+    if (req.files) {
+      let i = 0;
+      while (req.files[`jurorImage${i}`]?.[0]?.path) {
+        jurorImagePaths.push(req.files[`jurorImage${i}`][0].path);
+        i++;
+      }
+    }
+
+    let uploadedJurorImages = [];
+    for (const imgPath of jurorImagePaths) {
+      const uploaded = await uploadOnCloudinary(imgPath);
+      if (uploaded?.secure_url) uploadedJurorImages.push(uploaded.secure_url);
+    }
 
     const newFestival = new festivalSchema({
       hero: {
@@ -64,6 +95,8 @@ for (let i = 0; i < totalCards; i++) {
         title: hero1.title,
         alt: hero1.alt,
         description: hero1.description,
+        button: hero1.button,
+  link: hero1.link, 
       },
       advance: {
         alt: advance1.alt,
@@ -110,6 +143,23 @@ for (let i = 0; i < totalCards; i++) {
         title: runway1.title,
         button: runway1.button,
         link: runway1.link,
+      },
+      glossary: {
+        mainTitle: glossary1.mainTitle || '',
+        subtitle: glossary1.subtitle || '',
+        items: glossary1.items || [],
+      },
+      gallery: {
+        mainTitle: gallery1.mainTitle || '',
+        images: uploadedGalleryImages,
+      },
+      jurors: {
+        mainTitle: jurors1.mainTitle || '',
+        items: (jurors1.items || []).map((item, i) => ({
+          name: item.name,
+          role: item.role,
+          image: uploadedJurorImages[i] || '',
+        })),
       },
     });
     const festival = await newFestival.save();
@@ -190,9 +240,9 @@ export const updatedFestival = async (req, res) => {
         const uploadResult = await uploadOnCloudinary(advanceFilePath);
         advanceData.bgImage = uploadResult?.secure_url
           ? [
-              ...(existingFestival.advance?.bgImage || []),
-              uploadResult.secure_url,
-            ]
+            ...(existingFestival.advance?.bgImage || []),
+            uploadResult.secure_url,
+          ]
           : existingFestival.advance?.bgImage || [];
       } else {
         advanceData.bgImage = existingFestival.advance?.bgImage || [];
@@ -212,9 +262,9 @@ export const updatedFestival = async (req, res) => {
         const uploadResult = await uploadOnCloudinary(toplistFilePath);
         toplistData.bgImage = uploadResult?.secure_url
           ? [
-              ...(existingFestival.toplist?.bgImage || []),
-              uploadResult.secure_url,
-            ]
+            ...(existingFestival.toplist?.bgImage || []),
+            uploadResult.secure_url,
+          ]
           : existingFestival.toplist?.bgImage || [];
       } else {
         toplistData.bgImage = existingFestival.toplist?.bgImage || [];
@@ -230,9 +280,9 @@ export const updatedFestival = async (req, res) => {
         const uploadResult = await uploadOnCloudinary(robotFilePath);
         robotData.bgImage = uploadResult?.secure_url
           ? [
-              ...(existingFestival.robot?.bgImage || []),
-              uploadResult.secure_url,
-            ]
+            ...(existingFestival.robot?.bgImage || []),
+            uploadResult.secure_url,
+          ]
           : existingFestival.robot?.bgImage || [];
       } else {
         robotData.bgImage = existingFestival.robot?.bgImage || [];
@@ -252,9 +302,9 @@ export const updatedFestival = async (req, res) => {
         const uploadResult = await uploadOnCloudinary(competateFilePath);
         competateData.bgImage = uploadResult?.secure_url
           ? [
-              ...(existingFestival.competate?.bgImage || []),
-              uploadResult.secure_url,
-            ]
+            ...(existingFestival.competate?.bgImage || []),
+            uploadResult.secure_url,
+          ]
           : existingFestival.competate?.bgImage || [];
       } else {
         competateData.bgImage = existingFestival.competate?.bgImage || [];
@@ -270,9 +320,9 @@ export const updatedFestival = async (req, res) => {
         const uploadResult = await uploadOnCloudinary(runwayFilePath);
         runwayData.bgImage = uploadResult?.secure_url
           ? [
-              ...(existingFestival.runway?.bgImage || []),
-              uploadResult.secure_url,
-            ]
+            ...(existingFestival.runway?.bgImage || []),
+            uploadResult.secure_url,
+          ]
           : existingFestival.runway?.bgImage || [];
       } else {
         runwayData.bgImage = existingFestival.runway?.bgImage || [];
@@ -304,6 +354,59 @@ export const updatedFestival = async (req, res) => {
       updates.cardSection = {
         mainTitle: cardSectionData.mainTitle,
         cards: updatedCards,
+      };
+    }
+    if (req.body.glossary) {
+      const glossaryData = JSON.parse(req.body.glossary);
+      updates.glossary = {
+        mainTitle: glossaryData.mainTitle || '',
+        subtitle: glossaryData.subtitle || '',
+        items: glossaryData.items || [],
+      };
+    }
+
+    if (req.body.gallery !== undefined) {
+      const galleryData = JSON.parse(req.body.gallery);
+      let existingImages = existingFestival.gallery?.images || [];
+
+      let newGalleryImages = [];
+      let i = 0;
+      while (req.files?.[`galleryImage${i}`]?.[0]) {
+        const uploaded = await uploadOnCloudinary(req.files[`galleryImage${i}`][0].path);
+        if (uploaded?.secure_url) newGalleryImages.push(uploaded.secure_url);
+        i++;
+      }
+
+      updates.gallery = {
+        mainTitle: galleryData.mainTitle || existingFestival.gallery?.mainTitle || '',
+        images: [...existingImages, ...newGalleryImages],
+      };
+    }
+
+    if (req.body.jurors !== undefined) {
+      const jurorsData = JSON.parse(req.body.jurors);
+      const existingItems = existingFestival.jurors?.items || [];
+
+      const updatedItems = [];
+      for (let i = 0; i < jurorsData.items.length; i++) {
+        const existingItem = existingItems[i] || {};
+        let image = existingItem.image || '';
+
+        if (req.files?.[`jurorImage${i}`]?.[0]) {
+          const uploaded = await uploadOnCloudinary(req.files[`jurorImage${i}`][0].path);
+          image = uploaded?.secure_url || image;
+        }
+
+        updatedItems.push({
+          name: jurorsData.items[i].name,
+          role: jurorsData.items[i].role,
+          image,
+        });
+      }
+
+      updates.jurors = {
+        mainTitle: jurorsData.mainTitle || existingFestival.jurors?.mainTitle || '',
+        items: updatedItems,
       };
     }
     console.log("Updates object:", updates);

@@ -9,6 +9,10 @@ import axios from "axios";
 import Head from "next/head";
 import Loading from "@/components/faq/Loading";
 import Sheilds from "@/components/Home/Sheilds";
+import Glossary from '@/components/Home/Glossary';
+import GalleryPhotos from '@/components/Home/GalleryPhotos';
+import JurorPhotos from '@/components/Home/JurorPhotos';
+
 
 const page = () => {
   const [heroData, setHeroData] = useState({});
@@ -19,6 +23,10 @@ const page = () => {
   const [runway, setRunway] = useState({});
   const [shieldMainTitle, setShieldMainTitle] = useState("");
   const [shieldCards, setShieldCards] = useState([]);
+  const [glossaryData, setGlossaryData] = useState({});
+  const [galleryData, setGalleryData] = useState({});
+  const [jurorsData, setJurorsData] = useState({});
+
   const [loading, setLoading] = useState(true);
   const [metaData, setMetaData] = useState({
     page: "festival",
@@ -39,6 +47,10 @@ const page = () => {
         setRunway(data.festival[0].runway);
         setShieldMainTitle(data.festival[0].cardSection.mainTitle || "");
         setShieldCards(data.festival[0].cardSection.cards || []);
+        setGlossaryData(data.festival[0].glossary || {});
+        setGalleryData(data.festival[0].gallery || {});
+        setJurorsData(data.festival[0].jurors || {});
+
         setLoading(false);
       } catch (error) {
         setLoading(false);
@@ -68,7 +80,7 @@ const page = () => {
             description: meta.festival.description,
           });
         }
-      } catch (error) {}
+      } catch (error) { }
     };
     fetchMetaData();
   }, []);
@@ -86,6 +98,8 @@ const page = () => {
         title1={heroData?.title}
         alt={heroData?.alt}
         description={heroData?.description}
+        buttonText={heroData?.button}
+        buttonLink={heroData?.link}
       />
       <Advancing
         title1={advanceData?.title}
@@ -136,6 +150,21 @@ const page = () => {
         <div className="bg-[#F8F8F8] max-md:mt-12 md:h-48 md:-mt-16 relative -z-50"></div>
       </div>
       <Sheilds mainTitle={shieldMainTitle} cards={shieldCards} />
+
+      <Glossary
+        mainTitle={glossaryData?.mainTitle}
+        subtitle={glossaryData?.subtitle}
+        items={glossaryData?.items}
+      />
+
+      <GalleryPhotos
+        mainTitle={galleryData?.mainTitle}
+        images={galleryData?.images}
+      />
+      <JurorPhotos
+        mainTitle={jurorsData?.mainTitle}
+        items={jurorsData?.items}
+      />
       <Runway
         title={runway?.title}
         image={

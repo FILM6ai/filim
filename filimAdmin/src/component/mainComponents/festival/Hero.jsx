@@ -10,6 +10,10 @@ import Competition from "./Competition";
 import Runway from "./Runway";
 import FestivalCards from "./FestivalCards";
 import { validateFile } from "@/utils/fileValidation";
+import GlossarySection from "./GlossarySection";
+import GallerySection from "./GallerySection";
+import JurorsSection from "./JurorsSection";
+
 
 const Hero = () => {
   const [festivalId, setFestivalId] = useState(null);
@@ -21,6 +25,8 @@ const Hero = () => {
   const [cards, setCards] = useState([]);
   const [showCardPopup, setShowCardPopup] = useState(false);
   const [popupIndex, setPopupIndex] = useState(0);
+  const [heroButton, setHeroButton] = useState("");
+const [heroLink, setHeroLink] = useState("");
   const [tempCard, setTempCard] = useState({
     title: "",
     description: "",
@@ -28,6 +34,16 @@ const Hero = () => {
   });
 
   const [loading, setLoading] = useState(false);
+  const [glossary, setGlossary] = useState({
+    mainTitle: "",
+    subtitle: "",
+    items: [],
+  });
+
+  const [galleryTitle, setGalleryTitle] = useState("");
+  const [galleryImages, setGalleryImages] = useState([]);  // naye File[]
+  const [oldGalleryImages, setOldGalleryImages] = useState([]);  // DB se aaye URLs
+  const [jurors, setJurors] = useState({ mainTitle: "", items: [] });
 
   const [advance, setAdvance] = useState({
     alt: "",
@@ -98,6 +114,8 @@ const Hero = () => {
             setImage(homeData.hero.bgImage || "");
             setAlt(homeData.hero.alt || "");
             setDescription(homeData.hero.description || "");
+            setHeroButton(homeData.hero.button || "");
+  setHeroLink(homeData.hero.link || "");  
           }
           if (homeData?.advance) {
             setAdvance(homeData.advance);
@@ -125,6 +143,16 @@ const Hero = () => {
             setRunwayImage(null);
           }
           if (homeData?.cardSection) {
+            if (homeData?.glossary) {
+              setGlossary(homeData.glossary);
+            }
+            if (homeData?.gallery) {
+              setGalleryTitle(homeData.gallery.mainTitle || "");
+              setOldGalleryImages(homeData.gallery.images || []);
+            }
+            if (homeData?.jurors) {
+              setJurors(homeData.jurors);
+            }
             setMainTitle(homeData.cardSection?.mainTitle || "");
             setCards(homeData.cardSection?.cards || []);
           }
@@ -149,23 +177,23 @@ const Hero = () => {
 
   // Save card from popup
   const saveCard = () => {
-  const updated = [...cards];
-  if (popupIndex < updated.length) {
-    // Existing card edit
-    updated[popupIndex] = tempCard;
-  } else {
-    // Naya card add
-    updated.push(tempCard);
-  }
-  setCards(updated);           // ← 4 ki limit hata di
-  setShowCardPopup(false);
-};
+    const updated = [...cards];
+    if (popupIndex < updated.length) {
+      // Existing card edit
+      updated[popupIndex] = tempCard;
+    } else {
+      // Naya card add
+      updated.push(tempCard);
+    }
+    setCards(updated);           // ← 4 ki limit hata di
+    setShowCardPopup(false);
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
       const formData = new FormData();
-      const hero = { title, alt, description };
+const hero = { title, alt, description, button: heroButton, link: heroLink };
       formData.append("hero", JSON.stringify(hero));
       formData.append("cardSection", JSON.stringify({ mainTitle, cards }));
 
@@ -174,16 +202,37 @@ const Hero = () => {
       formData.append("robot", JSON.stringify(robot));
       formData.append("competate", JSON.stringify(competate));
       formData.append("runway", JSON.stringify(runway));
+      formData.append("glossary", JSON.stringify(glossary));
+      formData.append("gallery", JSON.stringify({ mainTitle: galleryTitle }));
+
+      // Gallery naye images append karo
+      galleryImages.forEach((file, i) => {
+        formData.append(`galleryImage${i}`, file);
+      });
+      formData.append("jurors", JSON.stringify({
+        mainTitle: jurors.mainTitle,
+        items: jurors.items.map(item => ({
+          name: item.name,
+          role: item.role,
+          image: typeof item.image === "string" ? item.image : "",
+        }))
+      }));
+
+      jurors.items.forEach((item, i) => {
+        if (item.image && typeof item.image !== "string") {
+          formData.append(`jurorImage${i}`, item.image);
+        }
+      });
 
       if (image) {
-  formData.append("heroImage", image);
-}
-// Cards images hero image se bahar nikalo — hamesha append ho
-cards.forEach((card, i) => {
-  if (card.image && typeof card.image !== "string") {
-    formData.append(`cardImage${i}`, card.image);
-  }
-});
+        formData.append("heroImage", image);
+      }
+      // Cards images hero image se bahar nikalo — hamesha append ho
+      cards.forEach((card, i) => {
+        if (card.image && typeof card.image !== "string") {
+          formData.append(`cardImage${i}`, card.image);
+        }
+      });
       if (advanceImage) {
         formData.append("advanceImage", advanceImage);
       }
@@ -222,6 +271,11 @@ cards.forEach((card, i) => {
           setOldCompetateImage(updatedFestivalData.competate?.bgImage || []);
           setCompetateImage(null);
           setOldRunwayImage(updatedFestivalData.runway?.bgImage || []);
+          setOldGalleryImages(updatedFestivalData.gallery?.images || []);
+          setGalleryImages([]);
+          if (updatedFestivalData.jurors) {
+            setJurors(updatedFestivalData.jurors);
+          }
           setRunwayImage(null);
         }
         toast.success("Festival data updated successfully!");
@@ -340,6 +394,26 @@ cards.forEach((card, i) => {
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
+            <div className="mb-4">
+              <h1 className="text-black">BUTTON TEXT</h1>
+              <input
+                type="text"
+                placeholder="e.g. SUBMIT YOUR MOVIE"
+                className="border border-black px-3 py-2 mt-2 outline-0 w-full"
+                value={heroButton}
+                onChange={(e) => setHeroButton(e.target.value)}
+              />
+            </div>
+            <div className="mb-4">
+              <h1 className="text-black">BUTTON LINK (URL)</h1>
+              <input
+                type="text"
+                placeholder="https://filmfreeway.com/..."
+                className="border border-black px-3 py-2 mt-2 outline-0 w-full"
+                value={heroLink}
+                onChange={(e) => setHeroLink(e.target.value)}
+              />
+            </div>
           </div>
         </form>
       </div>
@@ -409,6 +483,24 @@ cards.forEach((card, i) => {
         oldRunwayImage={oldRunwayImage}
         setOldRunwayImage={setOldRunwayImage}
         sectionName="runway"
+      />
+      <GlossarySection
+        glossary={glossary}
+        setGlossary={setGlossary}
+      />
+      <GallerySection
+        galleryTitle={galleryTitle}
+        setGalleryTitle={setGalleryTitle}
+        galleryImages={galleryImages}
+        setGalleryImages={setGalleryImages}
+        oldGalleryImages={oldGalleryImages}
+        setOldGalleryImages={setOldGalleryImages}
+        festivalId={festivalId}
+      />
+      <JurorsSection
+        jurors={jurors}
+        setJurors={setJurors}
+        festivalId={festivalId}
       />
       <div className="flex justify-end mt-8 mb-8">
         <button

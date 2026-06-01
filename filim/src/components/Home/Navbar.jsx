@@ -111,7 +111,7 @@ const Navbar = () => {
                   setIsOpen(false);
                 }}
               >
-                {/* <FaHome size={30} /> */}
+                <FaHome size={30} />  
               </Link>
               {linksStatic.map((item, ind) => (
                 <Link

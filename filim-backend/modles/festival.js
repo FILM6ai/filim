@@ -6,6 +6,8 @@ const FestivalPageSchema = new mongoose.Schema({
     title: { type: String },
     alt: { type: String },
     description: { type: String },
+     button: { type: String },
+  link: { type: String },
   },
 
   advance: {
@@ -55,6 +57,31 @@ const FestivalPageSchema = new mongoose.Schema({
     title: { type: String },
     button: { type: String },
     link: { type: String },
+  },
+  glossary: {
+    mainTitle: { type: String },
+    subtitle: { type: String },
+    items: [
+      {
+        term: { type: String },
+        definition: { type: String },
+      },
+    ],
+  },
+
+  gallery: {
+    mainTitle: { type: String },
+    images: [{ type: String }],
+  },
+  jurors: {
+    mainTitle: { type: String },
+    items: [
+      {
+        name: { type: String },
+        role: { type: String },
+        image: { type: String },
+      },
+    ],
   },
 });
 

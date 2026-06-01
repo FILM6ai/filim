@@ -38,7 +38,7 @@ const Sheilds = ({mainTitle, cards}) => {
 
   return (
     <div className='w-full min-h-screen bg-black flex flex-col  items-start justify-center gap-12 py-16 px-4 lg:px-20'>
-      <h1 className='text-white flex m-auto  md:text-4xl text-2xl'>
+      <h1 className='text-white flex m-auto  md:text-[60px] text-2xl'>
         {mainTitle}
       </h1>
       {displayCards.map((card, index) => (
@@ -53,13 +53,13 @@ const Sheilds = ({mainTitle, cards}) => {
           <Image
             src={card.image}
             alt={card.title}
-            width={100}
-            height={100}
+            width={150}
+            height={150}
             className='object-contain'
           />
           <div className='text-white text-left'>
             <h2 className='text-2xl  mb-1'>{card.title}</h2>
-            <p className='text-[16px] font-normal '>{card.description}</p>
+            <p className='text-[16px] leading-7 '>{card.description}</p>
           </div>
         </motion.div>
       ))}
