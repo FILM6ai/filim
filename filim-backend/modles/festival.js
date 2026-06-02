@@ -57,6 +57,18 @@ const FestivalPageSchema = new mongoose.Schema({
     title: { type: String },
     button: { type: String },
     link: { type: String },
+    popup: {
+      title: { type: String },
+      content: { type: String },
+      heading: { type: String },
+      description: { type: String },
+      subtitle: { type: String },
+      tagline: { type: String },
+      buttonText: { type: String },
+      buttonLink: { type: String },
+      image: { type: String },
+      youtubeUrl: { type: String },
+    },
   },
   glossary: {
     mainTitle: { type: String },

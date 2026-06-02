@@ -21,8 +21,12 @@ const page = () => {
         const { data } = await axios.get(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/faq/faqgetroute`
         );
-
-        setHeroData(data.faqData[0].faqhero);
+        const hero = data.faqData[0].faqhero || {};
+        // Normalize hero data: prefer youtubeUrl, otherwise detect if bgImage is video or image
+        const heroDataNormalized = {
+          ...hero,
+        };
+        setHeroData(heroDataNormalized);
         const allFaqs = data.faqData.map((item) => item.faq);
         setAdvanceData(allFaqs);
         setLoading(false);
@@ -70,7 +74,27 @@ const page = () => {
         <meta name='description' content={metaData.description} />
       </Head>
       <Hero
-        image={[{ type: 'video', value: heroData?.bgImage }]}
+        image={(() => {
+          const arr = [];
+          if (heroData?.youtubeUrl) {
+            // convert to embed URL if needed
+            const u = heroData.youtubeUrl;
+            let embed = u;
+            if (u.includes('watch')) {
+              const v = new URL(u).searchParams.get('v');
+              if (v) embed = `https://www.youtube.com/embed/${v}`;
+            } else if (u.includes('youtu.be')) {
+              const v = u.split('/').pop();
+              embed = `https://www.youtube.com/embed/${v}`;
+            }
+            arr.push({ type: 'youtube', value: embed });
+          } else if (heroData?.bgImage) {
+            const url = heroData.bgImage;
+            const isVideo = url && (url.endsWith('.mp4') || url.includes('video'));
+            arr.push({ type: isVideo ? 'video' : 'image', value: url });
+          }
+          return arr.length ? arr : [{ type: 'image', value: '' }];
+        })()}
         title1={heroData?.title}
         description={heroData?.description}
       />

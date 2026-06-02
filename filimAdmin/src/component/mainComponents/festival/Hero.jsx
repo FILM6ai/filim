@@ -89,9 +89,21 @@ const [heroLink, setHeroLink] = useState("");
     title: "",
     button: "",
     link: "",
+    popup: {
+      title: "",
+      content: "",
+      tagline: "",
+      heading: "",
+      description: "",
+      buttonText: "",
+      buttonLink: "",
+      image: "",
+      youtubeUrl: "",
+    },
   });
 
   const [runwayImage, setRunwayImage] = useState(false);
+  const [popupImageFile, setPopupImageFile] = useState(null);
   const [oldAdvanceImage, setOldAdvanceImage] = useState([]);
   const [oldToplistImage, setOldToplistImage] = useState([]);
   const [oldRobotImage, setOldRobotImage] = useState([]);
@@ -248,6 +260,9 @@ const hero = { title, alt, description, button: heroButton, link: heroLink };
       if (runwayImage) {
         formData.append("runwayImage", runwayImage);
       }
+      if (popupImageFile) {
+        formData.append("popupImage", popupImageFile);
+      }
 
       // Call update API using PUT if festivalId exists
       if (festivalId) {
@@ -277,6 +292,7 @@ const hero = { title, alt, description, button: heroButton, link: heroLink };
             setJurors(updatedFestivalData.jurors);
           }
           setRunwayImage(null);
+          setPopupImageFile(null);
         }
         toast.success("Festival data updated successfully!");
         console.log("Response:", response.data);
@@ -483,6 +499,8 @@ const hero = { title, alt, description, button: heroButton, link: heroLink };
         oldRunwayImage={oldRunwayImage}
         setOldRunwayImage={setOldRunwayImage}
         sectionName="runway"
+        popupImageFile={popupImageFile}
+        setPopupImageFile={setPopupImageFile}
       />
       <GlossarySection
         glossary={glossary}

@@ -1,6 +1,7 @@
 'use client';
 
 import axios from 'axios';
+import { validateFile } from '@/utils/fileValidation';
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 
@@ -8,7 +9,8 @@ const FaqHero = () => {
  const [faqDataId, setfaqDataId] = useState(null);
  const [title, setTitle] = useState('');
    const [alt, setAlt] = useState('');
- const [image, setImage] = useState(null);
+   const [image, setImage] = useState(null);
+   const [youtubeUrl, setYoutubeUrl] = useState('');
  const [description, setdescription] = useState('');
  const [loading, setLoading] = useState(false);
 
@@ -25,11 +27,12 @@ const FaqHero = () => {
          setfaqDataId(faqPage._id || null); // Ensure ID is correctly set
 
          if (faqPage.faqhero) {
-           setTitle(faqPage.faqhero.title || '');
-           setImage(faqPage.faqhero.bgImage || null);
-           setdescription(faqPage.faqhero.description || '');
-           setAlt(faqPage.faqhero.alt || '');
-         }
+             setTitle(faqPage.faqhero.title || '');
+             setImage(faqPage.faqhero.bgImage || null);
+             setdescription(faqPage.faqhero.description || '');
+             setAlt(faqPage.faqhero.alt || '');
+             setYoutubeUrl(faqPage.faqhero.youtubeUrl || '');
+           }
        }
      } catch (error) {
        console.error('Error fetching data:', error);
@@ -46,7 +49,12 @@ const FaqHero = () => {
 
    try {
      const formData = new FormData();
-     const hero = { title, description,alt };
+     const hero = { title, description, alt, youtubeUrl };
+
+     // If admin explicitly cleared image, include empty string to tell backend to clear
+     if (image === '') {
+       hero.bgImage = '';
+     }
 
      formData.append('faqhero', JSON.stringify(hero));
 
@@ -115,25 +123,68 @@ const FaqHero = () => {
               <span className='text-gray-600 font-medium'>Upload file</span>
             </label>
             <input
-              onChange={(e) => setImage(e.target.files[0])}
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const result = validateFile(file);
+                if (!result.valid) {
+                  toast.error(result.message);
+                  return;
+                }
+                setImage(file);
+              }}
               id='upload2'
               type='file'
-              accept='video/*'
+              accept='image/*,video/*'
               className='hidden'
             />
           </div>
           {/* Image Preview */}
           {image && (
             <div className='mt-4'>
-              <video
-                src={
-                  typeof image === 'string' ? image : URL.createObjectURL(image)
-                }
-                controls
-                className='w-36 h-auto'
-              />
+              {typeof image === 'string' ? (
+                image.endsWith('.mp4') || image.includes('video') ? (
+                  <video src={image} controls className='w-36 h-auto' />
+                ) : (
+                  <img src={image} alt={alt || 'preview'} className='w-36 h-auto' />
+                )
+              ) : image instanceof File ? (
+                image.type.startsWith('video/') ? (
+                  <video src={URL.createObjectURL(image)} controls className='w-36 h-auto' />
+                ) : (
+                  <img src={URL.createObjectURL(image)} alt={alt || 'preview'} className='w-36 h-auto' />
+                )
+              ) : null}
             </div>
           )}
+          <div className='mt-4'>
+            <label className='text-sm font-medium'>YouTube URL (optional)</label>
+            <input
+              type='text'
+              value={youtubeUrl}
+              onChange={(e) => setYoutubeUrl(e.target.value)}
+              placeholder='https://www.youtube.com/watch?v=...'
+              className='border px-2 py-1 w-full mt-2'
+            />
+            <div className='flex gap-2 mt-2'>
+              <button
+                type='button'
+                onClick={() => {
+                  setImage(null);
+                }}
+                className='text-sm px-2 py-1 bg-gray-200'
+              >
+                Remove Image
+              </button>
+              <button
+                type='button'
+                onClick={() => setYoutubeUrl('')}
+                className='text-sm px-2 py-1 bg-gray-200'
+              >
+                Remove YouTube URL
+              </button>
+            </div>
+          </div>
           <div className='mt-8'>
             <div className='mb-4'>
               <h1 className='text-black'>ALT TEXT</h1>

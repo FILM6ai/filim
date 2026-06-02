@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 const FaqPageSchema = new mongoose.Schema({
   faqhero: {
     bgImage: { type: String },
+    youtubeUrl: { type: String },
     title: { type: String },
     description: { type: String },
     alt: { type: String },

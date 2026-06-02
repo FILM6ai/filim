@@ -103,7 +103,7 @@ const Navbar = () => {
             <div className='flex flex-col min-[920px]:flex-row items-center space-y-4 min-[920px]:space-y-0 min-[920px]:space-x-8 p-4 min-[920px]:p-0'>
               <Link
                 href='/'
-                className={`hover:text-[#2ec3f5] pb-2 hover:border-b-2 border-[#2ec3f5] transition-colors text-[22px] ${
+                className={`hover:text-[#2ec3f5] pb-1 hover:border-b-2 border-[#2ec3f5] transition-colors text-[22px] ${
                   activeNav === '/' ? 'text-[#2ec3f5] border-b-2' : ''
                 }`}
                 onClick={() => {
@@ -111,7 +111,7 @@ const Navbar = () => {
                   setIsOpen(false);
                 }}
               >
-                <FaHome size={30} />  
+                <FaHome size={24} />  
               </Link>
               {linksStatic.map((item, ind) => (
                 <Link

@@ -68,6 +68,12 @@ export const createFestivalPage = async (req, res) => {
     if (runwayImage) {
       runwayImage = await uploadOnCloudinary(runwayImage);
     }
+
+    let runwayPopupImage;
+    if (req.files?.popupImage && req.files.popupImage.length) {
+      runwayPopupImage = await uploadOnCloudinary(req.files.popupImage[0].path);
+    }
+
     let uploadedGalleryImages = [];
     for (const imgPath of galleryImagePaths) {
       const uploaded = await uploadOnCloudinary(imgPath);
@@ -143,6 +149,10 @@ export const createFestivalPage = async (req, res) => {
         title: runway1.title,
         button: runway1.button,
         link: runway1.link,
+        popup: {
+          ...(runway1.popup || {}),
+          image: runwayPopupImage?.secure_url || (runway1.popup?.image || ""),
+        },
       },
       glossary: {
         mainTitle: glossary1.mainTitle || '',
@@ -315,6 +325,20 @@ export const updatedFestival = async (req, res) => {
     // Update Runway section if provided
     if (req.body.runway) {
       let runwayData = JSON.parse(req.body.runway);
+      runwayData.popup = runwayData.popup || {};
+      if (req.files && req.files.popupImage && req.files.popupImage.length) {
+        const popupFilePath = req.files.popupImage[0].path;
+        const uploadResult = await uploadOnCloudinary(popupFilePath);
+        runwayData.popup.image = uploadResult?.secure_url || runwayData.popup.image || existingFestival.runway?.popup?.image || "";
+      } else {
+        runwayData.popup.image = runwayData.popup.image !== undefined
+          ? runwayData.popup.image
+          : existingFestival.runway?.popup?.image || "";
+      }
+      runwayData.popup.youtubeUrl = runwayData.popup.youtubeUrl !== undefined
+        ? runwayData.popup.youtubeUrl
+        : existingFestival.runway?.popup?.youtubeUrl || "";
+
       if (req.files && req.files.runwayImage && req.files.runwayImage.length) {
         const runwayFilePath = req.files.runwayImage[0].path;
         const uploadResult = await uploadOnCloudinary(runwayFilePath);

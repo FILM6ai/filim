@@ -49,6 +49,10 @@ festivalRoute.post(
       name: "runwayImage",
       maxCount: 1,
     },
+    {
+      name: "popupImage",
+      maxCount: 1,
+    },
     { name: "galleryImage0", maxCount: 1 },
     { name: "galleryImage1", maxCount: 1 },
     { name: "galleryImage2", maxCount: 1 },
@@ -113,6 +117,7 @@ festivalRoute.put(
     { name: "robotImage", maxCount: 1 },
     { name: "competateImage", maxCount: 1 },
     { name: "runwayImage", maxCount: 1 },
+    { name: "popupImage", maxCount: 1 },
     { name: "galleryImage0", maxCount: 1 },
     { name: "galleryImage1", maxCount: 1 },
     { name: "galleryImage2", maxCount: 1 },

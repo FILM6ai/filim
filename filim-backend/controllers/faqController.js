@@ -26,17 +26,19 @@ export const createFaqPage = async (req, res) => {
       const hero1 = JSON.parse(faqhero);
       const advance1 = JSON.parse(faq);
 
-      let heroVideoPath = req.files?.heroImage?.[0]?.path;
-
-      if (heroVideoPath) {
-        heroVideoPath = await uploadOnCloudinary(heroVideoPath, {
-          resource_type: 'video',
+      let heroFile = req.files?.heroImage?.[0];
+      let heroUploadResult;
+      if (heroFile) {
+        const isVideo = heroFile.mimetype && heroFile.mimetype.startsWith('video/');
+        heroUploadResult = await uploadOnCloudinary(heroFile.path, {
+          resource_type: isVideo ? 'video' : 'image',
         });
       }
 
       const faqModel = new FaqSchema({
         faqhero: {
-          bgImage: heroVideoPath?.secure_url,
+          bgImage: heroUploadResult?.secure_url || hero1.bgImage || null,
+          youtubeUrl: hero1.youtubeUrl || '',
           title: hero1.title,
           description: hero1.description,
           alt: hero1.alt,
@@ -110,15 +112,20 @@ export const updateFaqPage = async (req, res) => {
       // Fallback to the original logic if stringified fields are provided
       if (req.body.faqhero) {
         let heroData = JSON.parse(req.body.faqhero);
-        if (req.files && req.files.heroImage && req.files.heroImage.length) {
-          const heroFilePath = req.files.heroImage[0].path;
-          const uploadResult = await uploadOnCloudinary(heroFilePath, {
-            resource_type: 'video',
+        // Handle optional file upload (image or video)
+        const heroFile = req.files?.heroImage?.[0];
+        if (heroFile) {
+          const isVideo = heroFile.mimetype && heroFile.mimetype.startsWith('video/');
+          const uploadResult = await uploadOnCloudinary(heroFile.path, {
+            resource_type: isVideo ? 'video' : 'image',
           });
-          heroData.bgImage = uploadResult?.secure_url;
+          heroData.bgImage = uploadResult?.secure_url || heroData.bgImage || existingFaq.faqhero?.bgImage;
         } else {
-          heroData.bgImage = existingFaq.faqhero?.bgImage;
+          // If admin explicitly sent an empty bgImage field, respect it; otherwise preserve existing
+          heroData.bgImage = heroData.bgImage !== undefined ? heroData.bgImage : existingFaq.faqhero?.bgImage;
         }
+        // youtubeUrl: allow clearing by sending empty string
+        heroData.youtubeUrl = heroData.youtubeUrl !== undefined ? heroData.youtubeUrl : existingFaq.faqhero?.youtubeUrl || '';
         updates.faqhero = heroData;
       }
 

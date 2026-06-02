@@ -33,7 +33,7 @@ const Terms = () => {
       }
   return (
     <div className=' text-start flex flex-col items-start py-32 px-8'>
-      <h1 className='pb-12 text-2xl font-semibold font-sans '>Terms and Conditions Page</h1>
+      <h1 className='pb-12 text-2xl font-semibold font-sans '>TERMS OF USE</h1>
       {termData ? (
         <div className='font-sans' dangerouslySetInnerHTML={{ __html: termData.content }} />
       ) : (

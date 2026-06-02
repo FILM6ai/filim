@@ -156,15 +156,16 @@ const page = () => {
         subtitle={glossaryData?.subtitle}
         items={glossaryData?.items}
       />
-
-      <GalleryPhotos
-        mainTitle={galleryData?.mainTitle}
-        images={galleryData?.images}
-      />
       <JurorPhotos
         mainTitle={jurorsData?.mainTitle}
         items={jurorsData?.items}
       />
+      <GalleryPhotos
+        mainTitle={galleryData?.mainTitle}
+        images={galleryData?.images}
+      />
+
+
       <Runway
         title={runway?.title}
         image={
@@ -175,6 +176,7 @@ const page = () => {
         button={runway?.button}
         alt={runway?.alt}
         link={runway?.link}
+        popup={runway?.popup}
       />
     </div>
   );
