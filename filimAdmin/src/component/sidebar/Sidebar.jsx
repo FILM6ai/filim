@@ -27,8 +27,8 @@ const menuItems = [
         icon: <FaHome size={16} className='mr-2' />,
       },
       {
-        label: 'Services',
-        link: '/services',
+        label: 'Production',
+        link: '/production',
         icon: <FaHome size={16} className='mr-2' />,
       },
       {
