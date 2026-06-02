@@ -49,7 +49,7 @@ const Navbar = () => {
   const linksStatic = [
     { name: 'Studio', link: '/studio' },
     { name: 'Production', link: '/production' },
-    { name: 'Festival', link: '/festival' },
+    { name: 'Festival', link: '/festival' }, 
     { name: 'News', link: '/news' },
     { name: 'Contact', link: '/contact' },
   ];
