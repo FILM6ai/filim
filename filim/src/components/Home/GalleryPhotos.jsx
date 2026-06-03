@@ -20,8 +20,8 @@ const GalleryPhotos = ({ mainTitle, images }) => {
         <div className="w-full bg-[#0d0d0d] text-white py-16 px-4 lg:px-20">
 
             {/* Title */}
-            <div className="mb-8 max-w-7xl mx-auto">
-                <h2 className="text-3xl md:text-4xl font-semibold text-white">
+           <div className="mb-8 max-w-7xl mx-auto text-center">
+                <h2 className="text-3xl  md:text-4xl font-semibold text-white">
                     {mainTitle}
                 </h2>
             </div>

@@ -3,6 +3,7 @@ import Hero from "@/components/Home/Hero";
 import React, { useEffect, useState } from "react";
 import Advancing from "@/components/Home/Advancing";
 import TopListing from "@/components/Home/TopListing";
+
 import Robot from "@/components/Home/Robot";
 import Runway from "@/components/Home/Runway";
 import axios from "axios";
@@ -120,7 +121,9 @@ const page = () => {
         button={toplist?.button}
         alt={toplist?.alt}
         link={toplist?.link}
+        popup={runway?.popup}
       />
+
       <Robot
         title={robot?.title}
         description={robot?.description}
@@ -132,7 +135,9 @@ const page = () => {
         button={robot?.button}
         alt={robot?.alt}
         link={robot?.link}
+        popup={runway?.popup}
       />
+
       <div>
         <TopListing
           title={competate?.title}
@@ -146,20 +151,22 @@ const page = () => {
           order="reverse"
           alt={competate?.alt}
           link={competate?.link}
+          popup={runway?.popup}
         />
+
         <div className="bg-[#F8F8F8] max-md:mt-12 md:h-48 md:-mt-16 relative -z-50"></div>
       </div>
       <Sheilds mainTitle={shieldMainTitle} cards={shieldCards} />
-
+      <JurorPhotos
+        mainTitle={jurorsData?.mainTitle}
+        items={jurorsData?.items}
+      />
       <Glossary
         mainTitle={glossaryData?.mainTitle}
         subtitle={glossaryData?.subtitle}
         items={glossaryData?.items}
       />
-      <JurorPhotos
-        mainTitle={jurorsData?.mainTitle}
-        items={jurorsData?.items}
-      />
+
       <GalleryPhotos
         mainTitle={galleryData?.mainTitle}
         images={galleryData?.images}
