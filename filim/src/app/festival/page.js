@@ -121,7 +121,7 @@ const page = () => {
         button={toplist?.button}
         alt={toplist?.alt}
         link={toplist?.link}
-        popup={runway?.popup}
+        popup={toplist?.popup}
       />
 
       <Robot
@@ -135,7 +135,7 @@ const page = () => {
         button={robot?.button}
         alt={robot?.alt}
         link={robot?.link}
-        popup={runway?.popup}
+        popup={robot?.popup}
       />
 
       <div>
@@ -151,7 +151,7 @@ const page = () => {
           order="reverse"
           alt={competate?.alt}
           link={competate?.link}
-          popup={runway?.popup}
+          popup={competate?.popup}
         />
 
         <div className="bg-[#F8F8F8] max-md:mt-12 md:h-48 md:-mt-16 relative -z-50"></div>

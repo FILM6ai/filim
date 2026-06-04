@@ -279,6 +279,23 @@ export const updatedFestival = async (req, res) => {
       } else {
         toplistData.bgImage = existingFestival.toplist?.bgImage || [];
       }
+
+      // Toplist popup image upload
+      if (req.files?.toplistPopupImage?.[0]) {
+        const uploadResult = await uploadOnCloudinary(req.files.toplistPopupImage[0].path);
+        toplistData.popup = {
+          ...(toplistData.popup || {}),
+          image: uploadResult?.secure_url || toplistData.popup?.image || existingFestival.toplist?.popup?.image || "",
+        };
+      } else {
+        toplistData.popup = {
+          ...(toplistData.popup || {}),
+          image: toplistData.popup?.image !== undefined
+            ? toplistData.popup.image
+            : existingFestival.toplist?.popup?.image || "",
+        };
+      }
+
       updates.toplist = toplistData;
     }
 
@@ -297,6 +314,23 @@ export const updatedFestival = async (req, res) => {
       } else {
         robotData.bgImage = existingFestival.robot?.bgImage || [];
       }
+
+      // Robot popup image upload
+      if (req.files?.robotPopupImage?.[0]) {
+        const uploadResult = await uploadOnCloudinary(req.files.robotPopupImage[0].path);
+        robotData.popup = {
+          ...(robotData.popup || {}),
+          image: uploadResult?.secure_url || robotData.popup?.image || existingFestival.robot?.popup?.image || "",
+        };
+      } else {
+        robotData.popup = {
+          ...(robotData.popup || {}),
+          image: robotData.popup?.image !== undefined
+            ? robotData.popup.image
+            : existingFestival.robot?.popup?.image || "",
+        };
+      }
+
       updates.robot = robotData;
     }
 
@@ -319,6 +353,23 @@ export const updatedFestival = async (req, res) => {
       } else {
         competateData.bgImage = existingFestival.competate?.bgImage || [];
       }
+
+      // Competate popup image upload
+      if (req.files?.competatePopupImage?.[0]) {
+        const uploadResult = await uploadOnCloudinary(req.files.competatePopupImage[0].path);
+        competateData.popup = {
+          ...(competateData.popup || {}),
+          image: uploadResult?.secure_url || competateData.popup?.image || existingFestival.competate?.popup?.image || "",
+        };
+      } else {
+        competateData.popup = {
+          ...(competateData.popup || {}),
+          image: competateData.popup?.image !== undefined
+            ? competateData.popup.image
+            : existingFestival.competate?.popup?.image || "",
+        };
+      }
+
       updates.competate = competateData;
     }
 

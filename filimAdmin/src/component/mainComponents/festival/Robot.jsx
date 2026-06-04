@@ -1,8 +1,13 @@
 "use client";
 import { validateFile } from "@/utils/fileValidation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+
+const defaultPopup = {
+  title: "", content: "", tagline: "", heading: "",
+  description: "", buttonText: "", buttonLink: "", image: "", youtubeUrl: "",
+};
 
 const Robot = ({
   robot,
@@ -13,14 +18,37 @@ const Robot = ({
   oldRobotImage,
   setOldRobotImage,
   sectionName,
+  popupImageFile,
+  setPopupImageFile,
 }) => {
+  const [showPopupEditor, setShowPopupEditor] = useState(false);
+  const [popupForm, setPopupForm] = useState(robot.popup || defaultPopup);
+
+  useEffect(() => {
+    setPopupForm(robot.popup || defaultPopup);
+  }, [robot.popup]);
+
   const onChangeHandler = (event) => {
     const name = event.target.name;
     const value = event.target.value;
+    if (name.startsWith("popup.")) {
+      const key = name.split(".")[1];
+      setPopupForm((data) => ({ ...data, [key]: value }));
+      return;
+    }
     setRobot((data) => ({ ...data, [name]: value }));
   };
 
-  console.log(robot, "hthfhfhfh");
+  const savePopup = () => {
+    setRobot((data) => ({ ...data, popup: { ...popupForm } }));
+    setShowPopupEditor(false);
+  };
+
+  const closePopupEditor = () => {
+    setPopupForm(robot.popup || defaultPopup);
+    setPopupImageFile(null);
+    setShowPopupEditor(false);
+  };
 
   return (
     <div>
@@ -181,6 +209,81 @@ const Robot = ({
                 name="link"
               />
             </div>
+            <div className="flex flex-col gap-3 mt-4">
+              <button type="button" onClick={() => setShowPopupEditor(true)} className="inline-flex w-full items-center justify-center rounded-full bg-black px-5 py-3 text-sm font-semibold text-white transition hover:bg-gray-900">
+                Edit Section 3 Popup
+              </button>
+              {robot.popup && (robot.popup.heading || robot.popup.description) && (
+                <div className="rounded-xl border border-gray-200 bg-white p-4 text-left shadow-sm">
+                  <p className="text-sm font-semibold text-gray-700">Popup preview</p>
+                  {robot.popup.heading && <h3 className="mt-2 text-lg font-bold text-black">{robot.popup.heading}</h3>}
+                  {robot.popup.description && <p className="text-sm text-gray-600">{robot.popup.description}</p>}
+                </div>
+              )}
+            </div>
+            {showPopupEditor && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+                <div className="relative w-full max-w-2xl rounded-[32px] bg-white p-8 shadow-2xl" style={{ maxHeight: 'calc(100vh - 120px)', overflow: 'auto' }}>
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <h2 className="text-2xl font-bold">Edit Section 3 Popup</h2>
+                      <p className="text-sm text-gray-600">Section 3 ka alag popup content.</p>
+                    </div>
+                    <button type="button" onClick={closePopupEditor} className="rounded-full bg-gray-100 px-3 py-2 text-sm font-semibold text-gray-700">Close</button>
+                  </div>
+                  <div className="mt-6 space-y-4">
+                    <div>
+                      <label className="mb-2 block text-sm font-semibold text-black">Popup Tagline</label>
+                      <input type="text" name="popup.tagline" value={popupForm.tagline || ""} onChange={onChangeHandler} placeholder="e.g. Special Offer" className="w-full rounded border border-gray-300 px-3 py-2 outline-none focus:border-black" />
+                    </div>
+                    <div>
+                      <label className="mb-2 block text-sm font-semibold text-black">Popup Heading</label>
+                      <input type="text" name="popup.heading" value={popupForm.heading || ""} onChange={onChangeHandler} placeholder="Heading" className="w-full rounded border border-gray-300 px-3 py-2 outline-none focus:border-black" />
+                    </div>
+                    <div>
+                      <label className="mb-2 block text-sm font-semibold text-black">Popup Description</label>
+                      <textarea name="popup.description" value={popupForm.description || ""} onChange={onChangeHandler} placeholder="Description" className="w-full rounded border border-gray-300 px-3 py-2 outline-none focus:border-black min-h-[140px]" />
+                    </div>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div>
+                        <label className="mb-2 block text-sm font-semibold text-black">Popup Image (optional)</label>
+                        <label htmlFor="robotPopupImageUpload" className="flex h-12 items-center justify-center rounded border border-dashed border-gray-300 bg-gray-50 text-sm text-gray-600 hover:bg-gray-100 cursor-pointer">
+                          {popupImageFile ? popupImageFile.name : popupForm.image ? "Change image" : "Upload image"}
+                        </label>
+                        <input id="robotPopupImageUpload" type="file" accept="image/*" className="hidden" onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          setPopupImageFile(file);
+                          setPopupForm((data) => ({ ...data, image: URL.createObjectURL(file) }));
+                        }} />
+                        {popupForm.image && <img src={popupForm.image} alt="Preview" className="mt-3 h-28 w-full rounded object-cover" />}
+                        {popupForm.image && (
+                          <button type="button" onClick={() => { setPopupForm((data) => ({ ...data, image: "" })); setPopupImageFile(null); }} className="mt-2 rounded bg-red-100 px-3 py-2 text-sm font-semibold text-red-700">Remove popup image</button>
+                        )}
+                      </div>
+                      <div>
+                        <label className="mb-2 block text-sm font-semibold text-black">YouTube URL (optional)</label>
+                        <input type="text" name="popup.youtubeUrl" value={popupForm.youtubeUrl || ""} onChange={onChangeHandler} placeholder="https://youtu.be/..." className="w-full rounded border border-gray-300 px-3 py-2 outline-none focus:border-black" />
+                      </div>
+                    </div>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div>
+                        <label className="mb-2 block text-sm font-semibold text-black">Button Text</label>
+                        <input type="text" name="popup.buttonText" value={popupForm.buttonText || ""} onChange={onChangeHandler} placeholder="e.g. LEARN MORE" className="w-full rounded border border-gray-300 px-3 py-2 outline-none focus:border-black" />
+                      </div>
+                      <div>
+                        <label className="mb-2 block text-sm font-semibold text-black">Button Link</label>
+                        <input type="text" name="popup.buttonLink" value={popupForm.buttonLink || ""} onChange={onChangeHandler} placeholder="https://example.com" className="w-full rounded border border-gray-300 px-3 py-2 outline-none focus:border-black" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-8 flex justify-end gap-3">
+                    <button type="button" onClick={closePopupEditor} className="rounded-full border border-gray-300 px-5 py-3 text-sm font-semibold text-gray-700">Cancel</button>
+                    <button type="button" onClick={savePopup} className="rounded-full bg-black px-6 py-3 text-sm font-semibold text-white">Save Popup</button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </form>
       </div>

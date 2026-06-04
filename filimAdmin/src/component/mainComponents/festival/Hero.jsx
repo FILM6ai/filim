@@ -104,6 +104,9 @@ const [heroLink, setHeroLink] = useState("");
 
   const [runwayImage, setRunwayImage] = useState(false);
   const [popupImageFile, setPopupImageFile] = useState(null);
+  const [toplistPopupImageFile, setToplistPopupImageFile] = useState(null);
+  const [robotPopupImageFile, setRobotPopupImageFile] = useState(null);
+  const [competatePopupImageFile, setCompetatePopupImageFile] = useState(null);
   const [oldAdvanceImage, setOldAdvanceImage] = useState([]);
   const [oldToplistImage, setOldToplistImage] = useState([]);
   const [oldRobotImage, setOldRobotImage] = useState([]);
@@ -263,6 +266,15 @@ const hero = { title, alt, description, button: heroButton, link: heroLink };
       if (popupImageFile) {
         formData.append("popupImage", popupImageFile);
       }
+      if (toplistPopupImageFile) {
+        formData.append("toplistPopupImage", toplistPopupImageFile);
+      }
+      if (robotPopupImageFile) {
+        formData.append("robotPopupImage", robotPopupImageFile);
+      }
+      if (competatePopupImageFile) {
+        formData.append("competatePopupImage", competatePopupImageFile);
+      }
 
       // Call update API using PUT if festivalId exists
       if (festivalId) {
@@ -293,6 +305,9 @@ const hero = { title, alt, description, button: heroButton, link: heroLink };
           }
           setRunwayImage(null);
           setPopupImageFile(null);
+          setToplistPopupImageFile(null);
+          setRobotPopupImageFile(null);
+          setCompetatePopupImageFile(null);
         }
         toast.success("Festival data updated successfully!");
         console.log("Response:", response.data);
@@ -453,6 +468,8 @@ const hero = { title, alt, description, button: heroButton, link: heroLink };
         oldToplistImage={oldToplistImage}
         setOldToplistImage={setOldToplistImage}
         sectionName="toplist"
+        popupImageFile={toplistPopupImageFile}
+        setPopupImageFile={setToplistPopupImageFile}
       />
       <Robot
         robot={robot}
@@ -463,6 +480,8 @@ const hero = { title, alt, description, button: heroButton, link: heroLink };
         oldRobotImage={oldRobotImage}
         setOldRobotImage={setOldRobotImage}
         sectionName="robot"
+        popupImageFile={robotPopupImageFile}
+        setPopupImageFile={setRobotPopupImageFile}
       />
       <Competition
         competate={competate}
@@ -473,6 +492,8 @@ const hero = { title, alt, description, button: heroButton, link: heroLink };
         oldCompetateImage={oldCompetateImage}
         setOldCompetateImage={setOldCompetateImage}
         sectionName="competate"
+        popupImageFile={competatePopupImageFile}
+        setPopupImageFile={setCompetatePopupImageFile}
       />
 
       <FestivalCards
