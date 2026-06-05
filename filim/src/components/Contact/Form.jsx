@@ -149,6 +149,7 @@ const Form = () => {
                 <option value="inquiries">inquiries</option>
                 <option value="partnership">partnership</option>
                 <option value="press">press</option>
+                <option value="festival">festival</option>
                 <option value="production">production</option>
                 <option value="submission">submission</option>
                 <option value="support">support</option>
@@ -191,7 +192,7 @@ const Form = () => {
               type="submit"
               className="bg-black text-white px-8 py-2 shadow hover:bg-blue-900 transition"
             >
-              Submit Now
+              SEND NOW
             </button>
           </div>
         </form>
