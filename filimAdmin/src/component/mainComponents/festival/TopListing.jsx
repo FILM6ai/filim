@@ -219,8 +219,17 @@ const TopListing = ({
               >
                 Edit Section 2 Popup
               </button>
-              {toplist.popup && (toplist.popup.heading || toplist.popup.description) && (
-                <div className="rounded-xl border border-gray-200 bg-white p-4 text-left shadow-sm">
+              {toplist.popup && (toplist.popup.heading || toplist.popup.description || toplist.popup.title || toplist.popup.content || toplist.popup.image || toplist.popup.youtubeUrl || toplist.popup.tagline) && (
+                <div className="relative rounded-xl border border-gray-200 bg-white p-4 text-left shadow-sm">
+                  <button 
+                    type="button"
+                    onClick={() => {
+                        setToplist((data) => ({ ...data, popup: { ...defaultPopup } }));
+                    }}
+                    className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-100 text-red-600 hover:bg-red-200"
+                  >
+                    ✕
+                  </button>
                   <p className="text-sm font-semibold text-gray-700">Popup preview</p>
                   {toplist.popup.heading && <h3 className="mt-2 text-lg font-bold text-black">{toplist.popup.heading}</h3>}
                   {toplist.popup.description && <p className="text-sm text-gray-600">{toplist.popup.description}</p>}

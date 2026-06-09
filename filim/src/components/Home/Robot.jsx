@@ -139,16 +139,18 @@ const Robot = ({ title, description, button, image, alt, link, youtubeUrl, popup
                   )}
                 </div>
               )}
-              <div className="flex justify-center">
-                <a
-                  href={popup?.buttonLink || link || "#"}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center justify-center rounded-full bg-white px-8 py-3 text-sm font-semibold text-black transition hover:bg-white/90 sm:px-10 sm:py-4"
-                >
-                  {popup?.buttonText || button || "Learn More"}
-                </a>
-              </div>
+              {popup?.buttonText && (
+                <div className="flex justify-center">
+                  <a
+                    href={popup?.buttonLink || link || "#"}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center justify-center rounded-full bg-white px-8 py-3 text-sm font-semibold text-black transition hover:bg-white/90 sm:px-10 sm:py-4"
+                  >
+                    {popup?.buttonText}
+                  </a>
+                </div>
+              )}
             </div>
           </div>
         </div>

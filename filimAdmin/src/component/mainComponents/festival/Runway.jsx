@@ -226,7 +226,18 @@ const Runway = ({
               >
                 Edit Learn More Popup
               </button>
-              <div className="rounded-xl border border-gray-200 bg-white p-4 text-left shadow-sm">
+              <div className="relative rounded-xl border border-gray-200 bg-white p-4 text-left shadow-sm">
+                {runway.popup && (runway.popup.heading || runway.popup.description || runway.popup.title || runway.popup.content || runway.popup.image || runway.popup.youtubeUrl || runway.popup.tagline || runway.popup.buttonText) && (
+                  <button 
+                    type="button"
+                    onClick={() => {
+                        setRunway((data) => ({ ...data, popup: { ...defaultPopup } }));
+                    }}
+                    className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-100 text-red-600 hover:bg-red-200"
+                  >
+                    ✕
+                  </button>
+                )}
                 <p className="text-sm font-semibold text-gray-700">Popup preview</p>
                 {runway.popup && (runway.popup.heading || runway.popup.description || runway.popup.buttonText) ? (
                   <div className="mt-3 space-y-3">

@@ -454,7 +454,7 @@ export const updatedFestival = async (req, res) => {
 
       updates.gallery = {
         mainTitle: galleryData.mainTitle || existingFestival.gallery?.mainTitle || '',
-        images: [...existingImages, ...newGalleryImages],
+        images: newGalleryImages.length > 0 ? newGalleryImages : existingImages,
       };
     }
 

@@ -213,8 +213,17 @@ const Robot = ({
               <button type="button" onClick={() => setShowPopupEditor(true)} className="inline-flex w-full items-center justify-center rounded-full bg-black px-5 py-3 text-sm font-semibold text-white transition hover:bg-gray-900">
                 Edit Section 3 Popup
               </button>
-              {robot.popup && (robot.popup.heading || robot.popup.description) && (
-                <div className="rounded-xl border border-gray-200 bg-white p-4 text-left shadow-sm">
+              {robot.popup && (robot.popup.heading || robot.popup.description || robot.popup.title || robot.popup.content || robot.popup.image || robot.popup.youtubeUrl || robot.popup.tagline) && (
+                <div className="relative rounded-xl border border-gray-200 bg-white p-4 text-left shadow-sm">
+                  <button 
+                    type="button"
+                    onClick={() => {
+                        setRobot((data) => ({ ...data, popup: { ...defaultPopup } }));
+                    }}
+                    className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-100 text-red-600 hover:bg-red-200"
+                  >
+                    ✕
+                  </button>
                   <p className="text-sm font-semibold text-gray-700">Popup preview</p>
                   {robot.popup.heading && <h3 className="mt-2 text-lg font-bold text-black">{robot.popup.heading}</h3>}
                   {robot.popup.description && <p className="text-sm text-gray-600">{robot.popup.description}</p>}

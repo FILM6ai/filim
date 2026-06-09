@@ -212,8 +212,17 @@ const Competition = ({
               <button type="button" onClick={() => setShowPopupEditor(true)} className="inline-flex w-full items-center justify-center rounded-full bg-black px-5 py-3 text-sm font-semibold text-white transition hover:bg-gray-900">
                 Edit Section 4 Popup
               </button>
-              {competate.popup && (competate.popup.heading || competate.popup.description) && (
-                <div className="rounded-xl border border-gray-200 bg-white p-4 text-left shadow-sm">
+              {competate.popup && (competate.popup.heading || competate.popup.description || competate.popup.title || competate.popup.content || competate.popup.image || competate.popup.youtubeUrl || competate.popup.tagline) && (
+                <div className="relative rounded-xl border border-gray-200 bg-white p-4 text-left shadow-sm">
+                  <button 
+                    type="button"
+                    onClick={() => {
+                        setCompetate((data) => ({ ...data, popup: { ...defaultPopup } }));
+                    }}
+                    className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-100 text-red-600 hover:bg-red-200"
+                  >
+                    ✕
+                  </button>
                   <p className="text-sm font-semibold text-gray-700">Popup preview</p>
                   {competate.popup.heading && <h3 className="mt-2 text-lg font-bold text-black">{competate.popup.heading}</h3>}
                   {competate.popup.description && <p className="text-sm text-gray-600">{competate.popup.description}</p>}
