@@ -21,7 +21,7 @@ import emailRoute from "./routes/emailRoute.js";
 import registrationRoute from './routes/registrationRoute.js';
 
 const app = express();
-const port = process.env.Port || 4000;
+// const port = process.env.Port || 4000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -47,11 +47,11 @@ app.use("/api/", emailRoute);
 app.use('/api', registrationRoute);
 
 
-// app.get("/", (req, res) => {
-//   res.send("Hello World!");
-// });
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.get("/", (req, res) => {
+  res.send("Hello World!");
 });
+// app.listen(port, () => {
+//   console.log(`Server is running on port ${port}`);
+// });
 
 export default app;

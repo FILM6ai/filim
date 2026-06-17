@@ -156,15 +156,15 @@ const page = () => {
 
         <div className="bg-[#F8F8F8] max-md:mt-12 md:h-48 md:-mt-16 relative -z-50"></div>
       </div>
-      <Sheilds mainTitle={shieldMainTitle} cards={shieldCards} />
-      <JurorPhotos
-        mainTitle={jurorsData?.mainTitle}
-        items={jurorsData?.items}
-      />
       <Glossary
         mainTitle={glossaryData?.mainTitle}
         subtitle={glossaryData?.subtitle}
         items={glossaryData?.items}
+      />
+      
+      <JurorPhotos
+        mainTitle={jurorsData?.mainTitle}
+        items={jurorsData?.items}
       />
 
       <GalleryPhotos
@@ -185,6 +185,7 @@ const page = () => {
         link={runway?.link}
         popup={runway?.popup}
       />
+      <Sheilds mainTitle={shieldMainTitle} cards={shieldCards} />
     </div>
   );
 };

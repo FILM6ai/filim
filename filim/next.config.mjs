@@ -17,6 +17,15 @@ const nextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: '/festival',
+        destination: '/WAIMF/festival',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

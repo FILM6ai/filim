@@ -79,8 +79,8 @@ const TopListing = ({
         ></div>
         <div
           className={`${order === "reverse"
-              ? "md:mr-20 mr-8 mb-16 max-sm:mb-4"
-              : "md:ml-20 ml-8 mb-24 max-sm:mb-4"
+            ? "md:mr-20 mr-8 mb-16 max-sm:mb-4"
+            : "md:ml-20 ml-8 mb-24 max-sm:mb-4"
             }`}
         >
           {embedUrl ? (
@@ -113,8 +113,8 @@ const TopListing = ({
         transition={{ duration: 1, ease: "easeOut" }}
         viewport={{ once: true, amount: 0.3 }}
         className={`max-md:mt-24 mb-24 ${order === "reverse"
-            ? "md:order-1 px-4 sm:px-6 md:px-20 "
-            : "px-4 sm:px-6 md:pr-24 "
+          ? "md:order-1 px-4 sm:px-6 md:px-20 "
+          : "px-4 sm:px-6 md:pr-24 "
           }`}
       >
         <h1 className="capitalize text-5xl text-heading ">{title}</h1>
@@ -138,7 +138,7 @@ const TopListing = ({
             {hasPopup ? (
               <button
                 onClick={() => setShowPopup(true)}
-                className="px-10 rounded hover:border-[#00a4c2] py-2 duration-300 transition-all text-white bg-[#00a4c2] border-2 border-[#00a4c2] hover:scale-105"
+                className="px-10 rounded py-2 rounded-md duration-300 transition-all text-white bg-black border-2 border-white hover:bg-[#00a4c2] hover:border-[#00a4c2] hover:scale-105"
               >
                 {button}
               </button>
