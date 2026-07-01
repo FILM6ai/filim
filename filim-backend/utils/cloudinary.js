@@ -52,6 +52,7 @@
 
 
 
+import fs from 'fs';
 import { v2 as cloudinary } from 'cloudinary';
 
 cloudinary.config({
@@ -60,19 +61,41 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-
 const uploadOnCloudinary = async (localFilePath, options = {}) => {
   try {
     if (!localFilePath) return null;
+
+    if (Array.isArray(localFilePath)) {
+      const results = await Promise.all(
+        localFilePath.map((file) => uploadOnCloudinary(file, options)),
+      );
+      return results.filter(Boolean);
+    }
+
     const uploadOptions = { resource_type: 'auto', ...options };
-    //upload the file on cloudinary
-    const response = await cloudinary.uploader.upload(
-      localFilePath,
-      uploadOptions
-    );
+
+    
+    if (typeof localFilePath !== 'string') {
+      return null;
+    }
+
+    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+      throw new Error('Cloudinary environment variables are missing');
+    }
+
+    if (!fs.existsSync(localFilePath)) {
+      throw new Error(`Local file not found for upload: ${localFilePath}`);
+    }
+
+    const response = await cloudinary.uploader.upload(localFilePath, uploadOptions);
+
+    if (fs.existsSync(localFilePath)) {
+      fs.unlinkSync(localFilePath);
+    }
+
     return response;
   } catch (error) {
-    console.log(error);
+    console.error('Cloudinary upload failed:', error.message || error);
     return null;
   }
 };

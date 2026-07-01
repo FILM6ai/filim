@@ -49,14 +49,23 @@
 // export default upload;
 
 
+
+import fs from 'fs';
 import multer from 'multer';
 
 const IMAGE_MAX_SIZE = 5 * 1024 * 1024;   // 5MB images ke liye
 const VIDEO_MAX_SIZE = 20 * 1024 * 1024;  // 20MB videos ke liye
+const uploadDir = process.env.UPLOAD_DIR || '/tmp/uploads';
+
+fs.mkdirSync(uploadDir, { recursive: true });
 
 const storage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, uploadDir);
+  },
   filename: function (req, file, callback) {
-    callback(null, file.originalname);
+    const safeName = `${Date.now()}-${file.originalname.replace(/\s+/g, '-')}`;
+    callback(null, safeName);
   },
 });
 
