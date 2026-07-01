@@ -3,48 +3,38 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 export const createHomePage = async (req, res) => {
   try {
-    const { hero, advance, toplist, robot, competate, runway, videos } = req.body;
+    const { hero, advance, toplist, robot, competate, runway, videos } =
+      req.body;
+    const hero1 = JSON.parse(hero);
+    const advance1 = JSON.parse(advance);
+    const topList1 = JSON.parse(toplist);
+    const robot1 = JSON.parse(robot);
+    const competate1 = JSON.parse(competate);
+    const runway1 = JSON.parse(runway);
+    const videos1 = JSON.parse(videos);
 
-    const parseField = (value) => {
-      if (!value) return {};
-      if (typeof value === 'object') return value;
-      try {
-        return JSON.parse(value);
-      } catch {
-        return {};
-      }
-    };
+    let heroVideoPath = req.files?.heroImage?.map((file) => file.path) || [];
 
-    
-    const hero1 = parseField(hero);
-    const advance1 = parseField(advance);
-    const topList1 = parseField(toplist);
-    const robot1 = parseField(robot);
-    const competate1 = parseField(competate);
-    const runway1 = parseField(runway);
-    const videos1 = parseField(videos);
+    let uploadedVideos = await Promise.all(
+      heroVideoPath.map((path) =>
+        uploadOnCloudinary(path, { resource_type: "video" }),
+      ),
+    );
 
-    const heroVideoPaths = req.files?.heroImage?.map((file) => file.path) || [];
-
-    const uploadedVideos = heroVideoPaths.length
-      ? (
-          await Promise.all(
-            heroVideoPaths.map((path) =>
-              uploadOnCloudinary(path, { resource_type: "video" }),
-            ),
-          )
-        ).filter(Boolean)
-      : [];
-
-    const videoPlayerPath = req.files?.videoPlayer?.[0]?.path;
+    let videoPlayerPath = req.files?.videoPlayer?.[0]?.path;
     let advanceImage = req.files?.advanceImage?.[0]?.path;
     let toplistImage = req.files?.toplistImage?.[0]?.path;
     let robotImage = req.files?.robotImage?.[0]?.path;
     let competateImage = req.files?.competateImage?.[0]?.path;
     let runwayImage = req.files?.runwayImage?.[0]?.path;
 
-    console.log(req.files?.heroImage, "heroImage");
+    console.log(req.files.heroImage, "heroImage");
 
+    if (heroVideoPath) {
+      heroVideoPath = await uploadOnCloudinary(heroVideoPath, {
+        resource_type: "video",
+      });
+    }
     let uploadedVideoUrls = [];
     if (req.files?.videoPlayer && req.files.videoPlayer.length > 0) {
       const paths = req.files.videoPlayer.map(f => f.path);
@@ -73,14 +63,13 @@ export const createHomePage = async (req, res) => {
       runwayImage = await uploadOnCloudinary(runwayImage);
     }
 
-    const heroBgImages = [
-      ...uploadedVideos.map((v) => v?.secure_url).filter(Boolean),
-      ...(hero1.youtubeUrls || []),
-    ];
-
     const newHome = new homeSchema({
       hero: {
-        bgImage: heroBgImages,
+        // bgImage: heroVideoPath?.secure_url,
+        bgImage: [
+          ...uploadedVideos.map((v) => v.secure_url),
+          ...(hero1.youtubeUrls || []),
+        ],
         title: hero1.title,
         description: hero1.description,
         button: hero1.buttonText,
@@ -176,20 +165,10 @@ export const updateHomePage = async (req, res) => {
     }
 
     const updates = {};
-    const parseField = (value) => {
-      if (!value) return {};
-      if (typeof value === 'object') return value;
-      try {
-        return JSON.parse(value);
-      } catch {
-        return {};
-      }
-    };
-
     console.log("Raw req.body:", req.body);
 
     if (req.body.hero) {
-      let heroData = parseField(req.body.hero);
+      let heroData = JSON.parse(req.body.hero);
       const existingImages = existingHome.hero?.bgImage || [];
 
       let newUploadedUrls = [];
@@ -211,7 +190,7 @@ export const updateHomePage = async (req, res) => {
     console.log(req.files, "req.files");
 
     if (req.body.videos) {
-      let videosData = parseField(req.body.videos);
+      let videosData = JSON.parse(req.body.videos);
 
       // Uploaded video files handle karo
       let newUploadedUrls = [];
@@ -240,7 +219,7 @@ export const updateHomePage = async (req, res) => {
     }
 
     if (req.body.advance) {
-      let advanceData = parseField(req.body.advance);
+      let advanceData = JSON.parse(req.body.advance);
       if (
         req.files &&
         req.files.advanceImage &&
@@ -258,7 +237,7 @@ export const updateHomePage = async (req, res) => {
 
     // Update Toplist section if provided
     if (req.body.toplist) {
-      let toplistData = parseField(req.body.toplist);
+      let toplistData = JSON.parse(req.body.toplist);
       if (
         req.files &&
         req.files.toplistImage &&
@@ -276,7 +255,7 @@ export const updateHomePage = async (req, res) => {
 
     // Update Robot section if provided
     if (req.body.robot) {
-      let robotData = parseField(req.body.robot);
+      let robotData = JSON.parse(req.body.robot);
       if (req.files && req.files.robotImage && req.files.robotImage.length) {
         const robotFilePath = req.files.robotImage[0].path;
         const uploadResult = await uploadOnCloudinary(robotFilePath);
@@ -290,7 +269,7 @@ export const updateHomePage = async (req, res) => {
 
     // Update Competate section if provided
     if (req.body.competate) {
-      let competateData = parseField(req.body.competate);
+      let competateData = JSON.parse(req.body.competate);
       if (
         req.files &&
         req.files.competateImage &&
@@ -311,7 +290,7 @@ export const updateHomePage = async (req, res) => {
 
     // Update Runway section if provided
     if (req.body.runway) {
-      let runwayData = parseField(req.body.runway);
+      let runwayData = JSON.parse(req.body.runway);
       if (req.files && req.files.runwayImage && req.files.runwayImage.length) {
         const runwayFilePath = req.files.runwayImage[0].path;
         const uploadResult = await uploadOnCloudinary(runwayFilePath);
@@ -341,7 +320,6 @@ export const updateHomePage = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Failed to update home page",
-      error: error.message || "Unknown error",
     });
   }
 };
