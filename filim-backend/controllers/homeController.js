@@ -20,7 +20,7 @@ export const createHomePage = async (req, res) => {
         uploadOnCloudinary(path, { resource_type: "video" }),
       ),
     );
-    
+
 
     let videoPlayerPath = req.files?.videoPlayer?.[0]?.path;
     let advanceImage = req.files?.advanceImage?.[0]?.path;
@@ -186,9 +186,11 @@ export const updateHomePage = async (req, res) => {
         newUploadedUrls = uploadedVideos.map((v) => v.secure_url);
       }
 
+      const clientUploadedUrls = heroData.newVideoUrls || [];
       const newYoutubeUrls = heroData.newYoutubeUrls || [];
-      heroData.bgImage = [...newUploadedUrls, ...newYoutubeUrls, ...existingImages];
+      heroData.bgImage = [...newUploadedUrls, ...clientUploadedUrls, ...newYoutubeUrls, ...existingImages];
       delete heroData.newYoutubeUrls;
+      delete heroData.newVideoUrls;
       updates.hero = heroData;
     }
     console.log(req.files, "req.files");

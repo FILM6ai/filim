@@ -202,8 +202,24 @@ const Hero = () => {
         }
       }
 
+     let uploadedHeroUrls = [];
+      if (Array.isArray(image) && image.length > 0) {
+        const files = image.filter((v) => v instanceof File);
+        if (files.length > 0) {
+          for (const file of files) {
+            const result = validateFile(file);
+            if (!result.valid) {
+              toast.error(result.message);
+              setLoading(false);
+              return;
+            }
+          }
+          uploadedHeroUrls = await Promise.all(files.map((f) => uploadToCloudinary(f)));
+        }
+      }
+
       const formData = new FormData();
-      const hero = { title, description, button, alt, link, youtubeUrls: newYoutubeUrls };
+      const hero = { title, description, button, alt, link, youtubeUrls: newYoutubeUrls, newVideoUrls: uploadedHeroUrls };
       console.log(hero, "hero");
       formData.append("hero", JSON.stringify(hero));
       formData.append("advance", JSON.stringify(advance));
@@ -221,15 +237,15 @@ const Hero = () => {
       };
       formData.append("videos", JSON.stringify(videoMetaData));
 
-      if (Array.isArray(image) && image.length > 0) {
-        image.forEach((file) => {
-          if (file instanceof File) {
-            formData.append("heroImage", file);
-          }
-        });
-      }
+      // if (Array.isArray(image) && image.length > 0) {
+      //   image.forEach((file) => {
+      //     if (file instanceof File) {
+      //       formData.append("heroImage", file);
+      //     }
+      //   });
+      // }
       // NOTE: video files are uploaded directly to Cloudinary above.
-      if (advanceImage) formData.append("advanceImage", advanceImage);
+      // if (advanceImage) formData.append("advanceImage", advanceImage);
       if (toplistImage) formData.append("toplistImage", toplistImage);
       if (robotImage) formData.append("robotImage", robotImage);
       if (competateImage) formData.append("competateImage", competateImage);
@@ -277,8 +293,24 @@ const Hero = () => {
         }
       }
 
+      let uploadedHeroUrls = [];
+      if (Array.isArray(image) && image.length > 0) {
+        const files = image.filter((v) => v instanceof File);
+        if (files.length > 0) {
+          for (const file of files) {
+            const result = validateFile(file);
+            if (!result.valid) {
+              toast.error(result.message);
+              setLoading(false);
+              return;
+            }
+          }
+          uploadedHeroUrls = await Promise.all(files.map((f) => uploadToCloudinary(f)));
+        }
+      }
+
       const formData = new FormData();
-      const hero = { title, description, button, alt, link, newYoutubeUrls };
+      const hero = { title, description, button, alt, link, newYoutubeUrls, newVideoUrls: uploadedHeroUrls };
       formData.append("hero", JSON.stringify(hero));
       formData.append("advance", JSON.stringify(advance));
       formData.append("toplist", JSON.stringify(toplist));
@@ -295,13 +327,13 @@ const Hero = () => {
       };
       formData.append("videos", JSON.stringify(videoMetaData));
 
-      if (Array.isArray(image) && image.length > 0) {
-        image.forEach((file) => {
-          if (file instanceof File) {
-            formData.append("heroImage", file);
-          }
-        });
-      }
+      // if (Array.isArray(image) && image.length > 0) {
+      //   image.forEach((file) => {
+      //     if (file instanceof File) {
+      //       formData.append("heroImage", file);
+      //     }
+      //   });
+      // }
       // NOTE: video files are uploaded directly to Cloudinary above.
       if (advanceImage) formData.append("advanceImage", advanceImage);
       if (toplistImage) formData.append("toplistImage", toplistImage);
