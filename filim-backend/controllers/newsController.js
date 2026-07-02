@@ -5,20 +5,10 @@ import { uploadOnCloudinary } from '../utils/cloudinary.js';
 
 export const createNewsPage = async (req, res) => {
   try {
-    const { title, alt,description } = req.body;
-    let videoPath = req.files?.heroImage?.[0]?.path;
-    console.log(req.files?.heroImage, 'heroImage');
-
-    let secureUrl = '';
-    if (videoPath) {
-      const uploadResult = await uploadOnCloudinary(videoPath, {
-        resource_type: 'video',
-      });
-      secureUrl = uploadResult?.secure_url;
-    }
+    const { title, alt, description, bgImage } = req.body;
 
     const newNews = new newsSchema({
-      bgImage: secureUrl,
+      bgImage: bgImage || '',
       title: title,
       alt: alt,
       description: description,
@@ -63,25 +53,15 @@ export const getNewsPage = async (req, res) => {
 export const updateNewsPage = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, alt,description } = req.body;
+    const { title, alt, description, bgImage } = req.body;
 
-    // Check for new hero image upload
-    let videoPath = req.files?.heroImage?.[0]?.path;
-    let secureUrl = '';
-    if (videoPath) {
-      const uploadResult = await uploadOnCloudinary(videoPath, {
-        resource_type: 'video',
-      });
-      secureUrl = uploadResult?.secure_url;
-    }
-    
     // Build an update object with provided fields
     const updateData = {};
     if (title) updateData.title = title;
     if (alt) updateData.alt = alt;
     if (description !== undefined) updateData.description = description;
 
-    if (secureUrl) updateData.bgImage = secureUrl;
+    if (bgImage) updateData.bgImage = bgImage;
 
     // Update news document and return the updated document
     const updatedNews = await newsSchema.findByIdAndUpdate(id, updateData, {

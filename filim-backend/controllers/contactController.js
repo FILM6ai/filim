@@ -6,19 +6,9 @@ export const createContactPage = async (req, res) => {
     const hero1 = JSON.parse(hero);
     const advance1 = JSON.parse(advance);
 
-    let heroVideoPath = req.files?.heroImage[0]?.path;
-
-    console.log(req.files.heroImage, 'heroImage');
-
-    if (heroVideoPath) {
-      heroVideoPath = await uploadOnCloudinary(heroVideoPath, {
-        resource_type: 'video',
-      });
-    }
-
     const newContact = new contactSchema({
       hero: {
-        bgImage: heroVideoPath?.secure_url,
+        bgImage: hero1.bgImage || '',
         title: hero1.title,
         alt: hero1.alt,
         description: hero1.description,
@@ -79,15 +69,7 @@ export const updateContactPage = async (req, res) => {
 
     if (req.body.hero) {
       let heroData = JSON.parse(req.body.hero);
-      if (req.files && req.files.heroImage && req.files.heroImage.length) {
-        const heroFilePath = req.files.heroImage[0].path;
-        const uploadResult = await uploadOnCloudinary(heroFilePath, {
-          resource_type: 'video',
-        });
-        heroData.bgImage = uploadResult?.secure_url;
-      } else {
-        heroData.bgImage = existingContact.hero?.bgImage;
-      }
+      heroData.bgImage = heroData.bgImage || existingContact.hero?.bgImage;
       updates.hero = heroData;
     }
 

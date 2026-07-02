@@ -6,6 +6,32 @@ import { toast } from "react-toastify";
 import Advancing from "./Advancing";
 import { validateFile } from "@/utils/fileValidation";
 
+const uploadToCloudinary = async (file) => {
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  if (!cloudName || !backendUrl) throw new Error("Cloudinary or backend config missing");
+
+  const signRes = await fetch(`${backendUrl}/api/cloudinary/sign`, { method: "POST" });
+  const signJson = await signRes.json();
+  if (!signRes.ok || !signJson.success) throw new Error(signJson.message || "Failed to get signature");
+
+  const { signature, timestamp, apiKey } = signJson;
+
+  const data = new FormData();
+  data.append("file", file);
+  data.append("api_key", apiKey);
+  data.append("timestamp", timestamp);
+  data.append("signature", signature);
+
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
+    method: "POST",
+    body: data,
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json?.error?.message || "Upload failed");
+  return json.secure_url || json.url;
+};
+
 const Contact = () => {
   const [contactId, setContactId] = useState(null);
   const [title, setTitle] = useState("");
@@ -53,14 +79,26 @@ const Contact = () => {
     e.preventDefault();
     setLoading(true);
     try {
+      let uploadedVideoUrl = null;
+      if (image && image instanceof File) {
+        const result = validateFile(image);
+        if (!result.valid) {
+          toast.error(result.message);
+          setLoading(false);
+          return;
+        }
+        uploadedVideoUrl = await uploadToCloudinary(image);
+      }
+
       const formData = new FormData();
-      const hero = { title, alt, description };
+      const hero = {
+        title,
+        alt,
+        description,
+        bgImage: uploadedVideoUrl || (typeof image === "string" ? image : undefined),
+      };
       formData.append("hero", JSON.stringify(hero));
       formData.append("advance", JSON.stringify(advance));
-
-      if (image) {
-        formData.append("heroImage", image);
-      }
 
       let response;
       // If contactId exists, update the contact page; otherwise, create a new one.

@@ -11,21 +11,11 @@ export const createServicePage = async (req, res) => {
     const competate1 = JSON.parse(competate);
     const runway1 = JSON.parse(runway);
 
-    let heroVideoPath = req.files?.heroImage[0]?.path;
     let advanceImage = req.files?.advanceImage[0]?.path;
     let toplistImage = req.files?.toplistImage[0]?.path;
     let robotImage = req.files?.robotImage[0]?.path;
     let competateImage = req.files?.competateImage[0]?.path;
     let runwayImage = req.files?.runwayImage[0]?.path;
-
-    console.log(req.files.heroImage, "heroImage");
-
-    if (heroVideoPath) {
-      heroVideoPath = await uploadOnCloudinary(heroVideoPath, {
-        resource_type: "video",
-      });
-    }
-    console.log(heroVideoPath, "cloud hero");
 
     if (advanceImage) {
       advanceImage = await uploadOnCloudinary(advanceImage);
@@ -49,7 +39,7 @@ export const createServicePage = async (req, res) => {
 
     const newService = new serviceSchema({
       hero: {
-        bgImage: heroVideoPath?.secure_url,
+        bgImage: hero1.bgImage || "",
         title: hero1.title,
         alt: hero1.alt,
         description: hero1.description,
@@ -150,16 +140,7 @@ export const updateServicePage = async (req, res) => {
     // Update Hero section if provided
     if (req.body.hero) {
       let heroData = JSON.parse(req.body.hero);
-      if (req.files && req.files.heroImage && req.files.heroImage.length) {
-        const heroFilePath = req.files.heroImage[0].path;
-        const uploadResult = await uploadOnCloudinary(heroFilePath, {
-          resource_type: "video",
-        });
-        heroData.bgImage = uploadResult?.secure_url;
-      } else {
-        // If no new image is provided, preserve the existing bgImage.
-        heroData.bgImage = existingService.hero?.bgImage;
-      }
+      heroData.bgImage = heroData.bgImage || existingService.hero?.bgImage;
       updates.hero = heroData;
     }
 

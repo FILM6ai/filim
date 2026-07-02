@@ -13,6 +13,32 @@ import Competate3 from "./Competate3";
 import NewCards from "./NewCards";
 import { validateFile } from "@/utils/fileValidation";
 
+const uploadToCloudinary = async (file) => {
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  if (!cloudName || !backendUrl) throw new Error("Cloudinary or backend config missing");
+
+  const signRes = await fetch(`${backendUrl}/api/cloudinary/sign`, { method: "POST" });
+  const signJson = await signRes.json();
+  if (!signRes.ok || !signJson.success) throw new Error(signJson.message || "Failed to get signature");
+
+  const { signature, timestamp, apiKey } = signJson;
+
+  const data = new FormData();
+  data.append("file", file);
+  data.append("api_key", apiKey);
+  data.append("timestamp", timestamp);
+  data.append("signature", signature);
+
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
+    method: "POST",
+    body: data,
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json?.error?.message || "Upload failed");
+  return json.secure_url || json.url;
+};
+
 const Hero = () => {
   // New state for studio ID
   const [studioId, setStudioId] = useState(null);
@@ -170,8 +196,24 @@ const [oldCompetateImage3, setOldCompetateImage3] = useState([]);
     e.preventDefault();
     setLoading(true);
     try {
+      let uploadedHeroUrls = [];
+      if (Array.isArray(image) && image.length > 0) {
+        const files = image.filter((v) => v instanceof File);
+        if (files.length > 0) {
+          for (const file of files) {
+            const result = validateFile(file);
+            if (!result.valid) {
+              toast.error(result.message);
+              setLoading(false);
+              return;
+            }
+          }
+          uploadedHeroUrls = await Promise.all(files.map((f) => uploadToCloudinary(f)));
+        }
+      }
+
       const formData = new FormData();
-      const heroData = { title, alt, description };
+      const heroData = { title, alt, description, newVideoUrls: uploadedHeroUrls };
       const card2Data = {
         description: card2?.description || "",
         youtubeUrl: card2?.youtubeUrl || "",
@@ -207,13 +249,13 @@ const [oldCompetateImage3, setOldCompetateImage3] = useState([]);
       formData.append("toplist3", JSON.stringify(toplist3));
       formData.append("competate3", JSON.stringify(competate3));
 
-      if (Array.isArray(image) && image.length > 0) {
-  image.forEach((file) => {
-    if (file instanceof File) {
-      formData.append("heroImage", file);
-    }
-  });
-}
+//       if (Array.isArray(image) && image.length > 0) {
+//   image.forEach((file) => {
+//     if (file instanceof File) {
+//       formData.append("heroImage", file);
+//     }
+//   });
+// }
       if (card1Image) formData.append("card1Image", card1Image);
       if (card2Image) formData.append("card2Image", card2Image);
       if (card3Image) formData.append("card3Image", card3Image);
@@ -250,8 +292,24 @@ const [oldCompetateImage3, setOldCompetateImage3] = useState([]);
     }
     setLoading(true);
     try {
+      let uploadedHeroUrls = [];
+      if (Array.isArray(image) && image.length > 0) {
+        const files = image.filter((v) => v instanceof File);
+        if (files.length > 0) {
+          for (const file of files) {
+            const result = validateFile(file);
+            if (!result.valid) {
+              toast.error(result.message);
+              setLoading(false);
+              return;
+            }
+          }
+          uploadedHeroUrls = await Promise.all(files.map((f) => uploadToCloudinary(f)));
+        }
+      }
+
       const formData = new FormData();
-      const heroData = { title, alt, description };
+      const heroData = { title, alt, description, newVideoUrls: uploadedHeroUrls };
       formData.append("hero", JSON.stringify(heroData));
       const card2Data = {
         description: card2.description,
@@ -287,12 +345,12 @@ const [oldCompetateImage3, setOldCompetateImage3] = useState([]);
       formData.append("toplist3", JSON.stringify(toplist3));
       formData.append("competate3", JSON.stringify(competate3));
 
-      if (Array.isArray(image)) {
-        image.forEach((file) => {
-          console.log("Appending file to FormData:", file.name);
-          formData.append("heroImage", file);
-        });
-      }
+      // if (Array.isArray(image)) {
+      //   image.forEach((file) => {
+      //     console.log("Appending file to FormData:", file.name);
+      //     formData.append("heroImage", file);
+      //   });
+      // }
 
       if (card1Image) formData.append("card1Image", card1Image);
       if (card2Image) formData.append("card2Image", card2Image);

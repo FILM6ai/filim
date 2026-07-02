@@ -14,6 +14,32 @@ import GlossarySection from "./GlossarySection";
 import GallerySection from "./GallerySection";
 import JurorsSection from "./JurorsSection";
 
+const uploadToCloudinary = async (file) => {
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  if (!cloudName || !backendUrl) throw new Error("Cloudinary or backend config missing");
+
+  const signRes = await fetch(`${backendUrl}/api/cloudinary/sign`, { method: "POST" });
+  const signJson = await signRes.json();
+  if (!signRes.ok || !signJson.success) throw new Error(signJson.message || "Failed to get signature");
+
+  const { signature, timestamp, apiKey } = signJson;
+
+  const data = new FormData();
+  data.append("file", file);
+  data.append("api_key", apiKey);
+  data.append("timestamp", timestamp);
+  data.append("signature", signature);
+
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
+    method: "POST",
+    body: data,
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json?.error?.message || "Upload failed");
+  return json.secure_url || json.url;
+};
+
 
 const Hero = () => {
   const [festivalId, setFestivalId] = useState(null);
@@ -206,9 +232,27 @@ const [heroLink, setHeroLink] = useState("");
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    try {
+   try {
+      let uploadedHeroUrl = null;
+      if (image && image instanceof File) {
+        const result = validateFile(image);
+        if (!result.valid) {
+          toast.error(result.message);
+          setLoading(false);
+          return;
+        }
+        uploadedHeroUrl = await uploadToCloudinary(image);
+      }
+
       const formData = new FormData();
-const hero = { title, alt, description, button: heroButton, link: heroLink };
+      const hero = {
+        title,
+        alt,
+        description,
+        button: heroButton,
+        link: heroLink,
+        bgImage: uploadedHeroUrl || (typeof image === "string" ? image : undefined),
+      };
       formData.append("hero", JSON.stringify(hero));
       formData.append("cardSection", JSON.stringify({ mainTitle, cards }));
 
@@ -239,9 +283,9 @@ const hero = { title, alt, description, button: heroButton, link: heroLink };
         }
       });
 
-      if (image) {
-        formData.append("heroImage", image);
-      }
+      // if (image) {
+      //   formData.append("heroImage", image);
+      // }
       // Cards images hero image se bahar nikalo — hamesha append ho
       cards.forEach((card, i) => {
         if (card.image && typeof card.image !== "string") {

@@ -56,13 +56,7 @@ export const createStudioPage = async (req, res) => {
     const competated3 = competate3 ? JSON.parse(competate3) : null;
 
     // let heroVideoPath = req.files?.heroImage[0]?.path;
-    let heroVideoPath = req.files?.heroImage?.map((file) => file.path) || [];
-
-    let uploadedVideos = await Promise.all(
-      heroVideoPath.map((path) =>
-        uploadOnCloudinary(path, { resource_type: "video" }),
-      ),
-    );
+    const uploadedHeroUrls = hero1.newVideoUrls || [];
     console.log(req.files, "card1Image");
     let card1Image = req.files?.card1Image?.[0]?.path;
     let card2Image = req.files?.card2Image?.[0]?.path;
@@ -80,12 +74,12 @@ export const createStudioPage = async (req, res) => {
     console.log(card1Image, "card1Image");
     console.log(card2Image, "card2Image");
 
-    if (heroVideoPath) {
-      heroVideoPath = await uploadOnCloudinary(heroVideoPath, {
-        resource_type: "video",
-      });
-    }
-    console.log(heroVideoPath, "cloud hero");
+    // if (heroVideoPath) {
+    //   heroVideoPath = await uploadOnCloudinary(heroVideoPath, {
+    //     resource_type: "video",
+    //   });
+    // }
+    // console.log(heroVideoPath, "cloud hero");
 
     if (card1Image) {
       card1Image = await uploadOnCloudinary(card1Image);
@@ -139,7 +133,7 @@ export const createStudioPage = async (req, res) => {
 
     const newStudio = new studioSchema({
       hero: {
-        bgImage: uploadedVideos.map((v) => v.secure_url),
+        bgImage: uploadedHeroUrls,
         title: hero1.title,
         alt: hero1.alt,
         description: hero1.description,
@@ -337,13 +331,8 @@ export const updateStudioPage = async (req, res) => {
     let competateImage3 = req.files?.competateImage3?.[0]?.path;
 
     // Upload new files if available
-    let heroVideoPath = req.files?.heroImage?.map((file) => file.path) || [];
+        const uploadedHeroUrls = hero1.newVideoUrls || [];
 
-    let uploadedVideos = await Promise.all(
-      heroVideoPath.map((path) =>
-        uploadOnCloudinary(path, { resource_type: "video" }),
-      ),
-    );
     if (card1Image) {
       card1Image = await uploadOnCloudinary(card1Image);
     }
@@ -398,10 +387,9 @@ export const updateStudioPage = async (req, res) => {
     const updatedHero = {
       title: hero1.title,
       bgImage:
-  uploadedVideos.length > 0
-    ? [...(currentStudio.hero.bgImage || []), ...uploadedVideos.map((v) => v.secure_url)]
-    : currentStudio.hero.bgImage || [],
-
+        uploadedHeroUrls.length > 0
+          ? [...(currentStudio.hero.bgImage || []), ...uploadedHeroUrls]
+          : currentStudio.hero.bgImage || [],
       alt: hero1.alt,
       description: hero1.description,
     };

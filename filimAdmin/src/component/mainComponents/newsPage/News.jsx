@@ -5,6 +5,32 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 
+const uploadToCloudinary = async (file) => {
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  if (!cloudName || !backendUrl) throw new Error("Cloudinary or backend config missing");
+
+  const signRes = await fetch(`${backendUrl}/api/cloudinary/sign`, { method: "POST" });
+  const signJson = await signRes.json();
+  if (!signRes.ok || !signJson.success) throw new Error(signJson.message || "Failed to get signature");
+
+  const { signature, timestamp, apiKey } = signJson;
+
+  const data = new FormData();
+  data.append("file", file);
+  data.append("api_key", apiKey);
+  data.append("timestamp", timestamp);
+  data.append("signature", signature);
+
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
+    method: "POST",
+    body: data,
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json?.error?.message || "Upload failed");
+  return json.secure_url || json.url;
+};
+
 const News = () => {
   const [newsId, setNewsId] = useState("");
   const [title, setTitle] = useState("");
@@ -38,16 +64,29 @@ const News = () => {
     fetchData();
   }, []);
 
-  const handleSubmit = async (e) => {
+ const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
+      let uploadedUrl = null;
+      if (image && typeof image !== "string") {
+        const result = validateFile(image);
+        if (!result.valid) {
+          toast.error(result.message);
+          setLoading(false);
+          return;
+        }
+        uploadedUrl = await uploadToCloudinary(image);
+      }
+
       const formData = new FormData();
       formData.append("title", title);
       formData.append("alt", alt);
       formData.append("description", description);
-      if (image && typeof image !== "string") {
-        formData.append("heroImage", image);
+      if (uploadedUrl) {
+        formData.append("bgImage", uploadedUrl);
+      } else if (typeof image === "string" && image) {
+        formData.append("bgImage", image);
       }
 
       let response;

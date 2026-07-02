@@ -15,8 +15,8 @@ export const createFestivalPage = async (req, res) => {
     const gallery1 = req.body.gallery ? JSON.parse(req.body.gallery) : { mainTitle: '', images: [] };
     const jurors1 = req.body.jurors ? JSON.parse(req.body.jurors) : { mainTitle: '', items: [] };
 
-    let heroVideoPath = req.files?.heroImage[0]?.path;
-    let advanceImage = req.files?.advanceImage[0]?.path;
+       let advanceImage = req.files?.advanceImage[0]?.path;
+
     let toplistImage = req.files?.toplistImage[0]?.path;
     let robotImage = req.files?.robotImage[0]?.path;
     let competateImage = req.files?.competateImage[0]?.path;
@@ -42,12 +42,12 @@ export const createFestivalPage = async (req, res) => {
       }
     }
 
-    if (heroVideoPath) {
-      heroVideoPath = await uploadOnCloudinary(heroVideoPath, {
-        resource_type: "video",
-      });
-    }
-    console.log(heroVideoPath, "cloud hero");
+    // if (heroVideoPath) {
+    //   heroVideoPath = await uploadOnCloudinary(heroVideoPath, {
+    //     resource_type: "video",
+    //   });
+    // }
+    // console.log(heroVideoPath, "cloud hero");
 
     if (advanceImage) {
       advanceImage = await uploadOnCloudinary(advanceImage);
@@ -96,13 +96,13 @@ export const createFestivalPage = async (req, res) => {
     }
 
     const newFestival = new festivalSchema({
-      hero: {
-        bgImage: heroVideoPath?.secure_url,
+        hero: {
+        bgImage: hero1.bgImage || "",
         title: hero1.title,
         alt: hero1.alt,
         description: hero1.description,
         button: hero1.button,
-  link: hero1.link, 
+        link: hero1.link,
       },
       advance: {
         alt: advance1.alt,
@@ -222,19 +222,10 @@ export const updatedFestival = async (req, res) => {
     console.log("Raw req.body:", req.body);
 
     // Update Hero section if provided
+    // Update Hero section if provided
     if (req.body.hero) {
       let heroData = JSON.parse(req.body.hero);
-      // If a new file is uploaded, process it.
-      if (req.files && req.files.heroImage && req.files.heroImage.length) {
-        const heroFilePath = req.files.heroImage[0].path;
-        const uploadResult = await uploadOnCloudinary(heroFilePath, {
-          resource_type: "video",
-        });
-        heroData.bgImage = uploadResult?.secure_url;
-      } else {
-        // If no new image is provided, preserve the existing bgImage.
-        heroData.bgImage = existingFestival.hero?.bgImage;
-      }
+      heroData.bgImage = heroData.bgImage || existingFestival.hero?.bgImage;
       updates.hero = heroData;
     }
 

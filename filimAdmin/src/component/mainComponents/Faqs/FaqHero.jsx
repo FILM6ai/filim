@@ -5,6 +5,32 @@ import { validateFile } from '@/utils/fileValidation';
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 
+const uploadToCloudinary = async (file) => {
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  if (!cloudName || !backendUrl) throw new Error("Cloudinary or backend config missing");
+
+  const signRes = await fetch(`${backendUrl}/api/cloudinary/sign`, { method: "POST" });
+  const signJson = await signRes.json();
+  if (!signRes.ok || !signJson.success) throw new Error(signJson.message || "Failed to get signature");
+
+  const { signature, timestamp, apiKey } = signJson;
+
+  const data = new FormData();
+  data.append("file", file);
+  data.append("api_key", apiKey);
+  data.append("timestamp", timestamp);
+  data.append("signature", signature);
+
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
+    method: "POST",
+    body: data,
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json?.error?.message || "Upload failed");
+  return json.secure_url || json.url;
+};
+
 const FaqHero = () => {
  const [faqDataId, setfaqDataId] = useState(null);
  const [title, setTitle] = useState('');
@@ -48,19 +74,30 @@ const FaqHero = () => {
    setLoading(true);
 
    try {
+     let uploadedUrl = null;
+     if (image && image instanceof File) {
+       const result = validateFile(image);
+       if (!result.valid) {
+         toast.error(result.message);
+         setLoading(false);
+         return;
+       }
+       uploadedUrl = await uploadToCloudinary(image);
+     }
+
      const formData = new FormData();
      const hero = { title, description, alt, youtubeUrl };
 
-     // If admin explicitly cleared image, include empty string to tell backend to clear
-     if (image === '') {
+     if (uploadedUrl) {
+       hero.bgImage = uploadedUrl;
+     } else if (image === '') {
+       // Admin explicitly cleared image
        hero.bgImage = '';
+     } else if (typeof image === 'string') {
+       hero.bgImage = image;
      }
 
      formData.append('faqhero', JSON.stringify(hero));
-
-     if (image && image instanceof File) {
-       formData.append('heroImage', image);
-     }
 
      let response;
      if (faqDataId) {
