@@ -11,6 +11,35 @@ import Runway from "./Runway";
 import { jsxs } from "react/jsx-runtime";
 import { validateFile } from "@/utils/fileValidation";
 
+
+
+// Upload a single file to Cloudinary using signed upload (server signs with API secret)
+const uploadToCloudinary = async (file) => {
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  if (!cloudName || !backendUrl) throw new Error("Cloudinary or backend config missing");
+
+  // Request signature from backend
+  const signRes = await fetch(`${backendUrl}/api/cloudinary/sign`, { method: "POST" });
+  const signJson = await signRes.json();
+  if (!signRes.ok || !signJson.success) throw new Error(signJson.message || "Failed to get signature");
+
+  const { signature, timestamp, apiKey } = signJson;
+
+  const data = new FormData();
+  data.append("file", file);
+  data.append("api_key", apiKey);
+  data.append("timestamp", timestamp);
+  data.append("signature", signature);
+
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
+    method: "POST",
+    body: data,
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json?.error?.message || "Upload failed");
+  return json.secure_url || json.url;
+};
 const Hero = () => {
   // Hero section states including the new alt state
   const [title, setTitle] = useState("");
@@ -156,6 +185,23 @@ const Hero = () => {
     e.preventDefault();
     setLoading(true);
     try {
+      // If there are new video files, upload them directly to Cloudinary
+      let uploadedVideoUrls = [];
+      if (Array.isArray(videos) && videos.length > 0) {
+        const files = videos.filter((v) => v instanceof File);
+        if (files.length > 0) {
+          for (const file of files) {
+            const result = validateFile(file);
+            if (!result.valid) {
+              toast.error(result.message);
+              setLoading(false);
+              return;
+            }
+          }
+          uploadedVideoUrls = await Promise.all(files.map((f) => uploadToCloudinary(f)));
+        }
+      }
+
       const formData = new FormData();
       const hero = { title, description, button, alt, link, youtubeUrls: newYoutubeUrls };
       console.log(hero, "hero");
@@ -170,7 +216,8 @@ const Hero = () => {
         description: videoData2,
         youtubeUrl: newYoutubeVideoUrls.length > 0
           ? newYoutubeVideoUrls[newYoutubeVideoUrls.length - 1]
-          : oldYoutubeUrl || ""
+          : oldYoutubeUrl || "",
+        videoUrls: [...(Array.isArray(oldVideo) ? oldVideo : []), ...uploadedVideoUrls],
       };
       formData.append("videos", JSON.stringify(videoMetaData));
 
@@ -181,12 +228,7 @@ const Hero = () => {
           }
         });
       }
-
-      if (Array.isArray(videos) && videos.length > 0) {
-        videos.forEach(file => {
-          if (file instanceof File) formData.append("videoPlayer", file);
-        });
-      }
+      // NOTE: video files are uploaded directly to Cloudinary above.
       if (advanceImage) formData.append("advanceImage", advanceImage);
       if (toplistImage) formData.append("toplistImage", toplistImage);
       if (robotImage) formData.append("robotImage", robotImage);
@@ -218,6 +260,23 @@ const Hero = () => {
     }
     setLoading(true);
     try {
+      // Upload any newly selected video files to Cloudinary and collect URLs
+      let uploadedVideoUrls = [];
+      if (Array.isArray(videos) && videos.length > 0) {
+        const files = videos.filter((v) => v instanceof File);
+        if (files.length > 0) {
+          for (const file of files) {
+            const result = validateFile(file);
+            if (!result.valid) {
+              toast.error(result.message);
+              setLoading(false);
+              return;
+            }
+          }
+          uploadedVideoUrls = await Promise.all(files.map((f) => uploadToCloudinary(f)));
+        }
+      }
+
       const formData = new FormData();
       const hero = { title, description, button, alt, link, newYoutubeUrls };
       formData.append("hero", JSON.stringify(hero));
@@ -231,7 +290,8 @@ const Hero = () => {
         description: videoData2,
         youtubeUrl: newYoutubeVideoUrls.length > 0
           ? newYoutubeVideoUrls[newYoutubeVideoUrls.length - 1]
-          : oldYoutubeUrl || ""
+          : oldYoutubeUrl || "",
+        videoUrls: [...(Array.isArray(oldVideo) ? oldVideo : []), ...uploadedVideoUrls],
       };
       formData.append("videos", JSON.stringify(videoMetaData));
 
@@ -242,12 +302,7 @@ const Hero = () => {
           }
         });
       }
-
-      if (Array.isArray(videos) && videos.length > 0) {
-        videos.forEach(file => {
-          if (file instanceof File) formData.append("videoPlayer", file);
-        });
-      }
+      // NOTE: video files are uploaded directly to Cloudinary above.
       if (advanceImage) formData.append("advanceImage", advanceImage);
       if (toplistImage) formData.append("toplistImage", toplistImage);
       if (robotImage) formData.append("robotImage", robotImage);

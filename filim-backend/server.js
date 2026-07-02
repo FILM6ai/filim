@@ -19,6 +19,7 @@ import faqRoute from "./routes/faqRoute.js";
 import termRoute from "./routes/termRoute.js";
 import emailRoute from "./routes/emailRoute.js";
 import registrationRoute from './routes/registrationRoute.js';
+import cloudinaryRoute from './routes/cloudinaryRoute.js';
 
 const app = express();
 // const port = process.env.Port || 4000;
@@ -45,6 +46,7 @@ app.use("/api/faq", faqRoute);
 app.use("/api/term", termRoute);
 app.use("/api/", emailRoute);
 app.use('/api', registrationRoute);
+app.use('/api/cloudinary', cloudinaryRoute);
 
 
 app.get("/", (req, res) => {

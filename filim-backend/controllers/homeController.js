@@ -20,6 +20,7 @@ export const createHomePage = async (req, res) => {
         uploadOnCloudinary(path, { resource_type: "video" }),
       ),
     );
+    
 
     let videoPlayerPath = req.files?.videoPlayer?.[0]?.path;
     let advanceImage = req.files?.advanceImage?.[0]?.path;
@@ -36,7 +37,10 @@ export const createHomePage = async (req, res) => {
       });
     }
     let uploadedVideoUrls = [];
-    if (req.files?.videoPlayer && req.files.videoPlayer.length > 0) {
+    // If client provided video URLs directly (client-side uploaded to Cloudinary), use them
+    if (videos1.videoUrls && Array.isArray(videos1.videoUrls) && videos1.videoUrls.length > 0) {
+      uploadedVideoUrls = videos1.videoUrls;
+    } else if (req.files?.videoPlayer && req.files.videoPlayer.length > 0) {
       const paths = req.files.videoPlayer.map(f => f.path);
       const uploaded = await Promise.all(
         paths.map(p => uploadOnCloudinary(p, { resource_type: "video" }))
@@ -192,7 +196,7 @@ export const updateHomePage = async (req, res) => {
     if (req.body.videos) {
       let videosData = JSON.parse(req.body.videos);
 
-      // Uploaded video files handle karo
+      // New uploaded files from server (if any)
       let newUploadedUrls = [];
       if (req.files?.videoPlayer && req.files.videoPlayer.length > 0) {
         const paths = req.files.videoPlayer.map(f => f.path);
@@ -202,14 +206,20 @@ export const updateHomePage = async (req, res) => {
         newUploadedUrls = uploaded.map(v => v.secure_url);
       }
 
-      // Existing video URLs ke saath merge karo
+      // Existing stored video URLs
       const existingVideoUrls = Array.isArray(existingHome.videos?.videoUrls)
         ? existingHome.videos.videoUrls
         : existingHome.videos?.videoUrls
           ? [existingHome.videos.videoUrls]
           : [];
 
-      videosData.videoUrls = [...existingVideoUrls, ...newUploadedUrls];
+      // If the client provided video URLs in the payload (client-side Cloudinary upload), include them
+      const providedVideoUrls = Array.isArray(videosData.videoUrls) ? videosData.videoUrls : [];
+
+      // Merge: existing -> provided -> newly uploaded on server (avoid duplicates)
+      const merged = [...existingVideoUrls, ...providedVideoUrls, ...newUploadedUrls];
+      const unique = Array.from(new Set(merged));
+      videosData.videoUrls = unique;
 
       videosData.youtubeUrl = videosData.youtubeUrl && videosData.youtubeUrl.trim() !== ""
         ? videosData.youtubeUrl
