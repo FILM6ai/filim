@@ -1,34 +1,9 @@
 import formSchema from "../modles/form.js";
 import sendEmail from "../utils/sendEmail.js";
 
-const submissionTracker = new Map();
-const RATE_LIMIT_WINDOW = 60 * 60 * 1000;
-const MAX_SUBMISSIONS = 5;
 // POST: Create a new form submission
 export const createFormPost = async (req, res) => {
   try {
-    const userIP = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
-    const now = Date.now();
-    const userRecord = submissionTracker.get(userIP) || {
-      count: 0,
-      firstSubmit: now,
-    };
-
-    if (now - userRecord.firstSubmit > RATE_LIMIT_WINDOW) {
-      userRecord.count = 0;
-      userRecord.firstSubmit = now;
-    }
-
-    if (userRecord.count >= MAX_SUBMISSIONS) {
-      return res.status(429).json({
-        success: false,
-        error: "Too many submissions. Please wait 1 hour before trying again.",
-      });
-    }
-
-    userRecord.count += 1;
-    submissionTracker.set(userIP, userRecord);
-
     const { firstName, lastName, email, topic, message, phone } = req.body;
 
     if (!firstName || !lastName || !email || !topic || !message) {
