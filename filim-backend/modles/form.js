@@ -13,6 +13,7 @@ const FormSchema = new mongoose.Schema({
       'inquiries',
       'partnership',
       'press',
+      'festival',
       'production',
       'submission',
       'support',
