@@ -75,11 +75,10 @@ export const fixMedia = async (req, res) => {
       faq: faqModel,
     };
 
-    const report = { dry, collections: {} };
+    const report = { version: "v3", dry, collections: {} };
 
     for (const [name, Model] of Object.entries(models)) {
-      const coll = mongoose.connection.db.collection(Model.collection.collectionName);
-      const docs = await coll.find({}).toArray();
+      const docs = await Model.find({}).lean();
       let urlReplacements = 0;
       let docsChanged = 0;
       let gallerySet = false;
@@ -90,20 +89,23 @@ export const fixMedia = async (req, res) => {
         urlReplacements += cnt;
 
         // Festival: also set the visible gallery to the 5 new images
+        let docGallerySet = false;
         if (name === "festival" && newDoc.gallery && Array.isArray(newDoc.gallery.images)) {
           const oldImgs = newDoc.gallery.images || [];
           const hasBroken = oldImgs.some((u) => typeof u === "string" && u.includes("drh7q62eh"));
           if (hasBroken || oldImgs.length !== GALLERY_IMAGES.length) {
             newDoc.gallery.images = [...GALLERY_IMAGES];
+            docGallerySet = true;
             gallerySet = true;
           }
         }
 
-        const changed = cnt > 0 || gallerySet;
+        const changed = cnt > 0 || docGallerySet;
         if (changed && JSON.stringify(newDoc) !== before) {
           docsChanged++;
           if (!dry) {
-            await coll.replaceOne({ _id: doc._id }, newDoc);
+            const { _id, ...rest } = newDoc;
+            await Model.replaceOne({ _id }, rest);
           }
         }
       }
