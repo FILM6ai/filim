@@ -78,7 +78,7 @@ export const fixMedia = async (req, res) => {
     const report = { dry, collections: {} };
 
     for (const [name, Model] of Object.entries(models)) {
-      const coll = Model.collection;
+      const coll = mongoose.connection.db.collection(Model.collection.collectionName);
       const docs = await coll.find({}).toArray();
       let urlReplacements = 0;
       let docsChanged = 0;
