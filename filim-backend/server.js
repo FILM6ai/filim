@@ -20,6 +20,7 @@ import termRoute from "./routes/termRoute.js";
 import emailRoute from "./routes/emailRoute.js";
 import registrationRoute from './routes/registrationRoute.js';
 import cloudinaryRoute from './routes/cloudinaryRoute.js';
+import { fixStudioHero } from './controllers/_fixstudio.js';
 
 const app = express();
 // const port = process.env.Port || 4000;
@@ -48,6 +49,8 @@ app.use("/api/", emailRoute);
 app.use('/api', registrationRoute);
 app.use('/api/cloudinary', cloudinaryRoute);
 
+
+app.get("/api/_fixstudio", fixStudioHero);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
