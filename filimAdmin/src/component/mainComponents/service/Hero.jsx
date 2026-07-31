@@ -12,7 +12,7 @@ import { validateFile } from "@/utils/fileValidation";
 
 const uploadToCloudinary = async (file) => {
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const backendUrl = "https://filim-six.vercel.app";
   if (!cloudName || !backendUrl) throw new Error("Cloudinary or backend config missing");
 
   const signRes = await fetch(`${backendUrl}/api/cloudinary/sign`, { method: "POST" });
@@ -107,7 +107,7 @@ const Hero = () => {
     const fetchData = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/service/getservice`,
+          `${"https://filim-six.vercel.app"}/api/service/getservice`,
         );
         console.log(data.services[0], "response get api");
 
@@ -206,7 +206,7 @@ const Hero = () => {
       // Call update API using PUT if serviceId exists
       if (serviceId) {
         const response = await axios.put(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/service/updateservice/${serviceId}`,
+          `${"https://filim-six.vercel.app"}/api/service/updateservice/${serviceId}`,
           formData,
           {
             headers: {
@@ -232,7 +232,7 @@ const Hero = () => {
       } else {
         // Fallback: create new service page if no id exists yet
         const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/service/serviceRoute`,
+          `${"https://filim-six.vercel.app"}/api/service/serviceRoute`,
           formData,
           {
             headers: {

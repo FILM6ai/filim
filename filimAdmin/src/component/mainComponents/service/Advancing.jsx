@@ -120,7 +120,7 @@ const Advancing = ({
                       onClick={async () => {
                         try {
                           await axios.delete(
-                            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/service/deleteimage/${serviceId}`,
+                            `${"https://filim-six.vercel.app"}/api/service/deleteimage/${serviceId}`,
                             {
                               data: {
                                 section: sectionName,

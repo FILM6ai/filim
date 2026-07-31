@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 
 const uploadToCloudinary = async (file) => {
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const backendUrl = "https://filim-six.vercel.app";
   if (!cloudName || !backendUrl) throw new Error("Cloudinary or backend config missing");
 
   const signRes = await fetch(`${backendUrl}/api/cloudinary/sign`, { method: "POST" });
@@ -44,7 +44,7 @@ const FaqHero = () => {
    const fetchData = async () => {
      try {
        const { data } = await axios.get(
-         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/faq/faqgetroute`
+         `${"https://filim-six.vercel.app"}/api/faq/faqgetroute`
        );
        console.log(data.faqData, 'Response from API');
 
@@ -103,7 +103,7 @@ const FaqHero = () => {
      if (faqDataId) {
        // Update existing FAQ page
        response = await axios.put(
-         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/faq/faqupdateroute/${faqDataId}`,
+         `${"https://filim-six.vercel.app"}/api/faq/faqupdateroute/${faqDataId}`,
          formData,
          {
            headers: { 'Content-Type': 'multipart/form-data' },
@@ -113,7 +113,7 @@ const FaqHero = () => {
      } else {
        // Create a new FAQ page
        response = await axios.post(
-         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/faq/faqpostroute`,
+         `${"https://filim-six.vercel.app"}/api/faq/faqpostroute`,
          formData,
          {
            headers: { 'Content-Type': 'multipart/form-data' },

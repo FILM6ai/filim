@@ -16,7 +16,7 @@ import JurorsSection from "./JurorsSection";
 
 const uploadToCloudinary = async (file) => {
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const backendUrl = "https://filim-six.vercel.app";
   if (!cloudName || !backendUrl) throw new Error("Cloudinary or backend config missing");
 
   const signRes = await fetch(`${backendUrl}/api/cloudinary/sign`, { method: "POST" });
@@ -143,7 +143,7 @@ const [heroLink, setHeroLink] = useState("");
     const fetchData = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/festival/getfestival`,
+          `${"https://filim-six.vercel.app"}/api/festival/getfestival`,
         );
         console.log(data.festival[0], "response get api");
 
@@ -323,7 +323,7 @@ const [heroLink, setHeroLink] = useState("");
       // Call update API using PUT if festivalId exists
       if (festivalId) {
         const response = await axios.put(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/festival/updatefestival/${festivalId}`,
+          `${"https://filim-six.vercel.app"}/api/festival/updatefestival/${festivalId}`,
           formData,
           {
             headers: {
@@ -358,7 +358,7 @@ const [heroLink, setHeroLink] = useState("");
       } else {
         // Fallback: create new service page if no id exists yet
         const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/festival/festivalRoute`,
+          `${"https://filim-six.vercel.app"}/api/festival/festivalRoute`,
           formData,
           {
             headers: {

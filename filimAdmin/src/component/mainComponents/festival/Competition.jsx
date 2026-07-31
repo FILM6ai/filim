@@ -125,7 +125,7 @@ const Competition = ({
                       onClick={async () => {
                         try {
                           await axios.delete(
-                            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/festival/deleteimage/${festivalId}`,
+                            `${"https://filim-six.vercel.app"}/api/festival/deleteimage/${festivalId}`,
                             {
                               data: {
                                 section: sectionName,

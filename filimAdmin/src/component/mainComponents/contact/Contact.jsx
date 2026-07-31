@@ -8,7 +8,7 @@ import { validateFile } from "@/utils/fileValidation";
 
 const uploadToCloudinary = async (file) => {
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const backendUrl = "https://filim-six.vercel.app";
   if (!cloudName || !backendUrl) throw new Error("Cloudinary or backend config missing");
 
   const signRes = await fetch(`${backendUrl}/api/cloudinary/sign`, { method: "POST" });
@@ -49,7 +49,7 @@ const Contact = () => {
     const fetchData = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contact/getcontact`,
+          `${"https://filim-six.vercel.app"}/api/contact/getcontact`,
         );
         console.log(data.contact[0], "response get api");
 
@@ -104,7 +104,7 @@ const Contact = () => {
       // If contactId exists, update the contact page; otherwise, create a new one.
       if (contactId) {
         response = await axios.put(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contact/updateContact/${contactId}`,
+          `${"https://filim-six.vercel.app"}/api/contact/updateContact/${contactId}`,
           formData,
           {
             headers: { "Content-Type": "multipart/form-data" },
@@ -113,7 +113,7 @@ const Contact = () => {
         toast.success("Contact page updated successfully!");
       } else {
         response = await axios.post(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contact/contatcRoute`,
+          `${"https://filim-six.vercel.app"}/api/contact/contatcRoute`,
           formData,
           {
             headers: { "Content-Type": "multipart/form-data" },

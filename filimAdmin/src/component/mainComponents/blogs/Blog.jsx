@@ -40,9 +40,9 @@ const Blog = () => {
         formData.append("image", image);
         console.log(image, "image");
       }
-      console.log(process.env.NEXT_PUBLIC_BACKEND_URL);
+      console.log("https://filim-six.vercel.app");
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog/blogroute`,
+        `${"https://filim-six.vercel.app"}/api/blog/blogroute`,
         formData,
         {
           headers: { 'Content-Type': 'multipart/form-data' },

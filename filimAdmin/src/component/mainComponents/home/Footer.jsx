@@ -36,7 +36,7 @@ const Footer = () => {
     const fetchFooter = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/footer`
+          `${"https://filim-six.vercel.app"}/api/footer`
         );
         if (data.footer && data.footer.length > 0) {
           const nav = data.footer[0];
@@ -126,7 +126,7 @@ const Footer = () => {
       if (navbarId) {
         // Update existing Footer document
         response = await axios.put(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/footer/${navbarId}`,
+          `${"https://filim-six.vercel.app"}/api/footer/${navbarId}`,
           formData,
           { headers: { 'Content-Type': 'multipart/form-data' } }
         );
@@ -134,7 +134,7 @@ const Footer = () => {
       } else {
         // Create new Footer document
         response = await axios.post(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/footer`,
+          `${"https://filim-six.vercel.app"}/api/footer`,
           formData,
           { headers: { 'Content-Type': 'multipart/form-data' } }
         );

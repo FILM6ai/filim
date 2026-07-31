@@ -103,7 +103,7 @@ const Robot = ({ robot, setRobot, robotImage, setRobotImage, studioId, oldRobotI
             onClick={async () => {
               try {
                 await axios.delete(
-                  `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/studio/deleteimage/${studioId}`,
+                  `${"https://filim-six.vercel.app"}/api/studio/deleteimage/${studioId}`,
                   { data: { section: sectionName, field: "bgImage", imageUrl: url } }
                 );
                 setOldRobotImage((prev) => prev.filter((u) => u !== url));

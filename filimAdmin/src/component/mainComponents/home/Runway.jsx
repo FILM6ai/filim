@@ -97,7 +97,7 @@ const Runway = ({
                       onClick={async () => {
                         try {
                           await axios.delete(
-                            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/home/deleteimage/${homeId}`,
+                            `${"https://filim-six.vercel.app"}/api/home/deleteimage/${homeId}`,
                             {
                               data: {
                                 section: "runway",

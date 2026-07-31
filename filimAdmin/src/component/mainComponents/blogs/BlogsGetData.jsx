@@ -15,7 +15,7 @@ const BlogsGetData = () => {
     const fetchBlogs = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog/getblog`
+          `${"https://filim-six.vercel.app"}/api/blog/getblog`
         );
         if (data.blogs && data.blogs.length > 0) {
           setBlogs(data.blogs);
@@ -43,7 +43,7 @@ const BlogsGetData = () => {
     try {
       // Include the blog ID in the URL parameter
       await axios.delete(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog/getdelete/${blogToDelete}`
+        `${"https://filim-six.vercel.app"}/api/blog/getdelete/${blogToDelete}`
       );
       setBlogs((prevBlogs) =>
         prevBlogs.filter((blog) => blog._id !== blogToDelete)
