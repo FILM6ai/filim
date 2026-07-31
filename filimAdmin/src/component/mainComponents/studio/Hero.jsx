@@ -15,7 +15,7 @@ import { validateFile } from "@/utils/fileValidation";
 
 const uploadToCloudinary = async (file) => {
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  const backendUrl = "https://filim-six.vercel.app";
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   if (!cloudName || !backendUrl) throw new Error("Cloudinary or backend config missing");
 
   const signRes = await fetch(`${backendUrl}/api/cloudinary/sign`, { method: "POST" });
@@ -118,7 +118,7 @@ const [oldCompetateImage3, setOldCompetateImage3] = useState([]);
     const fetchData = async () => {
       try {
         const { data } = await axios.get(
-          `${"https://filim-six.vercel.app"}/api/studio/getstudio`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/studio/getstudio`,
         );
         if (data.studio && data.studio.length > 0) {
           const homeData = data.studio[0];
@@ -270,7 +270,7 @@ const [oldCompetateImage3, setOldCompetateImage3] = useState([]);
       if (competateImage3) formData.append("competateImage3", competateImage3);
 
       const response = await axios.post(
-        `${"https://filim-six.vercel.app"}/api/studio/studioRoute`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/studio/studioRoute`,
         formData,
       );
       setStudioId(response.data.studio._id);
@@ -366,7 +366,7 @@ const [oldCompetateImage3, setOldCompetateImage3] = useState([]);
       if (competateImage3) formData.append("competateImage3", competateImage3);
 
       const response = await axios.put(
-        `${"https://filim-six.vercel.app"}/api/studio/updateStudio/${studioId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/studio/updateStudio/${studioId}`,
         formData,
       );
       const updatedStudio = response.data.studio;
@@ -477,7 +477,7 @@ setImage((prev) => {
             onClick={async () => {
               try {
                 await axios.delete(
-                  `${"https://filim-six.vercel.app"}/api/studio/deleteimage/${studioId}`,
+                  `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/studio/deleteimage/${studioId}`,
                   { data: { section: "hero", field: "bgImage", imageUrl: url } }
                 );
                 setOldHeroImages((prev) => prev.filter((u) => u !== url));

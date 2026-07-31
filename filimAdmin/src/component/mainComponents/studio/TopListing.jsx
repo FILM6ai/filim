@@ -105,7 +105,7 @@ const TopListing = ({ toplist, setToplist, toplistImage, setToplistImage, studio
             onClick={async () => {
               try {
                 await axios.delete(
-                  `${"https://filim-six.vercel.app"}/api/studio/deleteimage/${studioId}`,
+                  `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/studio/deleteimage/${studioId}`,
                   { data: { section: sectionName, field: "bgImage", imageUrl: url } }
                 );
                 setOldToplistImage((prev) => prev.filter((u) => u !== url));

@@ -16,7 +16,7 @@ import { validateFile } from "@/utils/fileValidation";
 // Upload a single file to Cloudinary using signed upload (server signs with API secret)
 const uploadToCloudinary = async (file) => {
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  const backendUrl = "https://filim-six.vercel.app";
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   if (!cloudName || !backendUrl) throw new Error("Cloudinary or backend config missing");
 
   // Request signature from backend
@@ -117,7 +117,7 @@ const Hero = () => {
     const fetchData = async () => {
       try {
         const { data } = await axios.get(
-          `${"https://filim-six.vercel.app"}/api/home/gethome`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/home/gethome`,
         );
         if (data.home && data.home.length > 0) {
           const homeData = data.home[0];
@@ -252,7 +252,7 @@ const Hero = () => {
       if (runwayImage) formData.append("runwayImage", runwayImage);
 
       const response = await axios.post(
-        `${"https://filim-six.vercel.app"}/api/home/homeRoute`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/home/homeRoute`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } },
       );
@@ -342,7 +342,7 @@ const Hero = () => {
       if (runwayImage) formData.append("runwayImage", runwayImage);
 
       const response = await axios.put(
-        `${"https://filim-six.vercel.app"}/api/home/homeupdate/${homeId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/home/homeupdate/${homeId}`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } },
       );
@@ -560,7 +560,7 @@ const Hero = () => {
                       onClick={async () => {
                         try {
                           await axios.delete(
-                            `${"https://filim-six.vercel.app"}/api/home/deleteimage/${homeId}`,
+                            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/home/deleteimage/${homeId}`,
                             {
                               data: {
                                 section: "hero",
@@ -774,7 +774,7 @@ const Hero = () => {
                 onClick={async () => {
                   try {
                     await axios.delete(
-                      `${"https://filim-six.vercel.app"}/api/home/deleteimage/${homeId}`,
+                      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/home/deleteimage/${homeId}`,
                       {
                         data: {
                           section: "videos",
@@ -812,7 +812,7 @@ const Hero = () => {
                     onClick={async () => {
                       try {
                         await axios.delete(
-                          `${"https://filim-six.vercel.app"}/api/home/deleteimage/${homeId}`,
+                          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/home/deleteimage/${homeId}`,
                           { data: { section: "videos", field: "videoUrls", imageUrl: url } }
                         );
                         setOldVideo(prev => prev.filter(u => u !== url));

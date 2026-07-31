@@ -42,7 +42,7 @@ const Page = () => {
     const fetchBlog = async () => {
       try {
         const { data } = await axios.get(
-          `${"https://filim-six.vercel.app"}/api/blog/getblog`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog/getblog`,
         );
         console.log(data, "api response for blogs");
 
@@ -113,7 +113,7 @@ const Page = () => {
       }
 
       const response = await axios.put(
-        `${"https://filim-six.vercel.app"}/api/blog/blogrouteupdate/${id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog/blogrouteupdate/${id}`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } },
       );

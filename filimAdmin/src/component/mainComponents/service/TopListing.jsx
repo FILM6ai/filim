@@ -119,7 +119,7 @@ const TopListing = ({
                       onClick={async () => {
                         try {
                           await axios.delete(
-                            `${"https://filim-six.vercel.app"}/api/service/deleteimage/${serviceId}`,
+                            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/service/deleteimage/${serviceId}`,
                             {
                               data: {
                                 section: sectionName,

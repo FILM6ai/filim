@@ -24,7 +24,7 @@ const FestivalCards = ({
       try {
         const axios = (await import("axios")).default;
         await axios.delete(
-          `${"https://filim-six.vercel.app"}/api/festival/deletecard/${festivalId}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/festival/deletecard/${festivalId}`,
           { data: { cardIndex: idx } }
         );
       } catch (err) {

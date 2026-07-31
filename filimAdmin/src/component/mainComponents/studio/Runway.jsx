@@ -102,7 +102,7 @@ const Runway = ({ runway, setRunway, runwayImage, setRunwayImage, studioId, oldR
             onClick={async () => {
               try {
                 await axios.delete(
-                  `${"https://filim-six.vercel.app"}/api/studio/deleteimage/${studioId}`,
+                  `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/studio/deleteimage/${studioId}`,
                   { data: { section: sectionName, field: "bgImage", imageUrl: url } }
                 );
                 setOldRunwayImage((prev) => prev.filter((u) => u !== url));

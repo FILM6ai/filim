@@ -77,7 +77,7 @@ const Form = () => {
     if (!confirm("Are you sure you want to delete this submission?")) return;
     try {
       await axios.delete(
-        `${"https://filim-six.vercel.app"}/api/form/deleteform/${id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/form/deleteform/${id}`,
       );
       setForms((prev) => prev.filter((f) => f._id !== id)); // UI se hata do
     } catch (err) {
@@ -93,7 +93,7 @@ const Form = () => {
     setDeleting(true);
     try {
       await axios.delete(
-        `${"https://filim-six.vercel.app"}/api/form/deleteforms`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/form/deleteforms`,
         { data: { ids: selectedIds } }, // axios DELETE mein body { data: {} } se bhejte hain
       );
       setForms((prev) => prev.filter((f) => !selectedIds.includes(f._id)));
@@ -115,7 +115,7 @@ const Form = () => {
   const fetchForms = async () => {
     try {
       const response = await axios.get(
-        `${"https://filim-six.vercel.app"}/api/form/getform`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/form/getform`,
       );
       setForms(
         [...response.data.forms].sort((a, b) => {

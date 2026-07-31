@@ -101,7 +101,7 @@ const Robot = ({
                       onClick={async () => {
                         try {
                           await axios.delete(
-                            `${"https://filim-six.vercel.app"}/api/home/deleteimage/${homeId}`,
+                            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/home/deleteimage/${homeId}`,
                             {
                               data: {
                                 section: "robot",

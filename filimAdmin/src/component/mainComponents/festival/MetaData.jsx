@@ -19,7 +19,7 @@ const MetaData = () => {
     const fetchMetaData = async () => {
       try {
         const response = await axios.get(
-          `${"https://filim-six.vercel.app"}/api/getmetadata`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/getmetadata`
         );
         console.log(response, 'response metadata');
         if (
@@ -59,13 +59,13 @@ const MetaData = () => {
       if (metaId) {
         // Update existing meta data record.
         response = await axios.put(
-          `${"https://filim-six.vercel.app"}/api/updatemetaData/${metaId}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/updatemetaData/${metaId}`,
           metaData
         );
       } else {
         // Create a new meta data record.
         response = await axios.post(
-          `${"https://filim-six.vercel.app"}/api/postmetaData`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/postmetaData`,
           metaData
         );
         console.log(response, 'response post data');

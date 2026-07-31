@@ -25,7 +25,7 @@ const Terms = () => {
     const fetchTerm = async () => {
       try {
         const { data } = await axios.get(
-          `${"https://filim-six.vercel.app"}/api/term/getterm`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/term/getterm`
         );
         if (data.termData && data.termData.length > 0) {
           const term = data.termData[0];
@@ -49,13 +49,13 @@ const Terms = () => {
       let response;
       if (termId) {
         response = await axios.put(
-          `${"https://filim-six.vercel.app"}/api/term/updateterm/${termId}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/term/updateterm/${termId}`,
           { content }
         );
         toast.success('Terms updated successfully!');
       } else {
         response = await axios.post(
-          `${"https://filim-six.vercel.app"}/api/term/postterm`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/term/postterm`,
           { content }
         );
         toast.success('Terms created successfully!');

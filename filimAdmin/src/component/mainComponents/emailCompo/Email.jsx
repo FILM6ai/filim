@@ -12,7 +12,7 @@ const Email = () => {
     const fetchEmails = async () => {
       try {
         const { data } = await axios.get(
-          `${"https://filim-six.vercel.app"}/api/getemail`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/getemail`
         );
 
         if (data.success) {

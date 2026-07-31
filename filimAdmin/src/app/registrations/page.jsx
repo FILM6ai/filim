@@ -19,7 +19,7 @@ const RegistrationsPage = () => {
     setLoading(true);
     try {
       const { data } = await axios.get(
-        `${"https://filim-six.vercel.app"}/api/getregistration`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/getregistration`,
       );
       if (data.success) {
         setEmails(data.emails);

@@ -102,7 +102,7 @@ const Competate3 = ({ competate3, setCompetate3, competateImage3, setCompetateIm
             onClick={async () => {
               try {
                 await axios.delete(
-                  `${"https://filim-six.vercel.app"}/api/studio/deleteimage/${studioId}`,
+                  `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/studio/deleteimage/${studioId}`,
                   { data: { section: sectionName, field: "bgImage", imageUrl: url } }
                 );
                 setOldCompetateImage3((prev) => prev.filter((u) => u !== url));

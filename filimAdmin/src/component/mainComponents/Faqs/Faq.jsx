@@ -16,7 +16,7 @@ const Faq = () => {
     const fetchFaqs = async () => {
       try {
         const { data } = await axios.get(
-          `${"https://filim-six.vercel.app"}/api/faq/faqgetroute`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/faq/faqgetroute`
         );
         setFaqs(data.faqData || []);
       } catch (error) {
@@ -53,14 +53,14 @@ const Faq = () => {
       if (selectedFaqId) {
         // Update existing FAQ
         response = await axios.put(
-          `${"https://filim-six.vercel.app"}/api/faq/faqupdateroute/${selectedFaqId}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/faq/faqupdateroute/${selectedFaqId}`,
           faqPayload
         );
         toast.success('FAQ updated successfully!');
       } else {
         // Create a new FAQ
         response = await axios.post(
-          `${"https://filim-six.vercel.app"}/api/faq/faqpostroute`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/faq/faqpostroute`,
           faqPayload
         );
         toast.success('FAQ created successfully!');
@@ -69,7 +69,7 @@ const Faq = () => {
 
       // Refresh FAQ list after submission
       const { data } = await axios.get(
-        `${"https://filim-six.vercel.app"}/api/faq/faqgetroute`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/faq/faqgetroute`
       );
       setFaqs(data.faqData || []);
       handleNewFaq(); // Reset form after update/create

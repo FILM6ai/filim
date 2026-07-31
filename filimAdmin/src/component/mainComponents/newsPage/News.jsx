@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 
 const uploadToCloudinary = async (file) => {
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  const backendUrl = "https://filim-six.vercel.app";
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   if (!cloudName || !backendUrl) throw new Error("Cloudinary or backend config missing");
 
   const signRes = await fetch(`${backendUrl}/api/cloudinary/sign`, { method: "POST" });
@@ -44,7 +44,7 @@ const News = () => {
     const fetchData = async () => {
       try {
         const { data } = await axios.get(
-          `${"https://filim-six.vercel.app"}/api/news/getnews`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/news/getnews`,
         );
         console.log(data, "response get api");
         const homeData = data.news[0];
@@ -92,7 +92,7 @@ const News = () => {
       let response;
       if (newsId) {
         response = await axios.put(
-          `${"https://filim-six.vercel.app"}/api/news/update/${newsId}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/news/update/${newsId}`,
           formData,
           {
             headers: { "Content-Type": "multipart/form-data" },
@@ -101,7 +101,7 @@ const News = () => {
       } else {
         // Create new news entry
         response = await axios.post(
-          `${"https://filim-six.vercel.app"}/api/news/newsRoute`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/news/newsRoute`,
           formData,
           {
             headers: { "Content-Type": "multipart/form-data" },
