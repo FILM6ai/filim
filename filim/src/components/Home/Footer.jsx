@@ -13,8 +13,6 @@ import { API_BASE_URL } from "@/utils/backend";
 const Footer = () => {
   const [footerData, setFooterData] = useState(null);
   const [email, setEmail] = useState('');
-  // Rolls over on its own so the copyright never goes stale again
-  const currentYear = new Date().getFullYear();
 
   useEffect(() => {
     const fetchFooter = async () => {
@@ -265,8 +263,8 @@ const Footer = () => {
         </div>
       </footer>
       <div className='bg-[#131313] text-white py-4'>
-        <p className='text-sm text-center' suppressHydrationWarning>
-          © {currentYear} Film6. All rights reserved.
+        <p className='text-sm text-center'>
+          © Film6. All rights reserved.
         </p>
       </div>
       {/* Toast container to show notifications */}
