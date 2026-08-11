@@ -6,10 +6,20 @@ const FooterLinkSchema = new mongoose.Schema({
   link: { type: String },
 });
 
+const FooterPartnerSchema = new mongoose.Schema({
+  name: { type: String },
+  link: { type: String },
+  logo: { type: String },
+});
+
 const FooterSchema = new mongoose.Schema({
   logo: { type: String },
   links: {
     type: [FooterLinkSchema],
+    default: [],
+  },
+  partners: {
+    type: [FooterPartnerSchema],
     default: [],
   },
   tiktokIcon: { type: String },

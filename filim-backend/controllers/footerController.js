@@ -176,3 +176,65 @@ export const updateFooter = async (req, res) => {
     });
   }
 };
+
+
+// partners — selective update, touches ONLY the partners array
+
+
+export const updatePartners = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    let incoming = req.body?.partners;
+    if (typeof incoming === 'string') {
+      try {
+        incoming = JSON.parse(incoming);
+      } catch (e) {
+        return res.status(400).json({
+          success: false,
+          message: 'partners must be an array',
+        });
+      }
+    }
+
+    if (!Array.isArray(incoming)) {
+      return res.status(400).json({
+        success: false,
+        message: 'partners must be an array',
+      });
+    }
+
+    const partners = incoming
+      .map((p) => ({
+        name: typeof p?.name === 'string' ? p.name.trim() : '',
+        link: typeof p?.link === 'string' ? p.link.trim() : '',
+        logo: typeof p?.logo === 'string' ? p.logo.trim() : '',
+      }))
+      .filter((p) => p.name || p.logo);
+
+    const updatedFooter = await Footer.findByIdAndUpdate(
+      id,
+      { $set: { partners } },
+      { new: true }
+    );
+
+    if (!updatedFooter) {
+      return res.status(404).json({
+        success: false,
+        message: 'Footer not found',
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      partners: updatedFooter.partners,
+      message: 'Partners updated successfully',
+    });
+  } catch (error) {
+    console.error('Error updating partners:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to update partners',
+    });
+  }
+};

@@ -1,6 +1,6 @@
 import express from 'express';
 import upload from '../middlewere/multer.js';
-import { createFooter, getFooter, updateFooter } from '../controllers/footerController.js';
+import { createFooter, getFooter, updateFooter, updatePartners } from '../controllers/footerController.js';
 
 
 const footerRouter = express.Router();
@@ -22,6 +22,10 @@ const footerRouter = express.Router();
   ]),
   updateFooter
 );
+
+// partners are stored as URLs (logos are uploaded straight to Cloudinary from the
+// admin), so this one takes plain JSON and only touches the partners array
+footerRouter.put('/footer/:id/partners', updatePartners);
 
 
 export default footerRouter;

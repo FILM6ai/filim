@@ -43,6 +43,19 @@ const Footer = () => {
     footerData?.links?.find((item) => item.name.toLowerCase() === 'twitter')
       ?.link || 'https://twitter.com';
 
+  // Partner brands (managed from the admin panel)
+  const partners = Array.isArray(footerData?.partners)
+    ? footerData.partners.filter((item) => item && (item.name || item.logo))
+    : [];
+
+  // Partners are typed in by hand, so a link like "acme.com" has to still work
+  const partnerHref = (link) => {
+    const value = (link || '').trim();
+    if (!value) return '#';
+    if (/^(https?:)?\/\//i.test(value) || /^mailto:/i.test(value)) return value;
+    return `https://${value}`;
+  };
+
   // Handler for subscribing email via the POST API
   const handleSubscribe = async (e) => {
     e.preventDefault();
@@ -144,16 +157,56 @@ const Footer = () => {
           {/* Top Section */}
           <div className='grid grid-cols-1 md:grid-cols-12 gap-8 mb-8'>
             {/* Logo and Description */}
-            <div className='md:col-span-4'>
+            <div className='md:col-span-3'>
               <p className='mb-4 max-w-[300px]'>
                 {footerData?.description ||
                   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.'}
               </p>
             </div>
 
-            {/* Links Section */}
+            {/* Partners Section */}
             <div className='md:col-span-4'>
-              <nav className='space-y-3 flex flex-col md:items-center'>
+              {partners.length > 0 && (
+                <>
+                  <h3 className='text-lg mb-4'>PARTNERS</h3>
+                  <ul
+                    className={`space-y-2 ${
+                      partners.length > 6 ? 'columns-2 gap-x-6' : ''
+                    }`}
+                  >
+                    {partners.map((partner, index) => (
+                      <li
+                        key={partner._id || `${partner.name}-${index}`}
+                        className='break-inside-avoid'
+                      >
+                        <a
+                          href={partnerHref(partner.link)}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          title={partner.name || 'Partner'}
+                          className='group flex items-center gap-2 text-[#737373] hover:text-white transition-colors'
+                        >
+                          {partner.logo ? (
+                            <img
+                              src={partner.logo}
+                              alt={partner.name || 'Partner'}
+                              className='h-6 w-6 object-contain shrink-0 opacity-80 group-hover:opacity-100 transition-opacity'
+                            />
+                          ) : null}
+                          <span className='text-sm'>
+                            {partner.name || partner.link}
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+            </div>
+
+            {/* Links Section */}
+            <div className='md:col-span-2'>
+              <nav className='space-y-3 flex flex-col'>
                 <Link
                   href='/faq'
                   className='block text-[#737373] hover:text-white transition-colors'
@@ -170,7 +223,7 @@ const Footer = () => {
             </div>
 
             {/* Newsletter Section */}
-            <div className='md:col-span-4'>
+            <div className='md:col-span-3'>
               <h3 className='text-lg mb-4'>Newsletter</h3>
               <p className='text-[#737373] mb-4'>Subscribe to Our Newsletter</p>
               <form
