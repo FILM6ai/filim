@@ -13,6 +13,8 @@ import { API_BASE_URL } from "@/utils/backend";
 const Footer = () => {
   const [footerData, setFooterData] = useState(null);
   const [email, setEmail] = useState('');
+  // Rolls over on its own so the copyright never goes stale again
+  const currentYear = new Date().getFullYear();
 
   useEffect(() => {
     const fetchFooter = async () => {
@@ -48,6 +50,14 @@ const Footer = () => {
   const partners = Array.isArray(footerData?.partners)
     ? footerData.partners.filter((item) => item && (item.name || item.logo))
     : [];
+
+  const hasPartners = partners.length > 0;
+
+  // Keep the row full-width whether or not the partners column is showing,
+  // otherwise the newsletter stops sitting flush right.
+  const columnSpans = hasPartners
+    ? { about: 'md:col-span-3', links: 'md:col-span-2', news: 'md:col-span-3' }
+    : { about: 'md:col-span-6', links: 'md:col-span-3', news: 'md:col-span-3' };
 
   // Partners are typed in by hand, so a link like "acme.com" has to still work
   const partnerHref = (link) => {
@@ -158,55 +168,53 @@ const Footer = () => {
           {/* Top Section */}
           <div className='grid grid-cols-1 md:grid-cols-12 gap-8 mb-8'>
             {/* Logo and Description */}
-            <div className='md:col-span-3'>
+            <div className={columnSpans.about}>
               <p className='mb-4 max-w-[300px]'>
                 {footerData?.description ||
                   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.'}
               </p>
             </div>
 
-            {/* Partners Section */}
-            <div className='md:col-span-4'>
-              {partners.length > 0 && (
-                <>
-                  <h3 className='text-lg mb-4'>PARTNERS</h3>
-                  <ul
-                    className={`space-y-2 ${
-                      partners.length > 6 ? 'columns-2 gap-x-6' : ''
-                    }`}
-                  >
-                    {partners.map((partner, index) => (
-                      <li
-                        key={partner._id || `${partner.name}-${index}`}
-                        className='break-inside-avoid'
+            {/* Partners Section - only takes up space once partners exist */}
+            {hasPartners && (
+              <div className='md:col-span-4'>
+                <h3 className='text-lg mb-4'>PARTNERS</h3>
+                <ul
+                  className={`space-y-2 ${
+                    partners.length > 6 ? 'columns-2 gap-x-6' : ''
+                  }`}
+                >
+                  {partners.map((partner, index) => (
+                    <li
+                      key={partner._id || `${partner.name}-${index}`}
+                      className='break-inside-avoid'
+                    >
+                      <a
+                        href={partnerHref(partner.link)}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        title={partner.name || 'Partner'}
+                        className='group flex items-center gap-2 text-[#737373] hover:text-white transition-colors'
                       >
-                        <a
-                          href={partnerHref(partner.link)}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                          title={partner.name || 'Partner'}
-                          className='group flex items-center gap-2 text-[#737373] hover:text-white transition-colors'
-                        >
-                          {partner.logo ? (
-                            <img
-                              src={partner.logo}
-                              alt={partner.name || 'Partner'}
-                              className='h-6 w-6 object-contain shrink-0 opacity-80 group-hover:opacity-100 transition-opacity'
-                            />
-                          ) : null}
-                          <span className='text-sm'>
-                            {partner.name || partner.link}
-                          </span>
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </>
-              )}
-            </div>
+                        {partner.logo ? (
+                          <img
+                            src={partner.logo}
+                            alt={partner.name || 'Partner'}
+                            className='h-6 w-6 object-contain shrink-0 opacity-80 group-hover:opacity-100 transition-opacity'
+                          />
+                        ) : null}
+                        <span className='text-sm'>
+                          {partner.name || partner.link}
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             {/* Links Section */}
-            <div className='md:col-span-2'>
+            <div className={columnSpans.links}>
               <nav className='space-y-3 flex flex-col'>
                 <Link
                   href='/faq'
@@ -224,7 +232,7 @@ const Footer = () => {
             </div>
 
             {/* Newsletter Section */}
-            <div className='md:col-span-3'>
+            <div className={columnSpans.news}>
               <h3 className='text-lg mb-4'>Newsletter</h3>
               <p className='text-[#737373] mb-4'>Subscribe to Our Newsletter</p>
               <form
@@ -257,7 +265,9 @@ const Footer = () => {
         </div>
       </footer>
       <div className='bg-[#131313] text-white py-4'>
-        <p className='text-sm text-center'>© 2025 Film6</p>
+        <p className='text-sm text-center' suppressHydrationWarning>
+          © {currentYear} Film6. All rights reserved.
+        </p>
       </div>
       {/* Toast container to show notifications */}
 <ToastContainer position="top-right" autoClose={3000} />
