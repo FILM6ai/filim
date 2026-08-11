@@ -9,10 +9,11 @@ import Robot from "./Robot";
 import Competition from "./Competition";
 import Runway from "./Runway";
 import { validateFile } from "@/utils/fileValidation";
+import { BACKEND_URL } from "@/utils/backend";
 
 const uploadToCloudinary = async (file) => {
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const backendUrl = BACKEND_URL;
   if (!cloudName || !backendUrl) throw new Error("Cloudinary or backend config missing");
 
   const signRes = await fetch(`${backendUrl}/api/cloudinary/sign`, { method: "POST" });
@@ -107,7 +108,7 @@ const Hero = () => {
     const fetchData = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/service/getservice`,
+          `${BACKEND_URL}/api/service/getservice`,
         );
         console.log(data.services[0], "response get api");
 
@@ -206,7 +207,7 @@ const Hero = () => {
       // Call update API using PUT if serviceId exists
       if (serviceId) {
         const response = await axios.put(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/service/updateservice/${serviceId}`,
+          `${BACKEND_URL}/api/service/updateservice/${serviceId}`,
           formData,
           {
             headers: {
@@ -232,7 +233,7 @@ const Hero = () => {
       } else {
         // Fallback: create new service page if no id exists yet
         const response = await axios.post(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/service/serviceRoute`,
+          `${BACKEND_URL}/api/service/serviceRoute`,
           formData,
           {
             headers: {

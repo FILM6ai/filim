@@ -13,6 +13,7 @@ import Sheilds from "@/components/Home/Sheilds";
 import Glossary from '@/components/Home/Glossary';
 import GalleryPhotos from '@/components/Home/GalleryPhotos';
 import JurorPhotos from '@/components/Home/JurorPhotos';
+import { API_BASE_URL } from "@/utils/backend";
 
 
 const page = () => {
@@ -38,7 +39,7 @@ const page = () => {
     const fetchHeroData = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/festival/getfestival`,
+          `${API_BASE_URL}/festival/getfestival`,
         );
         setHeroData(data.festival[0].hero);
         setAdvanceData(data.festival[0].advance);
@@ -67,7 +68,7 @@ const page = () => {
     const fetchMetaData = async () => {
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/getmetadata`,
+          `${API_BASE_URL}/getmetadata`,
         );
         if (
           response.data &&

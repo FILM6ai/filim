@@ -3,12 +3,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { BACKEND_URL } from "@/utils/backend";
 
 // Logos go straight to Cloudinary from the browser (signed by the backend), so the
 // hosting request-size limit never applies and the cloud name always comes from
 // whatever the backend is actually configured with.
 const uploadLogoToCloudinary = async (file) => {
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const backendUrl = BACKEND_URL;
   if (!backendUrl) throw new Error('Backend URL is not configured');
 
   const signRes = await fetch(`${backendUrl}/api/cloudinary/sign`, {
@@ -53,7 +54,7 @@ const Partners = () => {
       setLoading(true);
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/footer`
+          `${BACKEND_URL}/api/footer`
         );
         if (data.footer && data.footer.length > 0) {
           const footer = data.footer[0];
@@ -136,7 +137,7 @@ const Partners = () => {
     setSaving(true);
     try {
       await axios.put(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/footer/${footerId}/partners`,
+        `${BACKEND_URL}/api/footer/${footerId}/partners`,
         { partners: cleaned }
       );
       setPartners(cleaned);

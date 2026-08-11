@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import logo from '../../assets/images/logo.png';
+import { API_BASE_URL } from "@/utils/backend";
 
 const Footer = () => {
   const [footerData, setFooterData] = useState(null);
@@ -17,7 +18,7 @@ const Footer = () => {
     const fetchFooter = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/footer`
+          `${API_BASE_URL}/footer`
         );
         if (data.footer && data.footer.length > 0) {
           setFooterData(data.footer[0]);
@@ -67,7 +68,7 @@ const Footer = () => {
 
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/postemail`,
+        `${API_BASE_URL}/postemail`,
         { email }
       );
       if (response.data.success) {

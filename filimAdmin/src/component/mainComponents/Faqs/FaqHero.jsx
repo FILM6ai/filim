@@ -4,10 +4,11 @@ import axios from 'axios';
 import { validateFile } from '@/utils/fileValidation';
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import { BACKEND_URL } from "@/utils/backend";
 
 const uploadToCloudinary = async (file) => {
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const backendUrl = BACKEND_URL;
   if (!cloudName || !backendUrl) throw new Error("Cloudinary or backend config missing");
 
   const signRes = await fetch(`${backendUrl}/api/cloudinary/sign`, { method: "POST" });
@@ -44,7 +45,7 @@ const FaqHero = () => {
    const fetchData = async () => {
      try {
        const { data } = await axios.get(
-         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/faq/faqgetroute`
+         `${BACKEND_URL}/api/faq/faqgetroute`
        );
        console.log(data.faqData, 'Response from API');
 
@@ -103,7 +104,7 @@ const FaqHero = () => {
      if (faqDataId) {
        // Update existing FAQ page
        response = await axios.put(
-         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/faq/faqupdateroute/${faqDataId}`,
+         `${BACKEND_URL}/api/faq/faqupdateroute/${faqDataId}`,
          formData,
          {
            headers: { 'Content-Type': 'multipart/form-data' },
@@ -113,7 +114,7 @@ const FaqHero = () => {
      } else {
        // Create a new FAQ page
        response = await axios.post(
-         `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/faq/faqpostroute`,
+         `${BACKEND_URL}/api/faq/faqpostroute`,
          formData,
          {
            headers: { 'Content-Type': 'multipart/form-data' },

@@ -8,6 +8,7 @@ import Runway from "@/components/Home/Runway";
 import axios from "axios";
 import Head from "next/head";
 import Loading from "@/components/faq/Loading";
+import { API_BASE_URL } from "@/utils/backend";
 
 const page = () => {
   const [heroData, setHeroData] = useState({});
@@ -27,7 +28,7 @@ const page = () => {
   const fetchMetaData = async () => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/getmetadata`,
+        `${API_BASE_URL}/getmetadata`,
       );
       if (
         response.data &&
@@ -52,7 +53,7 @@ const page = () => {
     const fetchHeroData = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/service/getservice`,
+          `${API_BASE_URL}/service/getservice`,
         );
         setHeroData(data.services[0].hero);
         setAdvanceData(data.services[0].advance);

@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import slugify from 'slugify';
+import { API_BASE_URL } from "@/utils/backend";
 
 
 const Blogs = () => {
@@ -16,7 +17,7 @@ const Blogs = () => {
     const fetchBlogs = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/blog/getblog`
+          `${API_BASE_URL}/blog/getblog`
         );
         console.log(data.blogs, 'api response for blogs');
 

@@ -11,6 +11,7 @@ import axios from 'axios';
 import Head from 'next/head';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import VideoPlayer from '@/components/Home/VideoPlayer';
+import { API_BASE_URL } from "@/utils/backend";
 // why its not working
 
 
@@ -33,7 +34,7 @@ export default function Home() {
     const fetchHeroData = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/home/gethome`
+          `${API_BASE_URL}/home/gethome`
         );
         console.log(data.home[0].hero, 'hero');
         console.log(data.home[0].hero.bgImage, 'bgImage array check');
@@ -61,7 +62,7 @@ export default function Home() {
     const fetchMetaData = async () => {
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/getmetadata`
+          `${API_BASE_URL}/getmetadata`
         );
         if (
           response.data &&

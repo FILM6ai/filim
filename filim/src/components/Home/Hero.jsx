@@ -13,6 +13,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { IoSend } from "react-icons/io5";
+import { API_BASE_URL } from "@/utils/backend";
 const Hero = ({
   title1,
   description,
@@ -70,7 +71,7 @@ const Hero = ({
     setLoading(true);
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/postregistration`,
+        `${API_BASE_URL}/postregistration`,
         { email },
       );
       if (response.data.success) {

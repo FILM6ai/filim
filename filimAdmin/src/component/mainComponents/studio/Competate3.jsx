@@ -3,6 +3,7 @@ import { validateFile } from "@/utils/fileValidation";
 import React from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { BACKEND_URL } from "@/utils/backend";
 
 const Competate3 = ({ competate3, setCompetate3, competateImage3, setCompetateImage3, studioId, oldCompetateImage3, setOldCompetateImage3, sectionName }) => {
 
@@ -102,7 +103,7 @@ const Competate3 = ({ competate3, setCompetate3, competateImage3, setCompetateIm
             onClick={async () => {
               try {
                 await axios.delete(
-                  `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/studio/deleteimage/${studioId}`,
+                  `${BACKEND_URL}/api/studio/deleteimage/${studioId}`,
                   { data: { section: sectionName, field: "bgImage", imageUrl: url } }
                 );
                 setOldCompetateImage3((prev) => prev.filter((u) => u !== url));

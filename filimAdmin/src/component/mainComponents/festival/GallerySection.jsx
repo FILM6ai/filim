@@ -2,6 +2,7 @@
 import React, { useRef } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { BACKEND_URL } from "@/utils/backend";
 
 const GallerySection = ({
     galleryTitle,
@@ -28,7 +29,7 @@ const GallerySection = ({
     const deleteOldImage = async (url) => {
         try {
             await axios.delete(
-                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/festival/deleteimage/${festivalId}`,
+                `${BACKEND_URL}/api/festival/deleteimage/${festivalId}`,
                 {
                     data: {
                         section: "gallery",

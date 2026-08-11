@@ -8,6 +8,7 @@ import { BsCalendarDate } from "react-icons/bs";
 import { BiTime } from "react-icons/bi";
 import { HiDownload } from "react-icons/hi";
 import { AiOutlineReload } from "react-icons/ai";
+import { BACKEND_URL } from "@/utils/backend";
 
 const RegistrationsPage = () => {
   const [emails, setEmails] = useState([]);
@@ -19,7 +20,7 @@ const RegistrationsPage = () => {
     setLoading(true);
     try {
       const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/getregistration`,
+        `${BACKEND_URL}/api/getregistration`,
       );
       if (data.success) {
         setEmails(data.emails);

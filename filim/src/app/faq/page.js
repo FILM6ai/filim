@@ -5,6 +5,7 @@ import Hero from '@/components/Home/Hero';
 import axios from 'axios';
 import Head from 'next/head';
 import React, { useEffect, useState } from 'react';
+import { API_BASE_URL } from "@/utils/backend";
 
 const page = () => {
   const [heroData, setHeroData] = useState({});
@@ -19,7 +20,7 @@ const page = () => {
     const fetchHeroData = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/faq/faqgetroute`
+          `${API_BASE_URL}/faq/faqgetroute`
         );
         const hero = data.faqData[0].faqhero || {};
         // Normalize hero data: prefer youtubeUrl, otherwise detect if bgImage is video or image
@@ -44,7 +45,7 @@ const page = () => {
     const fetchMetaData = async () => {
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/getmetadata`
+          `${API_BASE_URL}/getmetadata`
         );
         if (
           response.data &&

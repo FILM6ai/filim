@@ -7,6 +7,7 @@ import ContactParah from '@/components/Home/ContactParah';
 import axios from 'axios';
 import Head from 'next/head';
 import Loading from '@/components/faq/Loading';
+import { API_BASE_URL } from "@/utils/backend";
 
 const page = () => {
   const [heroData, setHeroData] = useState({});
@@ -22,7 +23,7 @@ const [loading, setLoading] = useState(true);
     const fetchHeroData = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/contact/getcontact`
+          `${API_BASE_URL}/contact/getcontact`
         );
         
         setHeroData(data.contact[0].hero);
@@ -42,7 +43,7 @@ const [loading, setLoading] = useState(true);
     const fetchMetaData = async () => {
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/getmetadata`
+          `${API_BASE_URL}/getmetadata`
         );
         if (
           response.data &&

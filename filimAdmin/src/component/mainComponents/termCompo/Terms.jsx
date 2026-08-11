@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import dynamic from 'next/dynamic';
+import { BACKEND_URL } from "@/utils/backend";
 
 const Terms = () => {
   const [content, setContent] = useState('');
@@ -25,7 +26,7 @@ const Terms = () => {
     const fetchTerm = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/term/getterm`
+          `${BACKEND_URL}/api/term/getterm`
         );
         if (data.termData && data.termData.length > 0) {
           const term = data.termData[0];
@@ -49,13 +50,13 @@ const Terms = () => {
       let response;
       if (termId) {
         response = await axios.put(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/term/updateterm/${termId}`,
+          `${BACKEND_URL}/api/term/updateterm/${termId}`,
           { content }
         );
         toast.success('Terms updated successfully!');
       } else {
         response = await axios.post(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/term/postterm`,
+          `${BACKEND_URL}/api/term/postterm`,
           { content }
         );
         toast.success('Terms created successfully!');

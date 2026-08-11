@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { BACKEND_URL } from "@/utils/backend";
 
 // CSV download helper function
 const downloadCSV = (forms) => {
@@ -77,7 +78,7 @@ const Form = () => {
     if (!confirm("Are you sure you want to delete this submission?")) return;
     try {
       await axios.delete(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/form/deleteform/${id}`,
+        `${BACKEND_URL}/api/form/deleteform/${id}`,
       );
       setForms((prev) => prev.filter((f) => f._id !== id)); // UI se hata do
     } catch (err) {
@@ -93,7 +94,7 @@ const Form = () => {
     setDeleting(true);
     try {
       await axios.delete(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/form/deleteforms`,
+        `${BACKEND_URL}/api/form/deleteforms`,
         { data: { ids: selectedIds } }, // axios DELETE mein body { data: {} } se bhejte hain
       );
       setForms((prev) => prev.filter((f) => !selectedIds.includes(f._id)));
@@ -115,7 +116,7 @@ const Form = () => {
   const fetchForms = async () => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/form/getform`,
+        `${BACKEND_URL}/api/form/getform`,
       );
       setForms(
         [...response.data.forms].sort((a, b) => {

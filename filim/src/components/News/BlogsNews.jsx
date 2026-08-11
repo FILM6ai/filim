@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Loading from "../faq/Loading";
 import slugify from "slugify";
+import { API_BASE_URL } from "@/utils/backend";
 const BlogsNews = () => {
   const [bloges, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,7 +16,7 @@ const BlogsNews = () => {
     const fetchBlogs = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/blog/getblog`,
+          `${API_BASE_URL}/blog/getblog`,
         );
         console.log(data.blogs, "api response for blogs");
 

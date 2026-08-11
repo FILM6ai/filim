@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Terms from '@/components/faq/Terms';
 import Head from 'next/head';
+import { API_BASE_URL } from "@/utils/backend";
 
 const TermsPage = () => {
 
@@ -16,7 +17,7 @@ const TermsPage = () => {
       const fetchMetaData = async () => {
         try {
           const response = await axios.get(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/getmetadata`
+            `${API_BASE_URL}/getmetadata`
           );
           if (
             response.data &&

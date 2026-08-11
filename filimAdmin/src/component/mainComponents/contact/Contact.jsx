@@ -5,10 +5,11 @@ import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import Advancing from "./Advancing";
 import { validateFile } from "@/utils/fileValidation";
+import { BACKEND_URL } from "@/utils/backend";
 
 const uploadToCloudinary = async (file) => {
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const backendUrl = BACKEND_URL;
   if (!cloudName || !backendUrl) throw new Error("Cloudinary or backend config missing");
 
   const signRes = await fetch(`${backendUrl}/api/cloudinary/sign`, { method: "POST" });
@@ -49,7 +50,7 @@ const Contact = () => {
     const fetchData = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contact/getcontact`,
+          `${BACKEND_URL}/api/contact/getcontact`,
         );
         console.log(data.contact[0], "response get api");
 
@@ -104,7 +105,7 @@ const Contact = () => {
       // If contactId exists, update the contact page; otherwise, create a new one.
       if (contactId) {
         response = await axios.put(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contact/updateContact/${contactId}`,
+          `${BACKEND_URL}/api/contact/updateContact/${contactId}`,
           formData,
           {
             headers: { "Content-Type": "multipart/form-data" },
@@ -113,7 +114,7 @@ const Contact = () => {
         toast.success("Contact page updated successfully!");
       } else {
         response = await axios.post(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/contact/contatcRoute`,
+          `${BACKEND_URL}/api/contact/contatcRoute`,
           formData,
           {
             headers: { "Content-Type": "multipart/form-data" },

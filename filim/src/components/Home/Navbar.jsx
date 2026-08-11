@@ -10,6 +10,7 @@ import tiktok from '../../assets/images/tiktok.png';
 import insta from '../../assets/images/insta.png';
 import youtube from '../../assets/images/youtube.png';
 import axios from 'axios';
+import { API_BASE_URL } from "@/utils/backend";
 
 const Navbar = () => {
   const [footerData, setFooterData] = useState(null);
@@ -20,7 +21,7 @@ const Navbar = () => {
     const fetchFooter = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/footer`
+          `${API_BASE_URL}/footer`
         );
         if (data.footer && data.footer.length > 0) {
           setFooterData(data.footer[0]);

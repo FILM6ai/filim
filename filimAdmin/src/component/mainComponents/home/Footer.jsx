@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { BACKEND_URL } from "@/utils/backend";
 
 const Footer = () => {
   // State for image URLs, new link fields and description
@@ -36,7 +37,7 @@ const Footer = () => {
     const fetchFooter = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/footer`
+          `${BACKEND_URL}/api/footer`
         );
         if (data.footer && data.footer.length > 0) {
           const nav = data.footer[0];
@@ -126,7 +127,7 @@ const Footer = () => {
       if (navbarId) {
         // Update existing Footer document
         response = await axios.put(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/footer/${navbarId}`,
+          `${BACKEND_URL}/api/footer/${navbarId}`,
           formData,
           { headers: { 'Content-Type': 'multipart/form-data' } }
         );
@@ -134,7 +135,7 @@ const Footer = () => {
       } else {
         // Create new Footer document
         response = await axios.post(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/footer`,
+          `${BACKEND_URL}/api/footer`,
           formData,
           { headers: { 'Content-Type': 'multipart/form-data' } }
         );

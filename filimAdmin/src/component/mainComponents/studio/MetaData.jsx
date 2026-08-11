@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { BACKEND_URL } from "@/utils/backend";
 
 const MetaData = () => {
   // State for the studio meta data.
@@ -19,7 +20,7 @@ const MetaData = () => {
     const fetchMetaData = async () => {
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/getmetadata`
+          `${BACKEND_URL}/api/getmetadata`
         );
         console.log(response, 'response metadata');
         if (
@@ -59,13 +60,13 @@ const MetaData = () => {
       if (metaId) {
         // Update existing meta data record.
         response = await axios.put(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/updatemetaData/${metaId}`,
+          `${BACKEND_URL}/api/updatemetaData/${metaId}`,
           metaData
         );
       } else {
         // Create a new meta data record.
         response = await axios.post(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/postmetaData`,
+          `${BACKEND_URL}/api/postmetaData`,
           metaData
         );
         console.log(response, 'response post data');

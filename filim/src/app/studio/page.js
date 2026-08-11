@@ -8,6 +8,7 @@ import Head from "next/head";
 import Loading from "@/components/faq/Loading";
 // import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import CategoriesFestival from "@/components/Home/CategoriesFestival";
+import { API_BASE_URL } from "@/utils/backend";
 // loading
 const page = () => {
   const [heroData, setHeroData] = useState({});
@@ -35,7 +36,7 @@ const page = () => {
     const fetchHeroData = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/studio/getstudio`,
+          `${API_BASE_URL}/studio/getstudio`,
         );
         setHeroData(data.studio[0].hero);
         setAdvanceData(data.studio[0].advance);
@@ -64,7 +65,7 @@ const page = () => {
   const fetchMetaData = async () => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/getmetadata`,
+        `${API_BASE_URL}/getmetadata`,
       );
       if (
         response.data &&

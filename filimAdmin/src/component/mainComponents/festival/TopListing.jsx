@@ -3,6 +3,7 @@ import { validateFile } from "@/utils/fileValidation";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { BACKEND_URL } from "@/utils/backend";
 
 const defaultPopup = {
   title: "", content: "", tagline: "", heading: "",
@@ -128,7 +129,7 @@ const TopListing = ({
                       onClick={async () => {
                         try {
                           await axios.delete(
-                            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/festival/deleteimage/${festivalId}`,
+                            `${BACKEND_URL}/api/festival/deleteimage/${festivalId}`,
                             {
                               data: {
                                 section: sectionName,

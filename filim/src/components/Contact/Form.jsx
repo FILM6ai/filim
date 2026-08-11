@@ -4,6 +4,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import emailjs from "@emailjs/browser";
+import { API_BASE_URL } from "@/utils/backend";
 
 const MAX_CHARS = 1000;
 
@@ -41,7 +42,7 @@ const Form = () => {
     try {
       // 1. Backend mein save karo (database ke liye)
       const { data } = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/form/formRoute`,
+        `${API_BASE_URL}/form/formRoute`,
         formData,
       );
 

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { BACKEND_URL } from "@/utils/backend";
 
 const Email = () => {
   const [emails, setEmails] = useState([]);
@@ -12,7 +13,7 @@ const Email = () => {
     const fetchEmails = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/getemail`
+          `${BACKEND_URL}/api/getemail`
         );
 
         if (data.success) {

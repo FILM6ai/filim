@@ -9,6 +9,7 @@ import BlogsGetData from "./BlogsGetData";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { validateBlogFile } from "@/utils/fileValidation";
+import { BACKEND_URL } from "@/utils/backend";
 
 // Dynamically import React-Quill to disable SSR
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
@@ -40,9 +41,9 @@ const Blog = () => {
         formData.append("image", image);
         console.log(image, "image");
       }
-      console.log(process.env.NEXT_PUBLIC_BACKEND_URL);
+      console.log(BACKEND_URL);
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog/blogroute`,
+        `${BACKEND_URL}/api/blog/blogroute`,
         formData,
         {
           headers: { 'Content-Type': 'multipart/form-data' },

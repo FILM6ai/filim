@@ -3,6 +3,7 @@ import { validateFile } from "@/utils/fileValidation";
 import React from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { BACKEND_URL } from "@/utils/backend";
 
 const Runway = ({
   runway,
@@ -97,7 +98,7 @@ const Runway = ({
                       onClick={async () => {
                         try {
                           await axios.delete(
-                            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/home/deleteimage/${homeId}`,
+                            `${BACKEND_URL}/api/home/deleteimage/${homeId}`,
                             {
                               data: {
                                 section: "runway",

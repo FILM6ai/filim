@@ -1,5 +1,6 @@
 import { validateFile } from "@/utils/fileValidation";
 import React from "react";
+import { BACKEND_URL } from "@/utils/backend";
 
 const FestivalCards = ({
   cards,
@@ -24,7 +25,7 @@ const FestivalCards = ({
       try {
         const axios = (await import("axios")).default;
         await axios.delete(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/festival/deletecard/${festivalId}`,
+          `${BACKEND_URL}/api/festival/deletecard/${festivalId}`,
           { data: { cardIndex: idx } }
         );
       } catch (err) {

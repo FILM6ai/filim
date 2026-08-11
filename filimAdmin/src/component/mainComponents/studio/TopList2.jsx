@@ -3,6 +3,7 @@ import { validateFile } from "@/utils/fileValidation";
 import React from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { BACKEND_URL } from "@/utils/backend";
 
 const TopList2 = ({ toplist3, setToplist3, toplist3Image, setToplist3Image, studioId, oldToplist3Image, setOldToplist3Image, sectionName }) => {
 
@@ -105,7 +106,7 @@ const TopList2 = ({ toplist3, setToplist3, toplist3Image, setToplist3Image, stud
             onClick={async () => {
               try {
                 await axios.delete(
-                  `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/studio/deleteimage/${studioId}`,
+                  `${BACKEND_URL}/api/studio/deleteimage/${studioId}`,
                   { data: { section: sectionName, field: "bgImage", imageUrl: url } }
                 );
                 setOldToplist3Image((prev) => prev.filter((u) => u !== url));

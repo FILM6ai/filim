@@ -10,13 +10,14 @@ import Competition from "./Competition";
 import Runway from "./Runway";
 import { jsxs } from "react/jsx-runtime";
 import { validateFile } from "@/utils/fileValidation";
+import { BACKEND_URL } from "@/utils/backend";
 
 
 
 // Upload a single file to Cloudinary using signed upload (server signs with API secret)
 const uploadToCloudinary = async (file) => {
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const backendUrl = BACKEND_URL;
   if (!cloudName || !backendUrl) throw new Error("Cloudinary or backend config missing");
 
   // Request signature from backend
@@ -117,7 +118,7 @@ const Hero = () => {
     const fetchData = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/home/gethome`,
+          `${BACKEND_URL}/api/home/gethome`,
         );
         if (data.home && data.home.length > 0) {
           const homeData = data.home[0];
@@ -252,7 +253,7 @@ const Hero = () => {
       if (runwayImage) formData.append("runwayImage", runwayImage);
 
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/home/homeRoute`,
+        `${BACKEND_URL}/api/home/homeRoute`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } },
       );
@@ -342,7 +343,7 @@ const Hero = () => {
       if (runwayImage) formData.append("runwayImage", runwayImage);
 
       const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/home/homeupdate/${homeId}`,
+        `${BACKEND_URL}/api/home/homeupdate/${homeId}`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } },
       );
@@ -560,7 +561,7 @@ const Hero = () => {
                       onClick={async () => {
                         try {
                           await axios.delete(
-                            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/home/deleteimage/${homeId}`,
+                            `${BACKEND_URL}/api/home/deleteimage/${homeId}`,
                             {
                               data: {
                                 section: "hero",
@@ -774,7 +775,7 @@ const Hero = () => {
                 onClick={async () => {
                   try {
                     await axios.delete(
-                      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/home/deleteimage/${homeId}`,
+                      `${BACKEND_URL}/api/home/deleteimage/${homeId}`,
                       {
                         data: {
                           section: "videos",
@@ -812,7 +813,7 @@ const Hero = () => {
                     onClick={async () => {
                       try {
                         await axios.delete(
-                          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/home/deleteimage/${homeId}`,
+                          `${BACKEND_URL}/api/home/deleteimage/${homeId}`,
                           { data: { section: "videos", field: "videoUrls", imageUrl: url } }
                         );
                         setOldVideo(prev => prev.filter(u => u !== url));

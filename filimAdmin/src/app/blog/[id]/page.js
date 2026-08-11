@@ -7,6 +7,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "quill/dist/quill.snow.css";
 import { validateBlogFile } from "@/utils/fileValidation";
+import { BACKEND_URL } from "@/utils/backend";
 
 
 // Dynamically import ReactQuill to avoid SSR issues
@@ -42,7 +43,7 @@ const Page = () => {
     const fetchBlog = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog/getblog`,
+          `${BACKEND_URL}/api/blog/getblog`,
         );
         console.log(data, "api response for blogs");
 
@@ -113,7 +114,7 @@ const Page = () => {
       }
 
       const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog/blogrouteupdate/${id}`,
+        `${BACKEND_URL}/api/blog/blogrouteupdate/${id}`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } },
       );

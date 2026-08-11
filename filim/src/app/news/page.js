@@ -5,6 +5,7 @@ import BlogsNews from "@/components/News/BlogsNews";
 import axios from "axios";
 import Head from "next/head";
 import Loading from "@/components/faq/Loading";
+import { API_BASE_URL } from "@/utils/backend";
 
 const page = () => {
   const [title, setTitle] = useState("");
@@ -23,7 +24,7 @@ const page = () => {
     const fetchData = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/news/getnews`,
+          `${API_BASE_URL}/news/getnews`,
         );
         const homeData = data.news[0];
         if (homeData) {
@@ -46,7 +47,7 @@ const page = () => {
     const fetchMetaData = async () => {
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/getmetadata`,
+          `${API_BASE_URL}/getmetadata`,
         );
         if (
           response.data &&

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { FaEdit } from 'react-icons/fa';
 import { MdAutoDelete } from 'react-icons/md';
+import { BACKEND_URL } from "@/utils/backend";
 
 const BlogsGetData = () => {
   const [bloges, setBlogs] = useState([]);
@@ -15,7 +16,7 @@ const BlogsGetData = () => {
     const fetchBlogs = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog/getblog`
+          `${BACKEND_URL}/api/blog/getblog`
         );
         if (data.blogs && data.blogs.length > 0) {
           setBlogs(data.blogs);
@@ -43,7 +44,7 @@ const BlogsGetData = () => {
     try {
       // Include the blog ID in the URL parameter
       await axios.delete(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog/getdelete/${blogToDelete}`
+        `${BACKEND_URL}/api/blog/getdelete/${blogToDelete}`
       );
       setBlogs((prevBlogs) =>
         prevBlogs.filter((blog) => blog._id !== blogToDelete)

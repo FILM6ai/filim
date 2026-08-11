@@ -1,6 +1,7 @@
 'use client';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
+import { API_BASE_URL } from "@/utils/backend";
 
 const Terms = () => {
     
@@ -10,7 +11,7 @@ const Terms = () => {
         const fetchTermData = async () => {
           try {
             const { data } = await axios.get(
-              `${process.env.NEXT_PUBLIC_BACKEND_URL}/term/getterm`
+              `${API_BASE_URL}/term/getterm`
             );
             console.log(data.termData[0], 'terms data');
 

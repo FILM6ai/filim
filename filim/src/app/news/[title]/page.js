@@ -16,6 +16,7 @@ import Head from "next/head";
 import Loading from "@/components/faq/Loading";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import slugify from "slugify";
+import { API_BASE_URL } from "@/utils/backend";
 
 const extractYouTubeId = (url) => {
   const match = url.match(
@@ -77,7 +78,7 @@ const BlogDetail = () => {
     const fetchData = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/news/getnews`,
+          `${API_BASE_URL}/news/getnews`,
         );
         const homeData = data.news[0];
         if (homeData) {
@@ -95,7 +96,7 @@ const BlogDetail = () => {
     const fetchBlogs = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/blog/getblog`,
+          `${API_BASE_URL}/blog/getblog`,
         );
         if (data.blogs?.length) {
           setArticle(data.blogs);
@@ -130,7 +131,7 @@ const BlogDetail = () => {
     const fetchMetaData = async () => {
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/getmetadata`,
+          `${API_BASE_URL}/getmetadata`,
         );
         if (data?.data?.length) {
           const meta = data.data[0];
