@@ -26,14 +26,14 @@ const Advancing = ({ title1, title2, description, image, color, alt, youtubeUrl 
         transition={{ duration: 1, ease: "easeOut" }}
         viewport={{ once: true }}
       >
-        <h1
+        <h2
           className=" px-4 sm:px-6 lg:px-12  capitalize text-heading 
        lg:text-6xl md:text-6xl text-3xl  text-center "
         >
           {title1}
           <br />
           {title2}
-        </h1>
+        </h2>
         <p className=" px-4 sm:px-6 lg:px-20 text-xl max-w-3xl m-auto pt-6 text-center ">
           {description}
         </p>

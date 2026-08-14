@@ -107,9 +107,9 @@ const page = () => {
         </div> */}
       <section className="bg-black text-white py-12 px-4 sm:px-6 lg:px-20 mt-10">
         {/* Title OUTSIDE the grid */}
-        <h1 className="text-3xl font-medium text-center mb-12">
+        <h2 className="text-3xl font-medium text-center mb-12">
           {card1?.mainTitle}
-        </h1>
+        </h2>
 
         {/* Grid of all cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -26,7 +26,11 @@ const Hero = ({
   arrowRight,
   buttonText,
   buttonLink,
+  // The banner headline is the page's <h1> everywhere except article pages,
+  // where the article's own title is the subject and this is just a banner.
+  headingLevel = 1,
 }) => {
+  const Heading = headingLevel === 1 ? 'h1' : 'h2';
   const swiperRef = useRef(null);
   const videoRefs = useRef([]);
   const [showInput, setShowInput] = useState(false);
@@ -172,9 +176,9 @@ const Hero = ({
               transition={{ duration: 1, ease: "easeOut" }}
             >
               <div className="pointer-events-auto">
-                <h1 className=" max-sm:text-center max-sm:max-w-[342px] max-w-[820px] lg:leading-[80px] md:leading-[70px] max-sm:leading-[38px] text-3xl sm:text-5xl md:text-6xl lg:text-7xl mb-3 sm:mb-10">
+                <Heading className=" max-sm:text-center max-sm:max-w-[342px] max-w-[820px] lg:leading-[80px] md:leading-[70px] max-sm:leading-[38px] text-3xl sm:text-5xl md:text-6xl lg:text-7xl mb-3 sm:mb-10">
                   {title1}
-                </h1>
+                </Heading>
                 <p className="text-lg max-sm:text-center sm:text-2xl text-gray-300 mb-8">
                   {description}
                 </p>

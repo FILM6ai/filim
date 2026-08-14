@@ -7,6 +7,7 @@
 import slugify from 'slugify';
 import { API_BASE_URL } from '@/utils/backend';
 import { buildMetadata, htmlToDescription, pageMetadata } from '@/utils/siteMeta';
+import { JsonLd, articleSchema, publishedDate } from '@/utils/structuredData';
 
 // Must match the links in BlogsNews / Blogs / the article page itself.
 const toSlug = (title) => slugify(title || '', { lower: true, strict: true });
@@ -45,10 +46,41 @@ export async function generateMetadata({ params }) {
     path: `/news/${slug}`,
     image: typeof article.image === 'string' ? article.image : undefined,
     type: 'article',
-    publishedTime: article.createdAt,
+    publishedTime: publishedDate(article.date, article.createdAt),
   });
 }
 
-export default function Layout({ children }) {
-  return children;
+export default async function Layout({ children, params }) {
+  const { title } = await params;
+  const slug = decodeURIComponent(title || '');
+
+  // Same fetch as generateMetadata above, so Next serves it from its request
+  // cache rather than calling the backend a second time.
+  const blogs = await fetchBlogs();
+  const article = blogs.find((blog) => toSlug(blog?.title) === slug);
+
+  const name = String(article?.title || '').trim();
+
+  return (
+    <>
+      {article && (
+        <JsonLd
+          schemas={[
+            articleSchema({
+              title: name,
+              description: htmlToDescription(article.content, {
+                stripPrefix: name,
+              }),
+              slug,
+              image: typeof article.image === 'string' ? article.image : null,
+              datePublished: publishedDate(article.date, article.createdAt),
+              dateModified: article.updatedAt,
+              author: article.author,
+            }),
+          ]}
+        />
+      )}
+      {children}
+    </>
+  );
 }

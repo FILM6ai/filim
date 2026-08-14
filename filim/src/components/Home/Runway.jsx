@@ -74,7 +74,7 @@ const Runway = ({ margin, title, image, button, alt, link, youtubeUrl, popup }) 
           viewport={{ once: true, amount: 0.4 }}
           className=""
         >
-          <h1 className="text-2xl md:text-5xl max-w-[700px] ">{title}</h1>
+          <h2 className="text-2xl md:text-5xl max-w-[700px] ">{title}</h2>
         </motion.div>
 
         {hasPopup ? (

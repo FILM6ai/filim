@@ -61,9 +61,9 @@ const StudioLareSec = () => {
   return (
     <main className='min-h-screen bg-gray-100 mt-16'>
       <div className='Mycontainer pt-10 pb-14'>
-        <h1 className=' pb-10 text-center text-2xl md:text-4xl font-medium text-heading font-sans'>
+        <h2 className=' pb-10 text-center text-2xl md:text-4xl font-medium text-heading font-sans'>
           Film6 build a cinematic metaverse composed of 6 universes:
-        </h1>
+        </h2>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6'>
           {cards.map((card, index) => (
             <motion.div

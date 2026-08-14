@@ -38,9 +38,9 @@ const Sheilds = ({mainTitle, cards}) => {
 
   return (
     <div className='w-full min-h-screen bg-black flex flex-col  items-start justify-center gap-12 py-16 px-4 lg:px-20'>
-      <h1 className='text-white flex m-auto  md:text-[60px] text-2xl'>
+      <h2 className='text-white flex m-auto  md:text-[60px] text-2xl'>
         {mainTitle}
-      </h1>
+      </h2>
       {displayCards.map((card, index) => (
         <motion.div
           key={index}

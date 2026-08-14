@@ -24,6 +24,14 @@ const extractYouTubeId = (url) => {
   return match ? match[1] : "";
 };
 
+// The page title is already the article's <h1>. Editor bodies often repeat it
+// as an <h1> of their own, which leaves two competing top-level headings on the
+// page, so anything the editor marked as h1 is rendered one level down.
+const demoteInBodyHeadings = (html) =>
+  String(html || "")
+    .replace(/<h1(\s|>)/gi, "<h2$1")
+    .replace(/<\/h1>/gi, "</h2>");
+
 const splitContentInHalf = (html) => {
   if (!html) return { first: "", second: "" };
 
@@ -135,6 +143,7 @@ const icons = [
         image={[{ type: "video", value: image }]}
         title1={title2}
         alt={alt}
+        headingLevel={2}
       />
 
       <div className=" relative grid lg:grid-cols-[65%_33%] max-md:grid-cols-1 md:gap-8 px-4 sm:px-6 lg:px-20 mt-8">
@@ -191,7 +200,7 @@ const icons = [
             {singleBlog.youtubeUrl && singleBlog.youtubeUrl.trim() !== "" ? (
               (() => {
                 const { first, second } = splitContentInHalf(
-                  singleBlog.content || "",
+                  demoteInBodyHeadings(singleBlog.content),
                 );
                 return (
                   <>
@@ -227,7 +236,9 @@ const icons = [
             ) : (
               <div
                 className="blog-content ql-editor"
-                dangerouslySetInnerHTML={{ __html: singleBlog.content }}
+                dangerouslySetInnerHTML={{
+                  __html: demoteInBodyHeadings(singleBlog.content),
+                }}
               />
             )}
           </div>
@@ -236,9 +247,9 @@ const icons = [
         {/* Sidebar */}
         <div className="mb-12">
           <div className=" sticky top-[100px] border border-[#E4E7E9] px-6 max-sm:px-3 max-sm:mt-6 rounded">
-            <h1 className="pt-6 pb-6 text-xl font-sans text-[#191C1F]">
+            <h2 className="pt-6 pb-6 text-xl font-sans text-[#191C1F]">
               Latest Articles
-            </h1>
+            </h2>
             {[...article]
               .filter((blog) => blog.title !== singleBlog.title) // exclude the current blog
               .sort((a, b) => new Date(b.date) - new Date(a.date))

@@ -4,6 +4,11 @@ import Footer from '@/components/Home/Footer';
 import Navbar from '@/components/Home/Navbar';
 import Cookies from '@/components/cookies/Cookies';
 import { pageMetadata, SITE_URL } from '@/utils/siteMeta';
+import {
+  JsonLd,
+  organizationSchema,
+  websiteSchema,
+} from '@/utils/structuredData';
 
 // Site-wide defaults and the home page's own metadata. Every other route
 // overrides this from its own layout.
@@ -45,6 +50,8 @@ export default function RootLayout({ children }) {
           }}
         />
         <link rel='shortcut icon' href='/favicon.ico' />
+        {/* Who FILM6 is, on every page. */}
+        <JsonLd schemas={[organizationSchema(), websiteSchema()]} />
       </head>
       <body
         suppressHydrationWarning

@@ -117,7 +117,7 @@ const TopListing = ({
           : "px-4 sm:px-6 md:pr-24 "
           }`}
       >
-        <h1 className="capitalize text-5xl text-heading ">{title}</h1>
+        <h2 className="capitalize text-5xl text-heading ">{title}</h2>
         {genere && (
           <h2 className="pb-8 pt-9 text-[paragraph] font-bold">{genere}</h2>
         )}

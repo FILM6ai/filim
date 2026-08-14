@@ -11,9 +11,9 @@ export default function Faqs({ faqs }) {
   return (
     <div className='flex relative z-40 my-32 items-center justify-center'>
       <div className='mx-auto w-full max-w-2xl px-2'>
-        <h1 className='mb-8 font-sans text-center text-3xl font-semibold'>
+        <h2 className='mb-8 font-sans text-center text-3xl font-semibold'>
           Frequently Asked Questions
-        </h1>
+        </h2>
         {faqs.map((faqItem, index) => (
           <div key={index} className='mb-4 rounded-lg border bg-white'>
             <button

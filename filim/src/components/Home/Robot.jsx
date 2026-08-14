@@ -56,7 +56,7 @@ const Robot = ({ title, description, button, image, alt, link, youtubeUrl, popup
         viewport={{ once: true, amount: 0.4 }}
         className="px-4 sm:px-6 lg:px-20 py-6"
       >
-        <h1 className="lg:text-6xl md:text-5xl text-3xl max-w-2xl">{title}</h1>
+        <h2 className="lg:text-6xl md:text-5xl text-3xl max-w-2xl">{title}</h2>
         <p className="pt-6 max-w-xl pb-4">{description}</p>
         <div className="mt-4">
           {hasPopup ? (

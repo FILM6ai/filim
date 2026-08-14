@@ -45,9 +45,9 @@ const Blogs = () => {
   return (
     <div className='relative'>
       <div className='bg-[#F8F8F8] text-center md:h-[300px] sm:h-[230px] h-[170px] sm:pt-20 pt-8'>
-        <h1 className='text-2xl md:text-5xl max-w-xl m-auto text-[#2B3674] mb-2 px-4'>
+        <h2 className='text-2xl md:text-5xl max-w-xl m-auto text-[#2B3674] mb-2 px-4'>
           Latest News & Articles From The Post
-        </h1>
+        </h2>
       </div>
       <div className='sm:-mt-32 -mt-28'>
         <div className='max-w-7xl m-auto px-4 sm:px-6 lg:px-20 pt-16'>

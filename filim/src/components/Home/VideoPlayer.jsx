@@ -72,7 +72,7 @@ const VideoPlayer = ({ video, title, description, youtubeUrl }) => {
   return (
     <div className='bg-black py-8 md:py-12 max-md:mt-12 px-4  md:px-20  '>
       <div className='  flex flex-col items-center justify-center text-center  '>
-        <h1 className='text-xl sm:text-3xl  pb-3 text-white'>{title}</h1>
+        <h2 className='text-xl sm:text-3xl  pb-3 text-white'>{title}</h2>
         <p className='text-xs sm:text-lg text-white pb-6'>{description}</p>
       </div>
       <div className='mt-0 relative group'>
