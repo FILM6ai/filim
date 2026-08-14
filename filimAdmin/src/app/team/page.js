@@ -211,7 +211,25 @@ const TeamPage = () => {
                       {user.name}
                       {isSelf && <span className='text-gray-400'> (you)</span>}
                     </td>
-                    <td className='py-2 px-4 border'>{user.email}</td>
+                    {/* Editable in place: the first account was created with a
+                        placeholder address, and being stuck with it would mean
+                        deleting and recreating the account to fix a typo. */}
+                    <td className='py-2 px-4 border'>
+                      <input
+                        defaultValue={user.email}
+                        type='email'
+                        onBlur={(e) => {
+                          const next = e.target.value.trim().toLowerCase();
+                          if (next && next !== user.email) {
+                            update(user.id, { email: next });
+                          } else {
+                            e.target.value = user.email;
+                          }
+                        }}
+                        onKeyDown={(e) => e.key === 'Enter' && e.target.blur()}
+                        className='border border-transparent hover:border-gray-300 focus:border-gray-400 rounded p-1 w-full outline-none'
+                      />
+                    </td>
                     <td className='py-2 px-4 border'>
                       <select
                         value={user.role}

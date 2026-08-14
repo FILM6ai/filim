@@ -273,9 +273,29 @@ export const updateUser = async (req, res) => {
     }
 
     const isSelf = String(user._id) === String(req.authUser._id);
-    const { name, role, disabled } = req.body || {};
+    const { name, email, role, disabled } = req.body || {};
 
     if (typeof name === 'string' && name.trim()) user.name = name.trim();
+
+    if (typeof email === 'string' && email.trim()) {
+      const next = email.toLowerCase().trim();
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(next)) {
+        return res
+          .status(400)
+          .json({ success: false, message: 'That does not look like an email address.' });
+      }
+      if (next !== user.email) {
+        const taken = await AdminUser.findOne({ email: next, _id: { $ne: user._id } });
+        if (taken) {
+          return res
+            .status(409)
+            .json({ success: false, message: 'That email already has an account.' });
+        }
+        // Sessions are keyed on the account, not the address, so changing it
+        // does not sign anyone out mid-edit.
+        user.email = next;
+      }
+    }
 
     if (role === 'owner' || role === 'editor') {
       if (isSelf && role !== 'owner') {
