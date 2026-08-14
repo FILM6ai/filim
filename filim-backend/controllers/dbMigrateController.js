@@ -43,7 +43,10 @@ export const migrateDatabase = async (req, res) => {
 
   try {
     const targetUri = process.env.MONGODB_TARGET_URI;
-    if (!targetUri) {
+    // A dry run is still worth having before the destination exists: it is how
+    // you find out what the move actually involves - including collections
+    // nobody remembered - while there is still time to plan around it.
+    if (!targetUri && apply) {
       return res
         .status(500)
         .json({ success: false, message: 'MONGODB_TARGET_URI is not set' });
@@ -61,9 +64,12 @@ export const migrateDatabase = async (req, res) => {
       .filter((name) => !name.startsWith('system.'))
       .sort();
 
-    client = new MongoClient(targetUri, { serverSelectionTimeoutMS: 15000 });
-    await client.connect();
-    const target = client.db();
+    let target = null;
+    if (targetUri) {
+      client = new MongoClient(targetUri, { serverSelectionTimeoutMS: 15000 });
+      await client.connect();
+      target = client.db();
+    }
 
     const report = [];
     for (const name of collections) {
@@ -73,7 +79,7 @@ export const migrateDatabase = async (req, res) => {
         report.push({
           collection: name,
           source: await source.collection(name).countDocuments(),
-          targetBefore: await target.collection(name).countDocuments(),
+          targetBefore: target ? await target.collection(name).countDocuments() : null,
           targetAfter: null,
         });
       }
@@ -83,11 +89,13 @@ export const migrateDatabase = async (req, res) => {
       success: true,
       mode: apply ? 'applied' : 'dry run - nothing written',
       sourceDatabase: source.databaseName,
-      targetDatabase: target.databaseName,
+      targetDatabase: target ? target.databaseName : '(no target configured yet)',
       totals: {
         collections: report.length,
         sourceDocuments: report.reduce((sum, r) => sum + r.source, 0),
-        targetDocuments: report.reduce((sum, r) => sum + (r.targetAfter ?? r.targetBefore), 0),
+        targetDocuments: target
+          ? report.reduce((sum, r) => sum + (r.targetAfter ?? r.targetBefore ?? 0), 0)
+          : null,
       },
       report,
     });
