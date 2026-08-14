@@ -21,8 +21,6 @@ import emailRoute from "./routes/emailRoute.js";
 import registrationRoute from './routes/registrationRoute.js';
 import cloudinaryRoute from './routes/cloudinaryRoute.js';
 import authRoute from './routes/authRoute.js';
-// TEMPORARY - see routes/dbMigrateRoute.js. Remove after the database move.
-import dbMigrateRoute from './routes/dbMigrateRoute.js';
 import { protect } from './middlewere/auth.js';
 import { isAllowedOrigin } from './config/security.js';
 
@@ -90,9 +88,6 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/auth", authRoute);
-// TEMPORARY - database move. Sits behind the gate above like everything else,
-// and additionally requires a sign-in and a token of its own.
-app.use("/api/_migrate", dbMigrateRoute);
 app.use("/api/home", homeRouter);
 app.use("/api/service", serviceRoute);
 app.use("/api/festival", festivalRoute);
