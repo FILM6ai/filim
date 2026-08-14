@@ -7,9 +7,28 @@ import {
   FaAngleDown,
 } from 'react-icons/fa';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { MdOutlineLogin } from 'react-icons/md';
 import { motion } from 'framer-motion';
+import { logout } from '@/utils/authClient';
+
+// Sections only an owner sees. An editor who types the URL anyway still gets
+// nothing: the backend checks the role on every request, and hiding a link has
+// never been a way to keep anyone out.
+const ownerMenuItems = [
+  {
+    label: 'People',
+    icon: <FaShoppingCart size={20} className='mr-3 text-white' />,
+    link: '/team',
+    subMenu: [],
+  },
+  {
+    label: 'Activity log',
+    icon: <FaShoppingCart size={20} className='mr-3 text-white' />,
+    link: '/activity',
+    subMenu: [],
+  },
+];
+
 const menuItems = [
   {
     label: 'Pages',
@@ -88,16 +107,21 @@ const menuItems = [
     link: '/registrations',
     subMenu: [],
   },
+  {
+    label: 'Your account',
+    icon: <FaShoppingCart size={20} className='mr-3 text-white' />,
+    link: '/account',
+    subMenu: [],
+  },
 ];
 
-const Sidebar = ({ isOpen, toggleSidebar }) => {
-  const router = useRouter();
-const [showPopup, setShowPopup] = useState(false);
-  const handleLogout = () => {
-    localStorage.removeItem('adminAuthenticated');
-    router.push('/login');
-  };
+const Sidebar = ({ isOpen, toggleSidebar, user }) => {
+  const [showPopup, setShowPopup] = useState(false);
+  const handleLogout = () => logout();
   const [openMenus, setOpenMenus] = useState({});
+
+  const items =
+    user?.role === 'owner' ? [...menuItems, ...ownerMenuItems] : menuItems;
 
   const toggleSubMenu = (label) => {
     setOpenMenus((prev) => ({ ...prev, [label]: !prev[label] }));
@@ -123,9 +147,20 @@ const [showPopup, setShowPopup] = useState(false);
         </button>
       </div>
 
+      {/* Who is signed in - with individual accounts this is no longer always
+          the same anonymous "admin". */}
+      {isOpen && user && (
+        <div className='px-4 pb-3 border-b border-gray-800'>
+          <p className='text-white text-sm truncate'>{user.name}</p>
+          <p className='text-gray-400 text-xs truncate'>
+            {user.role === 'owner' ? 'Owner' : 'Editor'}
+          </p>
+        </div>
+      )}
+
       {/* Navigation Links */}
       <nav className='mt-4 flex-1 overflow-y-auto'>
-        {menuItems.map((menu) => (
+        {items.map((menu) => (
           <div key={menu.label}>
             {menu.subMenu && menu.subMenu.length > 0 ? (
               // If submenu exists, clicking toggles the submenu

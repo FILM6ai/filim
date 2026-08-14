@@ -1,23 +1,32 @@
 'use client';
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { Suspense, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { login } from '@/utils/authClient';
 
-const LoginAdmin = () => {
+const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
   const router = useRouter();
+  const expired = useSearchParams().get('expired');
 
-  const handleLogin = (e) => {
-    
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Replace these with your chosen static admin credentials
-    if (email === 'admin@film6.ai' && password === '793524') {
-      // Set a flag to indicate admin is authenticated
-      localStorage.setItem('adminAuthenticated', 'true');
-      router.push('/'); // Navigate to home page
-    } else {
-      setError('Invalid email or password');
+    setError('');
+    setBusy(true);
+    try {
+      // Checked by the backend against a hashed password. Nothing about the
+      // credentials lives in this file, unlike the shared password this
+      // replaced.
+      const user = await login(email, password);
+      router.replace(user.mustChangePassword ? '/account' : '/');
+    } catch (err) {
+      setError(
+        err?.response?.data?.message ||
+          'Could not sign in. Please check your connection and try again.',
+      );
+      setBusy(false);
     }
   };
 
@@ -27,6 +36,11 @@ const LoginAdmin = () => {
         <p className='text-2xl font-semibold m-auto'>
           <span className='text-blue-500'>Admin</span> Login
         </p>
+        {expired && (
+          <p className='w-full text-amber-600 bg-amber-50 border border-amber-200 rounded p-2'>
+            Your session has ended. Please sign in again.
+          </p>
+        )}
         <div className='w-full'>
           <p>Email</p>
           <input
@@ -35,6 +49,7 @@ const LoginAdmin = () => {
             className='border border-[#DADADA] rounded w-full p-2 mt-1 outline-none'
             type='email'
             placeholder='Enter Email'
+            autoComplete='username'
             required
           />
         </div>
@@ -46,19 +61,28 @@ const LoginAdmin = () => {
             className='border border-[#DADADA] rounded w-full p-2 mt-1 outline-none'
             type='password'
             placeholder='Enter Password'
+            autoComplete='current-password'
             required
           />
         </div>
         {error && <p className='text-red-500'>{error}</p>}
         <button
           type='submit'
-          className='bg-blue-500 cursor-pointer hover:bg-blue-700 text-white w-full py-2 rounded-md text-base'
+          disabled={busy}
+          className='bg-blue-500 cursor-pointer hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed text-white w-full py-2 rounded-md text-base'
         >
-          Login
+          {busy ? 'Signing in...' : 'Login'}
         </button>
       </div>
     </form>
   );
 };
+
+// useSearchParams needs a Suspense boundary to prerender.
+const LoginAdmin = () => (
+  <Suspense fallback={<div className='min-h-screen' />}>
+    <LoginForm />
+  </Suspense>
+);
 
 export default LoginAdmin;
