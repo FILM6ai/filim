@@ -1,6 +1,5 @@
 import express from 'express';
 import {
-  bootstrap,
   login,
   me,
   changePassword,
@@ -15,17 +14,9 @@ import { requireAuth } from '../middlewere/auth.js';
 
 const authRoute = express.Router();
 
-// TEMPORARY - first-run setup only. Creates the first owner account and then
-// refuses forever, because it checks that no account exists yet. Removed from
-// this file once the real account is in place.
-const SETUP_TOKEN = 'f6_setup_2Rk9Wq4Xm7Lp3Vt';
-authRoute.post('/bootstrap', (req, res, next) => {
-  if (req.query.token !== SETUP_TOKEN) {
-    return res.status(404).json({ success: false, message: 'Not found.' });
-  }
-  return bootstrap(req, res, next);
-});
-
+// The first-run setup route lived here. The owner account exists, so it is
+// gone: a way to create an account without being signed in should not outlast
+// the moment it was needed, even one that refuses once an account exists.
 authRoute.post('/login', login);
 
 authRoute.get('/me', requireAuth(), me);

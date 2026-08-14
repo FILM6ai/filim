@@ -34,50 +34,6 @@ const passwordProblem = (password) => {
 };
 
 // ---------------------------------------------------------------------------
-// First-run setup
-// ---------------------------------------------------------------------------
-
-/**
- * Creates the very first owner account. Refuses once any account exists, so it
- * cannot be used to add a second back door later. Removed from the routes once
- * the real account is in place.
- */
-export const bootstrap = async (req, res) => {
-  try {
-    const existing = await AdminUser.countDocuments();
-    if (existing > 0) {
-      return res
-        .status(409)
-        .json({ success: false, message: 'Already set up.' });
-    }
-
-    const { name, email, password } = req.body || {};
-    if (!name || !email) {
-      return res
-        .status(400)
-        .json({ success: false, message: 'name and email are required.' });
-    }
-
-    const temporary = password || randomPassword();
-    const user = await AdminUser.create({
-      name,
-      email: String(email).toLowerCase().trim(),
-      passwordHash: hashPassword(temporary),
-      role: 'owner',
-      mustChangePassword: true,
-    });
-
-    return res.status(201).json({
-      success: true,
-      user: publicUser(user),
-      temporaryPassword: temporary,
-    });
-  } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
-  }
-};
-
-// ---------------------------------------------------------------------------
 // Signing in
 // ---------------------------------------------------------------------------
 

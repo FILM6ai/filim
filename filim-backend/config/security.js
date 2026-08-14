@@ -1,22 +1,23 @@
 // Whether protected routes actually reject unauthenticated callers.
 //
-// Rollout is deliberately in two steps. With this false, the new login works
-// and the admin panel sends its token, but nothing is rejected - every request
-// that *would* be rejected is written to the activity log instead. That shows,
-// from real traffic, exactly what turning the lock on will break, and it means
-// there is never a moment where the panel is deployed against a backend it
-// cannot talk to.
+// Rolled out in two steps. The first shipped with this false: the login worked
+// and the admin panel sent its token, but nothing was rejected, so there was
+// never a moment where the panel was deployed against a backend it could not
+// talk to. This is step two.
 //
-// Step two is flipping this to true.
+// Everything that calls the API was accounted for before flipping it: the
+// public site makes only public reads plus its three visitor-facing form
+// posts; the admin panel was driven through all seventeen of its screens
+// against an enforcing backend, producing forty-five calls and no rejections.
+// The two stale deployments that also reached the database are no longer a
+// factor - one now points at an abandoned cluster, the other at its own.
 //
-// AUTH_ENFORCE in the backend's Vercel environment overrides it either way, so
-// enforcement can be turned off from the dashboard in an emergency without
-// waiting for a deploy.
+// AUTH_ENFORCE in the backend's Vercel environment overrides this either way,
+// so enforcement can be switched off from the dashboard in an emergency
+// without waiting for a deploy.
 const override = (process.env.AUTH_ENFORCE || '').trim().toLowerCase();
 
-// STEP 1 (current): false - observe only.
-// STEP 2: change this default to true.
-const ENFORCE_BY_DEFAULT = false;
+const ENFORCE_BY_DEFAULT = true;
 
 export const AUTH_ENFORCED =
   override === 'true' ? true

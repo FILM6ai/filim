@@ -96,7 +96,12 @@ const b64url = (buf) => Buffer.from(buf).toString('base64url');
 const sign = (data) =>
   crypto.createHmac('sha256', secretKey()).update(data).digest();
 
-export const TOKEN_TTL_SECONDS = 12 * 60 * 60;
+// A week rather than a day. Sessions can be revoked instantly regardless -
+// changing a password or disabling an account bumps the account's token
+// version and every existing token stops working at once - so the expiry is
+// not what protects the site. Making it short only risks signing someone out
+// in the middle of writing an article, which is a real cost for no real gain.
+export const TOKEN_TTL_SECONDS = 7 * 24 * 60 * 60;
 
 /**
  * `<payload>.<signature>`, both base64url.
