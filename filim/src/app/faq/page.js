@@ -3,7 +3,6 @@ import Faqs from '@/components/faq/Faqs';
 import Loading from '@/components/faq/Loading';
 import Hero from '@/components/Home/Hero';
 import axios from 'axios';
-import Head from 'next/head';
 import React, { useEffect, useState } from 'react';
 import { API_BASE_URL } from "@/utils/backend";
 
@@ -11,11 +10,6 @@ const page = () => {
   const [heroData, setHeroData] = useState({});
   const [advanceData, setAdvanceData] = useState([]);
   const [loading, setLoading] = useState(true);
-    const [metaData, setMetaData] = useState({
-      page: 'faq',
-      title: '',
-      description: '',
-    });
   useEffect(() => {
     const fetchHeroData = async () => {
       try {
@@ -40,40 +34,10 @@ const page = () => {
     fetchHeroData();
   }, []);
 
-
-  useEffect(() => {
-    const fetchMetaData = async () => {
-      try {
-        const response = await axios.get(
-          `${API_BASE_URL}/getmetadata`
-        );
-        if (
-          response.data &&
-          response.data.data &&
-          response.data.data.length > 0
-        ) {
-          const meta = response.data.data[0];
-          setMetaData({
-            page: 'faq',
-            title: meta.faq.title,
-            description: meta.faq.description,
-          });
-        }
-      } catch (error) {
-      }
-    };
-
-    fetchMetaData();
-  }, []);
-
   if (loading) return <Loading />; 
 
   return (
     <div>
-      <Head>
-        <title>{metaData.title || 'Blog Details'}</title>
-        <meta name='description' content={metaData.description} />
-      </Head>
       <Hero
         image={(() => {
           const arr = [];

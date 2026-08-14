@@ -8,12 +8,10 @@ import Blogs from '@/components/Home/Blogs';
 import Hero from '@/components/Home/Hero';
 import Loading from '../components/faq/Loading'
 import axios from 'axios';
-import Head from 'next/head';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import VideoPlayer from '@/components/Home/VideoPlayer';
 import { API_BASE_URL } from "@/utils/backend";
 // why its not working
-
 
 export default function Home() {
   const [heroData, setHeroData] = useState({});
@@ -22,12 +20,7 @@ export default function Home() {
   const [robot, setRobot] = useState({});
   const [competate, setCompetate] = useState({});
   const [runway, setRunway] = useState({});
-  const [metaData, setMetaData] = useState({
-    page: 'home',
-    title: '',
-    description: '',
-  });
-  const [video, setVideo] = useState({})
+const [video, setVideo] = useState({})
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -38,7 +31,6 @@ export default function Home() {
         );
         console.log(data.home[0].hero, 'hero');
         console.log(data.home[0].hero.bgImage, 'bgImage array check');
-
 
         setHeroData(data.home[0].hero);
         setAdvanceData(data.home[0].advance);
@@ -58,45 +50,10 @@ export default function Home() {
     fetchHeroData();
   }, []);
 
-  useEffect(() => {
-    const fetchMetaData = async () => {
-      try {
-        const response = await axios.get(
-          `${API_BASE_URL}/getmetadata`
-        );
-        if (
-          response.data &&
-          response.data.data &&
-          response.data.data.length > 0
-        ) {
-          const meta = response.data.data[0];
-          console.log(response.data.data[0], 'meta data response home');
-
-          setMetaData({
-            page: 'home',
-            title: meta.home.title,
-            description: meta.home.description,
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching meta data:', error);
-      }
-    };
-
-    fetchMetaData();
-  }, []);
-
-  console.log(metaData, 'metaData log ');
-
-
   if (loading) return <Loading />;
 
   return (
     <div>
-      <Head>
-        <title>{metaData.title || 'Film6.ai'}</title>
-        <meta name='description' content={metaData.description} />
-      </Head>
 
       <Hero
         height='height'

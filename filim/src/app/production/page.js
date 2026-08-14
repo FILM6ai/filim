@@ -6,7 +6,6 @@ import Advancing from "@/components/Home/Advancing";
 import Robot from "@/components/Home/Robot";
 import Runway from "@/components/Home/Runway";
 import axios from "axios";
-import Head from "next/head";
 import Loading from "@/components/faq/Loading";
 import { API_BASE_URL } from "@/utils/backend";
 
@@ -19,36 +18,6 @@ const page = () => {
   const [runway, setRunway] = useState({});
   const [loading, setLoading] = useState(true);
   // State for the home meta data.
-  const [metaData, setMetaData] = useState({
-    page: "services",
-    title: "",
-    description: "",
-  });
-
-  const fetchMetaData = async () => {
-    try {
-      const response = await axios.get(
-        `${API_BASE_URL}/getmetadata`,
-      );
-      if (
-        response.data &&
-        response.data.data &&
-        response.data.data.length > 0
-      ) {
-        const meta = response.data.data[0];
-        setMetaData({
-          page: "services",
-          title: meta.services.title,
-          description: meta.services.description,
-        });
-      }
-    } catch (error) {}
-  };
-
-  useEffect(() => {
-    fetchMetaData();
-  }, [metaData]);
-
   useEffect(() => {
     const fetchHeroData = async () => {
       try {
@@ -74,10 +43,6 @@ const page = () => {
 
   return (
     <div>
-      <Head>
-        <title>{metaData.title || "Blog Details"}</title>
-        <meta name="description" content={metaData.description} />
-      </Head>
       <Hero
         image={[{ type: "video", value: heroData?.bgImage }]}
         title1={heroData?.title}

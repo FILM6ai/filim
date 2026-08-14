@@ -12,7 +12,6 @@ import insta from "../../../assets/images/newInsta.webp";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Head from "next/head";
 import Loading from "@/components/faq/Loading";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import slugify from "slugify";
@@ -52,13 +51,7 @@ const BlogDetail = () => {
   const [article, setArticle] = useState([]);
   const [singleBlog, setSingleBlog] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [metaData, setMetaData] = useState({
-    page: "news",
-    title: "",
-    description: "",
-  });
-
-  const icons = [
+const icons = [
     { src: insta, link: "https://www.instagram.com" },
     { src: tiktok, link: "https://www.tiktok.com" },
     { src: youtube, link: "https://www.youtube.com" },
@@ -127,26 +120,6 @@ const BlogDetail = () => {
     window.scrollTo(0, 0);
   }, [title]);
 
-  useEffect(() => {
-    const fetchMetaData = async () => {
-      try {
-        const { data } = await axios.get(
-          `${API_BASE_URL}/getmetadata`,
-        );
-        if (data?.data?.length) {
-          const meta = data.data[0];
-          setMetaData({
-            page: "news",
-            title: meta.news?.title || "",
-            description: meta.news?.description || "",
-          });
-        }
-      } catch (error) { }
-    };
-
-    fetchMetaData();
-  }, []);
-
   if (loading) return <Loading />;
 
   if (!singleBlog) {
@@ -157,10 +130,6 @@ const BlogDetail = () => {
 
   return (
     <div>
-      <Head>
-        <title>{metaData.title || "Blog Details"}</title>
-        <meta name="description" content={metaData.description} />
-      </Head>
 
       <Hero
         image={[{ type: "video", value: image }]}

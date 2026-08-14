@@ -7,14 +7,12 @@ import TopListing from "@/components/Home/TopListing";
 import Robot from "@/components/Home/Robot";
 import Runway from "@/components/Home/Runway";
 import axios from "axios";
-import Head from "next/head";
 import Loading from "@/components/faq/Loading";
 import Sheilds from "@/components/Home/Sheilds";
 import Glossary from '@/components/Home/Glossary';
 import GalleryPhotos from '@/components/Home/GalleryPhotos';
 import JurorPhotos from '@/components/Home/JurorPhotos';
 import { API_BASE_URL } from "@/utils/backend";
-
 
 const page = () => {
   const [heroData, setHeroData] = useState({});
@@ -30,11 +28,6 @@ const page = () => {
   const [jurorsData, setJurorsData] = useState({});
 
   const [loading, setLoading] = useState(true);
-  const [metaData, setMetaData] = useState({
-    page: "festival",
-    title: "",
-    description: "",
-  });
   useEffect(() => {
     const fetchHeroData = async () => {
       try {
@@ -62,39 +55,10 @@ const page = () => {
     fetchHeroData();
   }, []);
 
-  // METADATA
-
-  useEffect(() => {
-    const fetchMetaData = async () => {
-      try {
-        const response = await axios.get(
-          `${API_BASE_URL}/getmetadata`,
-        );
-        if (
-          response.data &&
-          response.data.data &&
-          response.data.data.length > 0
-        ) {
-          const meta = response.data.data[0];
-          setMetaData({
-            page: "festival",
-            title: meta.festival.title,
-            description: meta.festival.description,
-          });
-        }
-      } catch (error) { }
-    };
-    fetchMetaData();
-  }, []);
-
   if (loading) return <Loading />;
 
   return (
     <div>
-      <Head>
-        <title>{metaData.title || "Blog Details"}</title>
-        <meta name="description" content={metaData.description} />
-      </Head>
       <Hero
         image={[{ type: "video", value: heroData?.bgImage }]}
         title1={heroData?.title}
@@ -172,7 +136,6 @@ const page = () => {
         mainTitle={galleryData?.mainTitle}
         images={galleryData?.images}
       />
-
 
       <Runway
         title={runway?.title}

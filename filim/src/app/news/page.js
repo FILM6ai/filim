@@ -3,7 +3,6 @@ import Hero from "@/components/Home/Hero";
 import React, { useEffect, useState } from "react";
 import BlogsNews from "@/components/News/BlogsNews";
 import axios from "axios";
-import Head from "next/head";
 import Loading from "@/components/faq/Loading";
 import { API_BASE_URL } from "@/utils/backend";
 
@@ -12,11 +11,6 @@ const page = () => {
   const [image, setImage] = useState(null);
   const [alt, setAlt] = useState("");
   const [description, setDescription] = useState("");
-  const [metaData, setMetaData] = useState({
-    page: "news",
-    title: "",
-    description: "",
-  });
   const [loading, setLoading] = useState(true);
 
   // Fetch existing news data
@@ -43,38 +37,10 @@ const page = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const fetchMetaData = async () => {
-      try {
-        const response = await axios.get(
-          `${API_BASE_URL}/getmetadata`,
-        );
-        if (
-          response.data &&
-          response.data.data &&
-          response.data.data.length > 0
-        ) {
-          const meta = response.data.data[0];
-          setMetaData({
-            page: "news",
-            title: meta.news.title,
-            description: meta.news.description,
-          });
-        }
-      } catch (error) {}
-    };
-
-    fetchMetaData();
-  }, []);
-
   if (loading) return <Loading />;
 
   return (
     <div>
-      <Head>
-        <title>{metaData.title || "Blog Details"}</title>
-        <meta name="description" content={metaData.description} />
-      </Head>
       <Hero
         image={[{ type: "video", value: image }]}
         title1={title}

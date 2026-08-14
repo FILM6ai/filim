@@ -3,6 +3,16 @@ import './globals.css';
 import Footer from '@/components/Home/Footer';
 import Navbar from '@/components/Home/Navbar';
 import Cookies from '@/components/cookies/Cookies';
+import { pageMetadata, SITE_URL } from '@/utils/siteMeta';
+
+// Site-wide defaults and the home page's own metadata. Every other route
+// overrides this from its own layout.
+export async function generateMetadata() {
+  return {
+    metadataBase: new URL(SITE_URL),
+    ...(await pageMetadata('home', '/')),
+  };
+}
 
 const geistSans = Geist({
   variable: '--font-geist-sans',

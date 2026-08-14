@@ -4,7 +4,6 @@ import TopListing from "@/components/Home/TopListing";
 import React, { useEffect, useState } from "react";
 import Advancing from "@/components/Home/Advancing";
 import axios from "axios";
-import Head from "next/head";
 import Loading from "@/components/faq/Loading";
 // import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import CategoriesFestival from "@/components/Home/CategoriesFestival";
@@ -26,12 +25,6 @@ const page = () => {
   const [card5, setCard5] = useState({});
   const [card6, setCard6] = useState({});
   const [loading, setLoading] = useState(true);
-  const [metaData, setMetaData] = useState({
-    page: "studio",
-    title: "",
-    description: "",
-  });
-
   useEffect(() => {
     const fetchHeroData = async () => {
       try {
@@ -62,37 +55,10 @@ const page = () => {
     fetchHeroData();
   }, []);
 
-  const fetchMetaData = async () => {
-    try {
-      const response = await axios.get(
-        `${API_BASE_URL}/getmetadata`,
-      );
-      if (
-        response.data &&
-        response.data.data &&
-        response.data.data.length > 0
-      ) {
-        const meta = response.data.data[0];
-        setMetaData({
-          page: "studio",
-          title: meta.studio.title,
-          description: meta.studio.description,
-        });
-      }
-    } catch (error) {}
-  };
-  useEffect(() => {
-    fetchMetaData();
-  }, [metaData]);
-
   if (loading) return <Loading />;
 
   return (
     <div>
-      <Head>
-        <title>{metaData.title || "Blog Details"}</title>
-        <meta name="description" content={metaData.description} />
-      </Head>
       <Hero
         image={
           heroData?.bgImage?.map((video) => ({
