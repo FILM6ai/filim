@@ -1,8 +1,33 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import axios from "axios";
+import { BACKEND_URL } from "@/utils/backend";
 
 const JurorsSection = ({ jurors, setJurors, festivalId }) => {
     const fileInputRefs = useRef({});
+
+    // The articles are listed so a juror is linked by picking a headline
+    // rather than by pasting an address. A pasted address is a copy of
+    // something that can change; the choice made here is a reference to it.
+    const [articles, setArticles] = useState([]);
+
+    useEffect(() => {
+        let cancelled = false;
+        axios
+            .get(`${BACKEND_URL}/api/blog/getblog`)
+            .then(({ data }) => {
+                if (cancelled) return;
+                setArticles(
+                    (data.blogs || [])
+                        .slice()
+                        .sort((a, b) => new Date(b.date) - new Date(a.date)),
+                );
+            })
+            .catch(() => { });
+        return () => {
+            cancelled = true;
+        };
+    }, []);
 
     const handleTitleChange = (e) => {
         setJurors((prev) => ({ ...prev, mainTitle: e.target.value }));
@@ -23,7 +48,10 @@ const JurorsSection = ({ jurors, setJurors, festivalId }) => {
     const addItem = () => {
         setJurors((prev) => ({
             ...prev,
-            items: [...(prev.items || []), { name: "", role: "", image: null }],
+            items: [
+                ...(prev.items || []),
+                { name: "", role: "", image: null, articleId: "", link: "" },
+            ],
         }));
     };
 
@@ -133,6 +161,60 @@ const JurorsSection = ({ jurors, setJurors, festivalId }) => {
                                     handleItemChange(index, "role", e.target.value)
                                 }
                             />
+                        </div>
+
+                        <div className="mb-3">
+                            <h1 className="text-black">THEIR ARTICLE IN NEWS</h1>
+                            <p className="text-gray-500 text-sm mt-1">
+                                Pick the article this juror&apos;s photo should open.
+                                Visitors clicking the photo get it in a new tab.
+                            </p>
+                            <select
+                                className="border border-black px-3 py-2 mt-2 outline-0 w-full bg-white"
+                                value={item.articleId || ""}
+                                onChange={(e) =>
+                                    handleItemChange(index, "articleId", e.target.value)
+                                }
+                            >
+                                <option value="">
+                                    — No article (photo is not clickable) —
+                                </option>
+                                {articles.map((article) => (
+                                    <option key={article._id} value={article._id}>
+                                        {article.title}
+                                    </option>
+                                ))}
+                            </select>
+
+                            {/* An article that has since been deleted would
+                                otherwise leave the box showing "No article"
+                                while the juror is still linked to it. */}
+                            {item.articleId &&
+                                articles.length > 0 &&
+                                !articles.some((a) => a._id === item.articleId) && (
+                                    <p className="text-red-600 text-sm mt-2">
+                                        The linked article no longer exists. Pick another
+                                        one, or leave it on “No article”.
+                                    </p>
+                                )}
+
+                            {!item.articleId && (
+                                <div className="mt-3">
+                                    <p className="text-gray-500 text-sm">
+                                        Or, if their profile is on another website, paste
+                                        the full address here instead.
+                                    </p>
+                                    <input
+                                        type="text"
+                                        placeholder="https://..."
+                                        className="border border-black px-3 py-2 mt-2 outline-0 w-full"
+                                        value={item.link || ""}
+                                        onChange={(e) =>
+                                            handleItemChange(index, "link", e.target.value)
+                                        }
+                                    />
+                                </div>
+                            )}
                         </div>
                     </div>
                 ))}

@@ -169,6 +169,8 @@ export const createFestivalPage = async (req, res) => {
           name: item.name,
           role: item.role,
           image: uploadedJurorImages[i] || '',
+          articleId: item.articleId || '',
+          link: item.link || '',
         })),
       },
     });
@@ -463,10 +465,20 @@ export const updatedFestival = async (req, res) => {
           image = uploaded?.secure_url || image;
         }
 
+        // Present-but-empty has to mean "clear it", so the test is whether the
+        // panel sent the field at all, not whether it sent something truthy.
+        // Anything that saves this section without knowing about links leaves
+        // them alone rather than wiping them.
+        const sent = jurorsData.items[i];
+        const keepOrTake = (field) =>
+          sent[field] !== undefined ? sent[field] : existingItem[field] || '';
+
         updatedItems.push({
-          name: jurorsData.items[i].name,
-          role: jurorsData.items[i].role,
+          name: sent.name,
+          role: sent.role,
           image,
+          articleId: keepOrTake('articleId'),
+          link: keepOrTake('link'),
         });
       }
 

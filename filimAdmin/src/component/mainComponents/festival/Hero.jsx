@@ -271,10 +271,16 @@ const [heroLink, setHeroLink] = useState("");
       });
       formData.append("jurors", JSON.stringify({
         mainTitle: jurors.mainTitle,
+        // This list is a whitelist, so a field left out here never reaches the
+        // backend no matter what the section stores.
         items: jurors.items.map(item => ({
           name: item.name,
           role: item.role,
           image: typeof item.image === "string" ? item.image : "",
+          articleId: item.articleId || "",
+          // Only kept when no article is chosen, so picking an article can
+          // never leave a stale outside address behind it.
+          link: item.articleId ? "" : (item.link || ""),
         }))
       }));
 

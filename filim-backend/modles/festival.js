@@ -140,6 +140,18 @@ const FestivalPageSchema = new mongoose.Schema({
         name: { type: String },
         role: { type: String },
         image: { type: String },
+        // Which News article this juror's photo opens.
+        //
+        // articleId is the one that matters: article addresses are built from
+        // the title, so an article that gets retitled moves to a new address
+        // and any address stored here would quietly stop working. Holding the
+        // id instead means the link is worked out from the article's current
+        // title every time the page is drawn.
+        //
+        // link is the fallback, for a juror whose profile lives somewhere off
+        // this site. It is only used when there is no articleId.
+        articleId: { type: String, default: '' },
+        link: { type: String, default: '' },
       },
     ],
   },
