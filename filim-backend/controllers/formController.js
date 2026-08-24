@@ -1,5 +1,4 @@
 import formSchema from "../modles/form.js";
-import sendEmail from "../utils/sendEmail.js";
 
 // POST: Create a new form submission
 export const createFormPost = async (req, res) => {
