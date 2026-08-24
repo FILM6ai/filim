@@ -3,10 +3,46 @@ import React, { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import emailjs from "@emailjs/browser";
 import { API_BASE_URL } from "@/utils/backend";
 
 const MAX_CHARS = 1000;
+
+// @emailjs/browser is NOT imported at the top of this file on purpose.
+//
+// It probes `typeof localStorage` while the module is being evaluated, and in
+// Safari with "Block all cookies" switched on, merely reading window.localStorage
+// throws SecurityError: "The operation is insecure." (typeof does not protect
+// you — localStorage is a declared getter, so the getter still runs). That threw
+// during import, which took the whole Contact page down to a blank screen while
+// every other page was fine, because this is the only page that loads emailjs.
+//
+// Loading it here, on submit, inside a try/catch, means a visitor whose browser
+// blocks storage still gets a working page and a message that reaches the
+// database — only the notification email is skipped.
+const sendNotificationEmail = async (formData) => {
+  const mod = await import("@emailjs/browser");
+  const emailjs = mod.default || mod;
+
+  return emailjs.send(
+    process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
+    process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
+    {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      phone: formData.phone || "N/A",
+      topic: formData.topic,
+      message: formData.message,
+      to_email: "contact@film6.ai",
+      submitted_at: new Date().toLocaleString("en-GB", {
+        timeZone: "Europe/Paris",
+        dateStyle: "full",
+        timeStyle: "short",
+      }),
+    },
+    process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY,
+  );
+};
 
 const Form = () => {
   // Initialize form state with default values.
@@ -47,26 +83,14 @@ const Form = () => {
       );
 
       if (data.success === true) {
-        // 2. EmailJS se client ko email bhejo
-        await emailjs.send(
-          process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
-          process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
-          {
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            email: formData.email,
-            phone: formData.phone || "N/A",
-            topic: formData.topic,
-            message: formData.message,
-            to_email: "contact@film6.ai ",
-            submitted_at: new Date().toLocaleString("en-US", {
-              timeZone: "Asia/Karachi",
-              dateStyle: "full",
-              timeStyle: "short",
-            }),
-          },
-          process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY,
-        );
+        // 2. Notify us by email. The submission is already stored by this
+        // point, so a browser that cannot run EmailJS must not be told its
+        // message was lost — it wasn't.
+        try {
+          await sendNotificationEmail(formData);
+        } catch (notifyError) {
+          console.error("Saved, but the notification email failed:", notifyError);
+        }
 
         toast.success("Message Sent successfully.");
         setFormData({
