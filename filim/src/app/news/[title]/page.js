@@ -10,7 +10,7 @@ import twitter from "../../../assets/images/x.jpg";
 import tiktok from "../../../assets/images/tik.png";
 import insta from "../../../assets/images/newInsta.webp";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Loading from "@/components/faq/Loading";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
@@ -32,6 +32,25 @@ const demoteInBodyHeadings = (html) =>
     .replace(/<h1(\s|>)/gi, "<h2$1")
     .replace(/<\/h1>/gi, "</h2>");
 
+const OWN_SITE = /^https?:\/\/(?:www\.)?film6\.ai/i;
+
+// Links pasted into the editor arrive as absolute film6.ai URLs carrying
+// target="_blank", so following an in-article link - a jury member's name, say -
+// opened a whole new tab and reloaded the site in it. Read eight jury profiles
+// and you have eight tabs. Only links that leave film6.ai keep their new tab.
+const keepInternalLinksInTab = (html) =>
+  String(html || "").replace(/<a\s[^>]*>/gi, (tag) => {
+    const href = (tag.match(/href\s*=\s*["']([^"']*)["']/i) || [])[1] || "";
+    if (!OWN_SITE.test(href) && !href.startsWith("/")) return tag;
+
+    const path = href.replace(OWN_SITE, "") || "/";
+    return tag
+      .replace(/\s(?:target|rel)\s*=\s*["'][^"']*["']/gi, "")
+      .replace(/href\s*=\s*["'][^"']*["']/i, `href="${path}"`);
+  });
+
+const articleBody = (html) => keepInternalLinksInTab(demoteInBodyHeadings(html));
+
 const splitContentInHalf = (html) => {
   if (!html) return { first: "", second: "" };
 
@@ -51,8 +70,8 @@ const splitContentInHalf = (html) => {
 
 const BlogDetail = () => {
   const { title } = useParams();
-  console.log(title, "title");
 
+  const headingRef = useRef(null);
   const [title2, setTitle] = useState("");
   const [image, setImage] = useState("");
   const [alt, setAlt] = useState("");
@@ -120,13 +139,39 @@ const icons = [
     setSingleBlog(blog || null);
   }, [title, article]);
 
+  // Opening an article used to land on the shared NEWS banner, which says
+  // nothing about the article you clicked - the headline sat just under the
+  // fold. Worse, two things fought over the position: Next scrolls a nested
+  // route into view (~734px down) and the page then yanked it back to 0. That
+  // round trip was the visible jump. Put the headline at the top instead, and
+  // hold it there while the banner's video loads and pushes the page around.
+  // Any real scroll input from the reader wins immediately.
   useEffect(() => {
-    console.log(singleBlog, "Updated singleBlog");
-  }, [singleBlog]);
+    if (!singleBlog || !headingRef.current) return;
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [title]);
+    let settling = true;
+    const release = () => {
+      settling = false;
+    };
+    const events = ["wheel", "touchstart", "keydown"];
+    events.forEach((e) =>
+      window.addEventListener(e, release, { passive: true, once: true }),
+    );
+
+    const hold = (ticks) => {
+      if (!settling || !headingRef.current) return;
+      headingRef.current.scrollIntoView({ block: "start" });
+      if (ticks > 0) requestAnimationFrame(() => hold(ticks - 1));
+    };
+    hold(12);
+    const afterMedia = setTimeout(() => hold(0), 400);
+
+    return () => {
+      settling = false;
+      clearTimeout(afterMedia);
+      events.forEach((e) => window.removeEventListener(e, release));
+    };
+  }, [singleBlog]);
 
   if (loading) return <Loading />;
 
@@ -148,7 +193,14 @@ const icons = [
 
       <div className=" relative grid lg:grid-cols-[65%_33%] max-md:grid-cols-1 md:gap-8 px-4 sm:px-6 lg:px-20 mt-8">
         <div>
-          <h1 className="text-3xl pb-6 font-sans">{singleBlog.title}</h1>
+          {/* scroll-mt clears the 72px navbar, which overlays rather than
+              occupies space, so a plain scroll-to-top would hide the headline */}
+          <h1
+            ref={headingRef}
+            className="text-3xl pb-6 font-sans scroll-mt-24"
+          >
+            {singleBlog.title}
+          </h1>
 
           {singleBlog.image && (
             <div className="mb-6">
@@ -200,7 +252,7 @@ const icons = [
             {singleBlog.youtubeUrl && singleBlog.youtubeUrl.trim() !== "" ? (
               (() => {
                 const { first, second } = splitContentInHalf(
-                  demoteInBodyHeadings(singleBlog.content),
+                  articleBody(singleBlog.content),
                 );
                 return (
                   <>
@@ -237,7 +289,7 @@ const icons = [
               <div
                 className="blog-content ql-editor"
                 dangerouslySetInnerHTML={{
-                  __html: demoteInBodyHeadings(singleBlog.content),
+                  __html: articleBody(singleBlog.content),
                 }}
               />
             )}
