@@ -61,7 +61,7 @@ const page = () => {
           slot is null when nothing is set, and the grid then renders as one
           uninterrupted run. */}
       <BlogsNews
-        videoAfter={6}
+        videoAfter={9}
         videoSlot={
           hasVideo ? (
             <VideoPlayer
