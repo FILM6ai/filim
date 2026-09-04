@@ -8,6 +8,12 @@ import {
   deleteCard,
 } from "../controllers/festivalController.js";
 import validateFileSize from "../middlewere/validateFileSize.js";
+import {
+  deleteVideoSectionItem,
+  getVideoSection,
+  updateVideoSection,
+} from '../controllers/videoSectionController.js';
+import festivalSchema from '../modles/festival.js';
 
 const festivalRoute = express.Router();
 
@@ -168,4 +174,10 @@ festivalRoute.put(
 
 festivalRoute.delete("/deleteimage/:id", deleteFestivalImage);
 festivalRoute.delete("/deletecard/:id", deleteCard);
+// The video block lives on its own routes because the page update endpoints above
+// rebuild the whole document - see videoSectionController.js.
+festivalRoute.get('/videosection', getVideoSection(festivalSchema));
+festivalRoute.put('/videosection/:id', updateVideoSection(festivalSchema));
+festivalRoute.delete('/videosection/:id', deleteVideoSectionItem(festivalSchema));
+
 export default festivalRoute;

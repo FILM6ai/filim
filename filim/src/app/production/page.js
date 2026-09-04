@@ -8,6 +8,7 @@ import Runway from "@/components/Home/Runway";
 import axios from "axios";
 import Loading from "@/components/faq/Loading";
 import { API_BASE_URL } from "@/utils/backend";
+import VideoPlayer from "@/components/Home/VideoPlayer";
 
 const page = () => {
   const [heroData, setHeroData] = useState({});
@@ -17,6 +18,7 @@ const page = () => {
   const [competate, setCompetate] = useState({});
   const [runway, setRunway] = useState({});
   const [loading, setLoading] = useState(true);
+  const [video, setVideo] = useState({});
   // State for the home meta data.
   useEffect(() => {
     const fetchHeroData = async () => {
@@ -30,6 +32,7 @@ const page = () => {
         setRobot(data.services[0].robot);
         setCompetate(data.services[0].competate);
         setRunway(data.services[0].runway);
+        setVideo(data.services[0].videos || {});
         setLoading(false);
       } catch (error) {
         setLoading(false);
@@ -73,6 +76,13 @@ const page = () => {
         button={toplist?.button}
         alt={toplist?.alt}
         link={toplist?.link}
+      />
+
+      <VideoPlayer
+        video={video?.videoUrls}
+        title={video?.title}
+        description={video?.description}
+        youtubeUrl={video?.youtubeUrl}
       />
       <Robot
         title={robot?.title}

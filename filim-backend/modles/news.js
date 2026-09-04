@@ -1,6 +1,9 @@
 import mongoose from 'mongoose';
+import { videoSectionFields } from './videoSection.js';
 
 const NewsPageSchema = new mongoose.Schema({
+  videos: { ...videoSectionFields },
+
   bgImage: { type: String },
   title: { type: String },
   alt: { type: String },

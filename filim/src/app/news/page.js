@@ -5,6 +5,7 @@ import BlogsNews from "@/components/News/BlogsNews";
 import axios from "axios";
 import Loading from "@/components/faq/Loading";
 import { API_BASE_URL } from "@/utils/backend";
+import VideoPlayer from "@/components/Home/VideoPlayer";
 
 const page = () => {
   const [title, setTitle] = useState("");
@@ -12,6 +13,7 @@ const page = () => {
   const [alt, setAlt] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(true);
+  const [video, setVideo] = useState({});
 
   // Fetch existing news data
   useEffect(() => {
@@ -26,6 +28,7 @@ const page = () => {
           setImage(homeData.bgImage || "");
           setAlt(homeData.alt || "");
           setDescription(homeData.description || "");
+          setVideo(homeData.videos || {});
         }
         setLoading(false);
       } catch (error) {
@@ -46,6 +49,12 @@ const page = () => {
         title1={title}
         alt={alt}
         description={description}
+      />
+      <VideoPlayer
+        video={video?.videoUrls}
+        title={video?.title}
+        description={video?.description}
+        youtubeUrl={video?.youtubeUrl}
       />
       <BlogsNews />
       {/* AlphaAct-One */}

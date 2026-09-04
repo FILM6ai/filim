@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
+import { videoSectionFields } from "./videoSection.js";
 
 const ServicePageSchema = new mongoose.Schema({
+  videos: { ...videoSectionFields },
+
   hero: {
     bgImage: { type: String },
     title: { type: String },

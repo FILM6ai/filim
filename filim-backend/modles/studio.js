@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
+import { videoSectionFields } from "./videoSection.js";
 
 const StudioPageSchema = new mongoose.Schema({
+  videos: { ...videoSectionFields },
+
   hero: {
     alt: { type: String },
     bgImage: [{ type: String }],

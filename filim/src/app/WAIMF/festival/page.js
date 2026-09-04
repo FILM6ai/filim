@@ -13,6 +13,7 @@ import Glossary from '@/components/Home/Glossary';
 import GalleryPhotos from '@/components/Home/GalleryPhotos';
 import JurorPhotos from '@/components/Home/JurorPhotos';
 import { API_BASE_URL } from "@/utils/backend";
+import VideoPlayer from "@/components/Home/VideoPlayer";
 
 const page = () => {
   const [heroData, setHeroData] = useState({});
@@ -28,6 +29,7 @@ const page = () => {
   const [jurorsData, setJurorsData] = useState({});
 
   const [loading, setLoading] = useState(true);
+  const [video, setVideo] = useState({});
   useEffect(() => {
     const fetchHeroData = async () => {
       try {
@@ -45,6 +47,7 @@ const page = () => {
         setGlossaryData(data.festival[0].glossary || {});
         setGalleryData(data.festival[0].gallery || {});
         setJurorsData(data.festival[0].jurors || {});
+        setVideo(data.festival[0].videos || {});
 
         setLoading(false);
       } catch (error) {
@@ -87,6 +90,13 @@ const page = () => {
         alt={toplist?.alt}
         link={toplist?.link}
         popup={toplist?.popup}
+      />
+
+      <VideoPlayer
+        video={video?.videoUrls}
+        title={video?.title}
+        description={video?.description}
+        youtubeUrl={video?.youtubeUrl}
       />
 
       <Robot

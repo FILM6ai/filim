@@ -8,6 +8,7 @@ import Loading from "@/components/faq/Loading";
 // import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import CategoriesFestival from "@/components/Home/CategoriesFestival";
 import { API_BASE_URL } from "@/utils/backend";
+import VideoPlayer from "@/components/Home/VideoPlayer";
 // loading
 const page = () => {
   const [heroData, setHeroData] = useState({});
@@ -25,6 +26,7 @@ const page = () => {
   const [card5, setCard5] = useState({});
   const [card6, setCard6] = useState({});
   const [loading, setLoading] = useState(true);
+  const [video, setVideo] = useState({});
   useEffect(() => {
     const fetchHeroData = async () => {
       try {
@@ -45,6 +47,7 @@ const page = () => {
         setCard4(data.studio[0].card4);
         setCard5(data.studio[0].card5);
         setCard6(data.studio[0].card6);
+        setVideo(data.studio[0].videos || {});
         setLoading(false);
       } catch (error) {
         console.error(error);
@@ -124,6 +127,13 @@ const page = () => {
           ))}
         </div>
       </section>
+
+      <VideoPlayer
+        video={video?.videoUrls}
+        title={video?.title}
+        description={video?.description}
+        youtubeUrl={video?.youtubeUrl}
+      />
 
       <TopListing
         title={toplist?.title}

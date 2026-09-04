@@ -1,5 +1,6 @@
 import MetaData from '@/component/mainComponents/newsPage/MetaData'
 import News from '@/component/mainComponents/newsPage/News'
+import VideoSection from '@/component/mainComponents/common/VideoSection'
 import React from 'react'
 
 const page = () => {
@@ -7,6 +8,7 @@ const page = () => {
     <div className='pt-12'>
       <MetaData/>
         <News/>
+      <VideoSection resource='news' pageName='News' />
     </div>
   )
 }

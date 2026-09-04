@@ -9,6 +9,12 @@ import {
   updateStudioPage,
 } from '../controllers/studioController.js';
 import validateFileSize from '../middlewere/validateFileSize.js';
+import {
+  deleteVideoSectionItem,
+  getVideoSection,
+  updateVideoSection,
+} from '../controllers/videoSectionController.js';
+import studioSchema from '../modles/studio.js';
 
 const studioRoute = express.Router();
 
@@ -56,5 +62,11 @@ studioRoute.put(
   updateStudioPage
 );
 studioRoute.delete('/deleteimage/:id', deleteStudioImage);
+
+// The video block lives on its own routes because the page update endpoints above
+// rebuild the whole document - see videoSectionController.js.
+studioRoute.get('/videosection', getVideoSection(studioSchema));
+studioRoute.put('/videosection/:id', updateVideoSection(studioSchema));
+studioRoute.delete('/videosection/:id', deleteVideoSectionItem(studioSchema));
 
 export default studioRoute;

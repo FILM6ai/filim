@@ -68,13 +68,23 @@ const VideoPlayer = ({ video, title, description, youtubeUrl }) => {
   };
 
   const embedUrl = convertToEmbedUrl(youtubeUrl);
+  const uploadedSrc = Array.isArray(video) ? video[video.length - 1] : video;
+
+  // A page with no video set must show nothing at all - not a black band with an
+  // empty player in it. Only a playable source counts: a title on its own is
+  // left over text, not a video section.
+  if (!embedUrl && !uploadedSrc) return null;
 
   return (
     <div className='bg-black py-8 md:py-12 max-md:mt-12 px-4  md:px-20  '>
-      <div className='  flex flex-col items-center justify-center text-center  '>
-        <h2 className='text-xl sm:text-3xl  pb-3 text-white'>{title}</h2>
-        <p className='text-xs sm:text-lg text-white pb-6'>{description}</p>
-      </div>
+      {(title || description) && (
+        <div className='  flex flex-col items-center justify-center text-center  '>
+          {title && <h2 className='text-xl sm:text-3xl  pb-3 text-white'>{title}</h2>}
+          {description && (
+            <p className='text-xs sm:text-lg text-white pb-6'>{description}</p>
+          )}
+        </div>
+      )}
       <div className='mt-0 relative group'>
         {embedUrl ? (
           /* YouTube embed */
@@ -90,7 +100,7 @@ const VideoPlayer = ({ video, title, description, youtubeUrl }) => {
             <video
               ref={videoRef}
               className='w-full rounded-xl shadow-lg'
-              src={Array.isArray(video) ? video[video.length - 1] : video}
+              src={uploadedSrc}
             />
 
             {!isPlaying && (
