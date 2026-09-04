@@ -5,6 +5,7 @@ import Image from "next/image";
 import Button from "./Button";
 import icon from "../../assets/images/sideicon.png";
 import { motion } from "framer-motion";
+import { playerSrc } from "@/utils/youtube";
 
 const TopListing = ({
   title,
@@ -85,7 +86,7 @@ const TopListing = ({
         >
           {embedUrl ? (
             <iframe
-              src={embedUrl}
+              src={playerSrc(embedUrl)}
               className="w-full aspect-video"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
@@ -177,7 +178,7 @@ const TopListing = ({
                 <div className="mx-auto mt-6 max-w-[90%] overflow-hidden rounded-3xl border border-white/10 bg-black/30">
                   {popupEmbedUrl ? (
                     <iframe
-                      src={popupEmbedUrl}
+                      src={playerSrc(popupEmbedUrl)}
                       className="h-[300px] w-full"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen

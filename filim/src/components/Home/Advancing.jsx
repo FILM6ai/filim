@@ -2,6 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { playerSrc } from "@/utils/youtube";
 const Advancing = ({ title1, title2, description, image, color, alt, youtubeUrl }) => {
   const convertToEmbedUrl = (url) => {
     if (!url) return "";
@@ -41,7 +42,7 @@ const Advancing = ({ title1, title2, description, image, color, alt, youtubeUrl 
       <div className={`${image === image ? image : ""}`}>
         {embedUrl ? (
           <iframe
-            src={embedUrl}
+            src={playerSrc(embedUrl)}
             className="w-full aspect-video mt-10"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen

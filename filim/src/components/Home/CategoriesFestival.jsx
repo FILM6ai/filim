@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { playerSrc } from "@/utils/youtube";
 
 const CategoriesFestival = ({ index = 0, description, img, youtubeUrl }) => {
   const convertToEmbedUrl = (url) => {
@@ -35,7 +36,7 @@ const CategoriesFestival = ({ index = 0, description, img, youtubeUrl }) => {
           {embedUrl ? (
             <div className="relative w-full h-64">
               <iframe
-                src={`${embedUrl}?rel=0`}
+                src={playerSrc(`${embedUrl}?rel=0`)}
                 title={description}
                 className="w-full h-full"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

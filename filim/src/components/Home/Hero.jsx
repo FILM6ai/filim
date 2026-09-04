@@ -14,6 +14,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { IoSend } from "react-icons/io5";
 import { API_BASE_URL } from "@/utils/backend";
+import { playerSrc } from "@/utils/youtube";
 const Hero = ({
   title1,
   description,
@@ -114,7 +115,7 @@ const Hero = ({
               <SwiperSlide key={idx}>
                 {img.type === "youtube" ? (
                   <iframe
-                    src={img.value}
+                    src={playerSrc(img.value)}
                     className="absolute inset-0 w-full h-full"
                     allow="autoplay; encrypted-media; autoplay"
                     allowFullScreen

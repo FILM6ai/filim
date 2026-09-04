@@ -16,6 +16,7 @@ import Loading from "@/components/faq/Loading";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import slugify from "slugify";
 import { API_BASE_URL } from "@/utils/backend";
+import { playerSrc } from "@/utils/youtube";
 
 const extractYouTubeId = (url) => {
   const match = url.match(
@@ -269,7 +270,7 @@ const icons = [
                       >
                         <iframe
                           className="absolute top-0 left-0 w-full h-full rounded-lg"
-                          src={`https://www.youtube.com/embed/${extractYouTubeId(singleBlog.youtubeUrl)}`}
+                          src={playerSrc(`https://www.youtube.com/embed/${extractYouTubeId(singleBlog.youtubeUrl)}`)}
                           title="YouTube video"
                           frameBorder="0"
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

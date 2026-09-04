@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { Play, Pause, Volume2, VolumeX, Maximize2 } from 'lucide-react';
+import { playerSrc } from "@/utils/youtube";
 
 const VideoPlayer = ({ video, title, description, youtubeUrl }) => {
   const videoRef = useRef(null);
@@ -89,7 +90,7 @@ const VideoPlayer = ({ video, title, description, youtubeUrl }) => {
         {embedUrl ? (
           /* YouTube embed */
           <iframe
-            src={`${embedUrl}?rel=0&controls=1`}
+            src={playerSrc(`${embedUrl}?rel=0&controls=1`)}
             className="w-full rounded-xl shadow-lg aspect-video"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen

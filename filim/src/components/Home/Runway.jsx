@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import runway1 from "../../assets/images/runway.png";
 import { motion } from "framer-motion";
+import { playerSrc } from "@/utils/youtube";
 
 const Runway = ({ margin, title, image, button, alt, link, youtubeUrl, popup }) => {
   const [showPopup, setShowPopup] = useState(false);
@@ -45,7 +46,7 @@ const Runway = ({ margin, title, image, button, alt, link, youtubeUrl, popup }) 
       <div className="absolute inset-0 w-full h-full">
         {sectionEmbedUrl ? (
           <iframe
-            src={sectionEmbedUrl}
+            src={playerSrc(sectionEmbedUrl)}
             className="w-full h-full"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
@@ -136,7 +137,7 @@ const Runway = ({ margin, title, image, button, alt, link, youtubeUrl, popup }) 
                 <div className="mx-auto mt-6 max-w-[90%] overflow-hidden rounded-3xl border border-white/10 bg-black/30">
                   {popupEmbedUrl ? (
                     <iframe
-                      src={popupEmbedUrl}
+                      src={playerSrc(popupEmbedUrl)}
                       className="h-[300px] w-full"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
