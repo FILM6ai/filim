@@ -42,6 +42,12 @@ const page = () => {
 
   if (loading) return <Loading />;
 
+  // The player hides itself when there is no source, but the grid has to know
+  // beforehand whether to split, so ask the same question here.
+  const hasVideo = Boolean(
+    video?.youtubeUrl || (video?.videoUrls && video.videoUrls.length > 0),
+  );
+
   return (
     <div>
       <Hero
@@ -50,13 +56,23 @@ const page = () => {
         alt={alt}
         description={description}
       />
-      <VideoPlayer
-        video={video?.videoUrls}
-        title={video?.title}
-        description={video?.description}
-        youtubeUrl={video?.youtubeUrl}
+      {/* This page's header runs straight into the article grid, so the video
+          goes after the first six articles rather than on top of the list. The
+          slot is null when nothing is set, and the grid then renders as one
+          uninterrupted run. */}
+      <BlogsNews
+        videoAfter={6}
+        videoSlot={
+          hasVideo ? (
+            <VideoPlayer
+              video={video?.videoUrls}
+              title={video?.title}
+              description={video?.description}
+              youtubeUrl={video?.youtubeUrl}
+            />
+          ) : null
+        }
       />
-      <BlogsNews />
       {/* AlphaAct-One */}
     </div>
   );

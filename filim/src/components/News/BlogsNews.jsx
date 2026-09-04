@@ -8,7 +8,12 @@ import axios from "axios";
 import Loading from "../faq/Loading";
 import slugify from "slugify";
 import { API_BASE_URL } from "@/utils/backend";
-const BlogsNews = () => {
+// `videoSlot` is the page's video block, dropped in after `videoAfter` articles
+// instead of sitting under the header - on this page the header is followed
+// immediately by the article grid, so a video there interrupts the list before it
+// has started. Null when the page has no video set, in which case the grid stays
+// a single uninterrupted run exactly as before.
+const BlogsNews = ({ videoSlot = null, videoAfter = 6 }) => {
   const [bloges, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -42,15 +47,23 @@ const BlogsNews = () => {
   if (!bloges.length) {
     return <div>No blogs found.</div>;
   }
-  return (
-    <div className=" ">
-      <div className=" md:pb-24  max-w-7xl m-auto   px-4 sm:px-6 lg:px-20 pt-16">
-        <div className=" relative  z-10 grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-8">
-          {[...bloges]
+  const sorted = [...bloges].sort((a, b) => new Date(b.date) - new Date(a.date));
 
-            .sort((a, b) => new Date(b.date) - new Date(a.date))
+  // Without a video this is one list and one grid, unchanged. With one, the list
+  // is cut in two so the video sits between the rows rather than on top of them.
+  const groups = videoSlot
+    ? [sorted.slice(0, videoAfter), sorted.slice(videoAfter)].filter(
+        (group) => group.length > 0,
+      )
+    : [sorted];
 
-            .map((article, ind) => (
+  const renderGrid = (articles, key, withBottomPadding) => (
+    <div
+      key={key}
+      className={`${withBottomPadding ? "md:pb-24" : ""}  max-w-7xl m-auto   px-4 sm:px-6 lg:px-20 pt-16`}
+    >
+      <div className=" relative  z-10 grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-8">
+        {articles.map((article, ind) => (
               <motion.div
                 key={article.title || ind}
                 initial={{ y: 100, opacity: 0 }}
@@ -95,8 +108,21 @@ const BlogsNews = () => {
                 </Link>
               </motion.div>
             ))}
-        </div>
       </div>
+    </div>
+  );
+
+  return (
+    <div className=" ">
+      {groups.map((group, index) => (
+        <div key={index}>
+          {renderGrid(group, index, index === groups.length - 1)}
+          {videoSlot && index === 0 && groups.length > 1 ? videoSlot : null}
+        </div>
+      ))}
+      {/* Fewer articles than the cut-off: there is no second half to sit above,
+          so the video goes at the end rather than vanishing. */}
+      {videoSlot && groups.length === 1 ? videoSlot : null}
     </div>
   );
 };
