@@ -7,6 +7,12 @@ import {
 } from "../controllers/homeController.js";
 import upload from "../middlewere/multer.js";
 import validateFileSize from "../middlewere/validateFileSize.js";
+import {
+  deleteVideoSectionItem,
+  getVideoSection,
+  updateVideoSection,
+} from "../controllers/videoSectionController.js";
+import homeSchema from "../modles/home.js";
 
 const homeRouter = express.Router();
 
@@ -83,5 +89,15 @@ homeRouter.put(
   updateHomePage,
 );
 homeRouter.delete("/deleteimage/:id", deleteHomeImage);
+
+// The home page's second video block. Its own routes, writing dotted `videos2.*`
+// paths - see videoSectionController.js. The first video block keeps its place in
+// the big home form above and is deliberately left alone.
+homeRouter.get("/videosection2", getVideoSection(homeSchema, "videos2"));
+homeRouter.put("/videosection2/:id", updateVideoSection(homeSchema, "videos2"));
+homeRouter.delete(
+  "/videosection2/:id",
+  deleteVideoSectionItem(homeSchema, "videos2"),
+);
 
 export default homeRouter;

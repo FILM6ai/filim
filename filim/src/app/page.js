@@ -21,6 +21,8 @@ export default function Home() {
   const [competate, setCompetate] = useState({});
   const [runway, setRunway] = useState({});
 const [video, setVideo] = useState({})
+  // Second video block, further down the page - see the render below.
+  const [video2, setVideo2] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -39,6 +41,7 @@ const [video, setVideo] = useState({})
         setCompetate(data.home[0].competate);
         setRunway(data.home[0].runway);
         setVideo(data.home[0].videos);
+        setVideo2(data.home[0].videos2 || {});
         console.log(data.home[0].hero, 'data hero');
         setLoading(false);
       } catch (error) {
@@ -118,6 +121,20 @@ const [video, setVideo] = useState({})
         alt={competate?.alt}
         link={competate?.link}
       />
+      {/* Second video block, sitting just above Cinematic Metaverse. Same
+          component and same rule as the first one: with nothing set it renders
+          null, so the page closes up as if it were not here. */}
+      <VideoPlayer
+        video={
+          Array.isArray(video2?.videoUrls)
+            ? video2.videoUrls[video2.videoUrls.length - 1]
+            : video2?.videoUrls
+        }
+        title={video2?.title}
+        description={video2?.description}
+        youtubeUrl={video2?.youtubeUrl}
+      />
+
       <Runway
         title={runway?.title}
         image={runway?.bgImage}

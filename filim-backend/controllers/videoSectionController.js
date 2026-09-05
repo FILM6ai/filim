@@ -9,6 +9,12 @@
 //
 // Each handler is a factory taking the mongoose model, so studio, service,
 // festival and news share one implementation and cannot drift apart.
+//
+// The second argument names the field to read and write. It defaults to `videos`,
+// which is what every page had when this was written; the home page has a second
+// block stored as `videos2`. The response always comes back under the key
+// `videos` whichever field it came from - which field a page uses is storage
+// detail, and the panel component should not have to know it.
 
 const EMPTY_SECTION = {
   title: "",
@@ -35,7 +41,7 @@ const asArray = (value) => {
   return value ? [value] : [];
 };
 
-export const getVideoSection = (model) => async (req, res) => {
+export const getVideoSection = (model, field = "videos") => async (req, res) => {
   try {
     const doc = await model.findOne({});
     if (!doc) {
@@ -44,10 +50,11 @@ export const getVideoSection = (model) => async (req, res) => {
         .json({ success: false, message: "Page not found" });
     }
 
+    const stored = doc[field];
     return res.status(200).json({
       success: true,
       id: doc._id,
-      videos: { ...EMPTY_SECTION, ...(doc.videos?.toObject?.() || doc.videos || {}) },
+      videos: { ...EMPTY_SECTION, ...(stored?.toObject?.() || stored || {}) },
     });
   } catch (error) {
     console.error("Error fetching video section:", error);
@@ -57,7 +64,7 @@ export const getVideoSection = (model) => async (req, res) => {
   }
 };
 
-export const updateVideoSection = (model) => async (req, res) => {
+export const updateVideoSection = (model, field = "videos") => async (req, res) => {
   try {
     const { id } = req.params;
     const existing = await model.findById(id);
@@ -68,7 +75,7 @@ export const updateVideoSection = (model) => async (req, res) => {
     }
 
     const payload = parseVideos(req.body);
-    const current = existing.videos || {};
+    const current = existing[field] || {};
 
     // Uploads reach Cloudinary from the browser with a signed request, so the
     // panel sends back finished URLs. Merging rather than replacing means a save
@@ -79,12 +86,12 @@ export const updateVideoSection = (model) => async (req, res) => {
     ];
 
     const set = {
-      "videos.videoUrls": Array.from(new Set(merged.filter(Boolean))),
-      "videos.title": payload.title ?? current.title ?? "",
-      "videos.description": payload.description ?? current.description ?? "",
+      [`${field}.videoUrls`]: Array.from(new Set(merged.filter(Boolean))),
+      [`${field}.title`]: payload.title ?? current.title ?? "",
+      [`${field}.description`]: payload.description ?? current.description ?? "",
       // An absent key keeps what is stored; an empty string clears it on
       // purpose, which is how the panel removes a video from a page.
-      "videos.youtubeUrl":
+      [`${field}.youtubeUrl`]:
         payload.youtubeUrl === undefined
           ? current.youtubeUrl ?? ""
           : String(payload.youtubeUrl).trim(),
@@ -98,7 +105,7 @@ export const updateVideoSection = (model) => async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      videos: updated.videos,
+      videos: updated[field],
       message: "Video section updated successfully",
     });
   } catch (error) {
@@ -109,10 +116,13 @@ export const updateVideoSection = (model) => async (req, res) => {
   }
 };
 
-export const deleteVideoSectionItem = (model) => async (req, res) => {
+export const deleteVideoSectionItem = (model, field = "videos") => async (req, res) => {
   try {
     const { id } = req.params;
-    const { field, videoUrl } = req.body || {};
+    // The body's `field` says which part of the block to clear (the YouTube link
+    // or one uploaded file); the factory's `field` says which block. Different
+    // things, so the body's is read out under a different name here.
+    const { field: target, videoUrl } = req.body || {};
 
     const existing = await model.findById(id);
     if (!existing) {
@@ -122,14 +132,14 @@ export const deleteVideoSectionItem = (model) => async (req, res) => {
     }
 
     let updateQuery;
-    if (field === "videoUrls") {
+    if (target === "videoUrls") {
       updateQuery = {
-        "videos.videoUrls": asArray(existing.videos?.videoUrls).filter(
+        [`${field}.videoUrls`]: asArray(existing[field]?.videoUrls).filter(
           (url) => url !== videoUrl,
         ),
       };
-    } else if (field === "youtubeUrl") {
-      updateQuery = { "videos.youtubeUrl": "" };
+    } else if (target === "youtubeUrl") {
+      updateQuery = { [`${field}.youtubeUrl`]: "" };
     } else {
       return res
         .status(400)
@@ -142,7 +152,7 @@ export const deleteVideoSectionItem = (model) => async (req, res) => {
       { new: true },
     );
 
-    return res.status(200).json({ success: true, videos: updated.videos });
+    return res.status(200).json({ success: true, videos: updated[field] });
   } catch (error) {
     console.error("Error deleting from video section:", error);
     return res.status(500).json({ success: false, message: "Delete failed" });

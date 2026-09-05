@@ -17,8 +17,9 @@ import { uploadToCloudinary } from "@/utils/cloudinaryUpload";
 // else.
 //
 // `resource` is the API segment: "studio", "service" (the Production page),
-// "festival" or "news".
-const VideoSection = ({ resource, pageName }) => {
+// "festival", "news" or "home". `path` is the route on that resource, which is
+// "videosection" everywhere except the home page's second block.
+const VideoSection = ({ resource, pageName, path = "videosection", intro }) => {
   const [id, setId] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -29,7 +30,10 @@ const VideoSection = ({ resource, pageName }) => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  const endpoint = `${BACKEND_URL}/api/${resource}/videosection`;
+  const endpoint = `${BACKEND_URL}/api/${resource}/${path}`;
+  // Two of these can sit on one admin page, so the file input needs an id that
+  // is unique per block or clicking one label opens the other one's picker.
+  const uploadId = `videoUpload-${resource}-${path}`;
 
   useEffect(() => {
     const load = async () => {
@@ -155,8 +159,8 @@ const VideoSection = ({ resource, pageName }) => {
         VIDEO PLAYER SECTION{pageName ? ` - ${pageName.toUpperCase()} PAGE` : ""}
       </h1>
       <p className="text-sm text-gray-600 mt-1">
-        Paste a YouTube link to show a video on this page. Leave it empty and the
-        section does not appear on the website at all.
+        {intro ||
+          "Paste a YouTube link to show a video on this page. Leave it empty and the section does not appear on the website at all."}
       </p>
 
       {loading ? (
@@ -199,7 +203,7 @@ const VideoSection = ({ resource, pageName }) => {
 
           <div className="rounded-md border border-indigo-500 bg-gray-50 p-4 shadow-md w-40 mt-6">
             <label
-              htmlFor={`videoUpload-${resource}`}
+              htmlFor={uploadId}
               className="flex flex-col items-center gap-2 cursor-pointer"
             >
               <span className="text-gray-600 font-medium">
@@ -210,7 +214,7 @@ const VideoSection = ({ resource, pageName }) => {
               </span>
             </label>
             <input
-              id={`videoUpload-${resource}`}
+              id={uploadId}
               type="file"
               accept="video/*"
               multiple

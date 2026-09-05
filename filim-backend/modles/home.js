@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { videoSectionFields } from "./videoSection.js";
 
 const HomePageSchema = new mongoose.Schema({
   hero: {
@@ -47,6 +48,10 @@ const HomePageSchema = new mongoose.Schema({
     button: { type: String },
     link: { type: String },
   },
+  // Second video block, shown between the Celebrating Innovation section and
+  // Cinematic Metaverse. Kept as its own field rather than turning `videos` into
+  // an array, so nothing that already reads `videos` has to change.
+  videos2: { ...videoSectionFields },
   runway: {
     alt: { type: String },
     bgImage: [{ type: String }],
