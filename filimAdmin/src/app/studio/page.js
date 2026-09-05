@@ -19,7 +19,7 @@ const page = () => {
         resource='studio'
         path='videosection2'
         pageName='Studio - second video'
-        intro='This is the SECOND video on the Studio page, shown further down, just above the last section, Animation Engine. Leave it empty and it does not appear on the website at all.'
+        intro='This is the SECOND video on the Studio page, shown further down, just above the "Open Source Movie Production" section. Leave it empty and it does not appear on the website at all.'
       />
     </div>
   )

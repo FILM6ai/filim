@@ -185,6 +185,19 @@ const page = () => {
         />
       </div>
 
+      {/* Second video block, sitting just above "Open Source Movie Production".
+          ⚠ That section is the one rendered from the `runway` state variable
+          below - the variable names on this page do not match the sections they
+          draw (`runway` holds the DB field competate2). Same component and same
+          rule as the first block: with nothing set it renders null, so the page
+          closes up as if it were not here. */}
+      <VideoPlayer
+        video={video2?.videoUrls}
+        title={video2?.title}
+        description={video2?.description}
+        youtubeUrl={video2?.youtubeUrl}
+      />
+
       <div className="md:mt-32 ">
         <TopListing
           title={runway?.title}
@@ -217,16 +230,6 @@ const page = () => {
           youtubeUrl={toplist3?.youtubeUrl}
         />
       </div>
-      {/* Second video block, sitting just above the last (Animation Engine) section. Same
-          component and same rule as the first one: with nothing set it renders
-          null, so the page closes up as if it were not here. */}
-      <VideoPlayer
-        video={video2?.videoUrls}
-        title={video2?.title}
-        description={video2?.description}
-        youtubeUrl={video2?.youtubeUrl}
-      />
-
       <div className="md:mt-32 md:mb-40 max-sm:mb-16">
         <TopListing
           title={competate3?.title}
