@@ -3,6 +3,9 @@ import { videoSectionFields } from "./videoSection.js";
 
 const StudioPageSchema = new mongoose.Schema({
   videos: { ...videoSectionFields },
+  // Second video block, lower down the page. Its own field rather than an
+  // array, so nothing that already reads `videos` has to change.
+  videos2: { ...videoSectionFields },
 
   hero: {
     alt: { type: String },

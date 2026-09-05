@@ -27,6 +27,8 @@ const page = () => {
   const [card6, setCard6] = useState({});
   const [loading, setLoading] = useState(true);
   const [video, setVideo] = useState({});
+  // Second video block, lower down the page - see the render below.
+  const [video2, setVideo2] = useState({});
   useEffect(() => {
     const fetchHeroData = async () => {
       try {
@@ -48,6 +50,7 @@ const page = () => {
         setCard5(data.studio[0].card5);
         setCard6(data.studio[0].card6);
         setVideo(data.studio[0].videos || {});
+        setVideo2(data.studio[0].videos2 || {});
         setLoading(false);
       } catch (error) {
         console.error(error);
@@ -214,6 +217,16 @@ const page = () => {
           youtubeUrl={toplist3?.youtubeUrl}
         />
       </div>
+      {/* Second video block, sitting just above the last (Animation Engine) section. Same
+          component and same rule as the first one: with nothing set it renders
+          null, so the page closes up as if it were not here. */}
+      <VideoPlayer
+        video={video2?.videoUrls}
+        title={video2?.title}
+        description={video2?.description}
+        youtubeUrl={video2?.youtubeUrl}
+      />
+
       <div className="md:mt-32 md:mb-40 max-sm:mb-16">
         <TopListing
           title={competate3?.title}

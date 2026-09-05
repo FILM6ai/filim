@@ -8,7 +8,19 @@ const page = () => {
     <div className='pt-12'>
       <MetaData/>
       <Hero />
-      <VideoSection resource='festival' pageName='Festival' />
+      <VideoSection
+        resource='festival'
+        pageName='Festival - first video'
+        intro='This is the FIRST video on the Festival page, the one nearer the top. Leave it empty and it does not appear on the website at all.'
+      />
+      {/* The second block writes to its own field through its own route, so the
+          two never overwrite each other - see VideoSection.jsx. */}
+      <VideoSection
+        resource='festival'
+        path='videosection2'
+        pageName='Festival - second video'
+        intro='This is the SECOND video on the Festival page, shown further down, just above the last section, Exploring the AI Revolution. Leave it empty and it does not appear on the website at all.'
+      />
     </div>
   );
 }

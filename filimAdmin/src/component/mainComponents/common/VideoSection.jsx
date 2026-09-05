@@ -7,8 +7,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { BACKEND_URL } from "@/utils/backend";
 import { uploadToCloudinary } from "@/utils/cloudinaryUpload";
 
-// The video block that already existed on the home page, now usable on Studio,
-// Production, Festival and News.
+// The video block that started on the home page, now usable on any page. Home,
+// Studio, Production and Festival each carry two of them; News carries one.
 //
 // It saves on its own button rather than joining the page's big form, because
 // each page's update endpoint rebuilds the whole document from whatever the form
@@ -17,8 +17,8 @@ import { uploadToCloudinary } from "@/utils/cloudinaryUpload";
 // else.
 //
 // `resource` is the API segment: "studio", "service" (the Production page),
-// "festival", "news" or "home". `path` is the route on that resource, which is
-// "videosection" everywhere except the home page's second block.
+// "festival", "news" or "home". `path` is the route on that resource:
+// "videosection" for the first block, "videosection2" for the second.
 const VideoSection = ({ resource, pageName, path = "videosection", intro }) => {
   const [id, setId] = useState("");
   const [title, setTitle] = useState("");
@@ -34,6 +34,10 @@ const VideoSection = ({ resource, pageName, path = "videosection", intro }) => {
   // Two of these can sit on one admin page, so the file input needs an id that
   // is unique per block or clicking one label opens the other one's picker.
   const uploadId = `videoUpload-${resource}-${path}`;
+  // react-toastify sends a toast to the default container unless told otherwise.
+  // Two of these on one page means two containers, so every toast here names
+  // its own or the same message renders twice.
+  const containerId = `videoSection-${resource}-${path}`;
 
   useEffect(() => {
     const load = async () => {
@@ -49,7 +53,7 @@ const VideoSection = ({ resource, pageName, path = "videosection", intro }) => {
         );
       } catch (error) {
         console.error("Failed to load video section:", error);
-        toast.error("Could not load the video section");
+        toast.error("Could not load the video section", { containerId });
       } finally {
         setLoading(false);
       }
@@ -83,7 +87,7 @@ const VideoSection = ({ resource, pageName, path = "videosection", intro }) => {
 
   const handleSave = async () => {
     if (!id) {
-      toast.error("This page has no record to save against yet");
+      toast.error("This page has no record to save against yet", { containerId });
       return;
     }
 
@@ -92,7 +96,7 @@ const VideoSection = ({ resource, pageName, path = "videosection", intro }) => {
     // show nothing after saving.
     const embedUrl = toEmbedUrl(youtubeUrl);
     if (embedUrl === null) {
-      toast.error("That is not a YouTube link - paste the URL from the address bar");
+      toast.error("That is not a YouTube link - paste the URL from the address bar", { containerId });
       return;
     }
 
@@ -120,10 +124,10 @@ const VideoSection = ({ resource, pageName, path = "videosection", intro }) => {
         Array.isArray(data.videos?.videoUrls) ? data.videos.videoUrls : [],
       );
       setPendingFiles([]);
-      toast.success("Video section saved");
+      toast.success("Video section saved", { containerId });
     } catch (error) {
       console.error("Failed to save video section:", error);
-      toast.error("Save failed");
+      toast.error("Save failed", { containerId });
     } finally {
       setSaving(false);
     }
@@ -140,10 +144,10 @@ const VideoSection = ({ resource, pageName, path = "videosection", intro }) => {
       setVideoUrls(
         Array.isArray(data.videos?.videoUrls) ? data.videos.videoUrls : [],
       );
-      toast.success("Removed");
+      toast.success("Removed", { containerId });
     } catch (error) {
       console.error("Failed to remove video:", error);
-      toast.error("Delete failed");
+      toast.error("Delete failed", { containerId });
     }
   };
 
@@ -151,10 +155,11 @@ const VideoSection = ({ resource, pageName, path = "videosection", intro }) => {
 
   return (
     <div className="p-4 border mt-10">
-      {/* These four pages mount no toast container of their own, so without this
+      {/* These pages mount no toast container of their own, so without this
           every "Saved" and every error message here would fire into nothing and
-          the Save button would look like it did nothing. */}
-      <ToastContainer position="top-right" autoClose={3000} />
+          the Save button would look like it did nothing. Each block owns its
+          container and addresses it by id, so two on one page do not double up. */}
+      <ToastContainer containerId={containerId} position="top-right" autoClose={3000} />
       <h1 className="text-black pt-4 font-semibold text-lg">
         VIDEO PLAYER SECTION{pageName ? ` - ${pageName.toUpperCase()} PAGE` : ""}
       </h1>

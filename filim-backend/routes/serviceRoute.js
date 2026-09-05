@@ -70,4 +70,10 @@ serviceRoute.get('/videosection', getVideoSection(serviceSchema));
 serviceRoute.put('/videosection/:id', updateVideoSection(serviceSchema));
 serviceRoute.delete('/videosection/:id', deleteVideoSectionItem(serviceSchema));
 
+// The second video block, lower down the page. Same controller, different
+// field - the write stays scoped to dotted `videos2.*` paths.
+serviceRoute.get('/videosection2', getVideoSection(serviceSchema, 'videos2'));
+serviceRoute.put('/videosection2/:id', updateVideoSection(serviceSchema, 'videos2'));
+serviceRoute.delete('/videosection2/:id', deleteVideoSectionItem(serviceSchema, 'videos2'));
+
 export default serviceRoute;

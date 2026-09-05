@@ -30,6 +30,8 @@ const page = () => {
 
   const [loading, setLoading] = useState(true);
   const [video, setVideo] = useState({});
+  // Second video block, lower down the page - see the render below.
+  const [video2, setVideo2] = useState({});
   useEffect(() => {
     const fetchHeroData = async () => {
       try {
@@ -48,6 +50,7 @@ const page = () => {
         setGalleryData(data.festival[0].gallery || {});
         setJurorsData(data.festival[0].jurors || {});
         setVideo(data.festival[0].videos || {});
+        setVideo2(data.festival[0].videos2 || {});
 
         setLoading(false);
       } catch (error) {
@@ -145,6 +148,16 @@ const page = () => {
       <GalleryPhotos
         mainTitle={galleryData?.mainTitle}
         images={galleryData?.images}
+      />
+
+      {/* Second video block, sitting just above the last (Exploring the AI Revolution) section. Same
+          component and same rule as the first one: with nothing set it renders
+          null, so the page closes up as if it were not here. */}
+      <VideoPlayer
+        video={video2?.videoUrls}
+        title={video2?.title}
+        description={video2?.description}
+        youtubeUrl={video2?.youtubeUrl}
       />
 
       <Runway

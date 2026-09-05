@@ -69,4 +69,10 @@ studioRoute.get('/videosection', getVideoSection(studioSchema));
 studioRoute.put('/videosection/:id', updateVideoSection(studioSchema));
 studioRoute.delete('/videosection/:id', deleteVideoSectionItem(studioSchema));
 
+// The second video block, lower down the page. Same controller, different
+// field - the write stays scoped to dotted `videos2.*` paths.
+studioRoute.get('/videosection2', getVideoSection(studioSchema, 'videos2'));
+studioRoute.put('/videosection2/:id', updateVideoSection(studioSchema, 'videos2'));
+studioRoute.delete('/videosection2/:id', deleteVideoSectionItem(studioSchema, 'videos2'));
+
 export default studioRoute;

@@ -19,6 +19,8 @@ const page = () => {
   const [runway, setRunway] = useState({});
   const [loading, setLoading] = useState(true);
   const [video, setVideo] = useState({});
+  // Second video block, lower down the page - see the render below.
+  const [video2, setVideo2] = useState({});
   // State for the home meta data.
   useEffect(() => {
     const fetchHeroData = async () => {
@@ -33,6 +35,7 @@ const page = () => {
         setCompetate(data.services[0].competate);
         setRunway(data.services[0].runway);
         setVideo(data.services[0].videos || {});
+        setVideo2(data.services[0].videos2 || {});
         setLoading(false);
       } catch (error) {
         setLoading(false);
@@ -114,6 +117,16 @@ const page = () => {
         />
         <div className="bg-[#F8F8F8] max-md:mt-12 md:h-48 md:-mt-16 relative -z-50"></div>
       </div>
+      {/* Second video block, sitting just above the last (WAIMF Celebrating Innovation) section. Same
+          component and same rule as the first one: with nothing set it renders
+          null, so the page closes up as if it were not here. */}
+      <VideoPlayer
+        video={video2?.videoUrls}
+        title={video2?.title}
+        description={video2?.description}
+        youtubeUrl={video2?.youtubeUrl}
+      />
+
       <Runway
         title={runway?.title}
         image={

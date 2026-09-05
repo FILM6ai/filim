@@ -180,4 +180,10 @@ festivalRoute.get('/videosection', getVideoSection(festivalSchema));
 festivalRoute.put('/videosection/:id', updateVideoSection(festivalSchema));
 festivalRoute.delete('/videosection/:id', deleteVideoSectionItem(festivalSchema));
 
+// The second video block, lower down the page. Same controller, different
+// field - the write stays scoped to dotted `videos2.*` paths.
+festivalRoute.get('/videosection2', getVideoSection(festivalSchema, 'videos2'));
+festivalRoute.put('/videosection2/:id', updateVideoSection(festivalSchema, 'videos2'));
+festivalRoute.delete('/videosection2/:id', deleteVideoSectionItem(festivalSchema, 'videos2'));
+
 export default festivalRoute;
