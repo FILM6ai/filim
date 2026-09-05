@@ -117,16 +117,6 @@ const page = () => {
         />
         <div className="bg-[#F8F8F8] max-md:mt-12 md:h-48 md:-mt-16 relative -z-50"></div>
       </div>
-      {/* Second video block, sitting just above the last (WAIMF Celebrating Innovation) section. Same
-          component and same rule as the first one: with nothing set it renders
-          null, so the page closes up as if it were not here. */}
-      <VideoPlayer
-        video={video2?.videoUrls}
-        title={video2?.title}
-        description={video2?.description}
-        youtubeUrl={video2?.youtubeUrl}
-      />
-
       <Runway
         title={runway?.title}
         image={
@@ -138,6 +128,17 @@ const page = () => {
         button={runway?.button}
         alt={runway?.alt}
         link={runway?.link}
+      />
+
+      {/* Second video block, the last thing on the page - below WAIMF
+          Celebrating Innovation and directly above the footer. Same component
+          and same rule as the first one: with nothing set it renders null, so
+          the page closes up as if it were not here. */}
+      <VideoPlayer
+        video={video2?.videoUrls}
+        title={video2?.title}
+        description={video2?.description}
+        youtubeUrl={video2?.youtubeUrl}
       />
     </div>
   );
