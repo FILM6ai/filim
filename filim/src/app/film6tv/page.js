@@ -4,10 +4,11 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import axios from "axios";
 import Loading from "@/components/faq/Loading";
+import FeaturedHero from "@/components/Film6TV/FeaturedHero";
 import FilmGrid from "@/components/Film6TV/FilmGrid";
 import FilmPlayer from "@/components/Film6TV/FilmPlayer";
 import { API_BASE_URL } from "@/utils/backend";
-import { groupByCategory, isPlayable } from "@/utils/film6tv";
+import { featuredFilms, groupByCategory, isPlayable } from "@/utils/film6tv";
 
 // FILM6 TV.
 //
@@ -48,27 +49,23 @@ const Film6TVPage = () => {
   // when none of its films can play, rather than leaving a bare heading.
   const playable = films.filter((film) => isPlayable(film, libraryId));
   const rows = groupByCategory(playable, settings?.rowOrder || []);
+  const featured = featuredFilms(playable, libraryId);
 
   const hero = settings?.hero || {};
   const cta = settings?.cta || {};
 
   return (
     <div className="bg-black min-h-screen">
-      {/* Header. Kept as type on black rather than a picture: with no films
-          loaded yet a large empty image reads as broken, whereas type does not. */}
-      <section className="px-4 sm:px-6 lg:px-20 pt-32 pb-8 relative">
-        {hero.bgImage && (
-          <div className="absolute inset-0 overflow-hidden">
-            <img
-              src={hero.bgImage}
-              alt={hero.alt || ""}
-              className="w-full h-full object-cover opacity-40"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/30" />
-          </div>
-        )}
-
-        <div className="relative">
+      {featured.length > 0 ? (
+        <FeaturedHero
+          films={featured}
+          bunnyLibraryId={libraryId}
+          onPlay={setSelected}
+        />
+      ) : (
+        // Nothing to feature yet. Type on black rather than a large empty
+        // image, which reads as broken.
+        <section className="px-4 sm:px-6 lg:px-20 pt-32 pb-8">
           <h1 className="text-3xl sm:text-5xl text-white font-semibold">
             {hero.title || "FILM6 TV"}
           </h1>
@@ -77,8 +74,8 @@ const Film6TVPage = () => {
               {hero.description}
             </p>
           )}
-        </div>
-      </section>
+        </section>
+      )}
 
       {rows.length > 0 ? (
         rows.map(([category, list]) => (

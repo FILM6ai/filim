@@ -66,3 +66,26 @@ export const groupByCategory = (films, rowOrder = []) => {
   for (const [name, list] of groups) ordered.push([name, list]);
   return ordered;
 };
+
+// Bunny renders a short animated preview for every video it stores. Swapping a
+// still for this on hover is the whole trick behind how alive the best sites in
+// this space feel - and it costs nothing extra, because Bunny generates it
+// whether we use it or not.
+//
+// YouTube has no public equivalent, so those films stay still. That asymmetry is
+// worth knowing: it is a concrete reason to move a catalogue onto Bunny beyond
+// ownership.
+export const filmPreview = (film, bunnyLibraryId) => {
+  if (film?.provider !== "bunny" || !bunnyLibraryId || !film.bunnyVideoId) {
+    return "";
+  }
+  return `https://vz-${bunnyLibraryId}.b-cdn.net/${film.bunnyVideoId}/preview.webp`;
+};
+
+// The films shown full width at the top of the page. Falls back to the newest
+// playable film so the hero is never empty just because nobody ticked a box.
+export const featuredFilms = (films, bunnyLibraryId) => {
+  const playable = films.filter((film) => isPlayable(film, bunnyLibraryId));
+  const flagged = playable.filter((film) => film.featured);
+  return flagged.length > 0 ? flagged : playable.slice(0, 1);
+};

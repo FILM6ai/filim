@@ -37,7 +37,21 @@ const FilmSchema = new mongoose.Schema(
     // settings rather than being repeated on every film.
     bunnyVideoId: { type: String, default: "" },
 
+    // Which festival and edition selected this film, e.g. "WAIMF 2026".
+    // One field doing three jobs: it prints the laurel on the film, it groups a
+    // year's selection into a row, and it is what waimf.org filters on so the
+    // festival site can show its own selection from this same catalogue.
+    edition: { type: String, default: "" },
+    // Any other festival the film has been selected by. Borrowed credibility,
+    // and the film-maker's to claim - so it is free text, not a fixed list.
+    laurels: [{ type: String }],
+
+    // Shown full width at the top of the page. More than one may be flagged;
+    // the page rotates through them.
     featured: { type: Boolean, default: false },
+    // The film's own title artwork, laid over the still. Optional - without one
+    // the title is set in type, which is what most films will use.
+    titleImage: { type: String, default: "" },
     // Unpublished films stay in the panel and off the website, so a catalogue
     // can be prepared before a festival rather than appearing as it is typed.
     published: { type: Boolean, default: true },

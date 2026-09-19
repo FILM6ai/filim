@@ -49,6 +49,10 @@ export const getFilms = async (req, res) => {
     // The website asks for published films only; the panel asks for everything.
     const includeUnpublished = req.query.all === "1";
     const query = includeUnpublished ? {} : { published: true };
+    // ?edition=WAIMF%202026 narrows the catalogue to one festival selection, so
+    // a second site can render its own films from this same endpoint without a
+    // second database or a second admin screen.
+    if (req.query.edition) query.edition = req.query.edition;
 
     const films = await filmSchema
       .find(query)
@@ -99,6 +103,9 @@ export const createFilm = async (req, res) => {
       provider,
       youtubeUrl,
       bunnyVideoId: provider === "bunny" ? String(body.bunnyVideoId || "").trim() : "",
+      edition: body.edition || "",
+      laurels: Array.isArray(body.laurels) ? body.laurels.filter(Boolean) : [],
+      titleImage: body.titleImage || "",
       featured: Boolean(body.featured),
       published: body.published === undefined ? true : Boolean(body.published),
     });
@@ -142,12 +149,15 @@ export const updateFilm = async (req, res) => {
       "category",
       "poster",
       "alt",
+      "edition",
+      "titleImage",
     ]) {
       if (body[field] !== undefined) set[field] = body[field];
     }
 
     if (body.order !== undefined) set.order = Number(body.order) || 0;
     if (body.featured !== undefined) set.featured = Boolean(body.featured);
+    if (Array.isArray(body.laurels)) set.laurels = body.laurels.filter(Boolean);
     if (body.published !== undefined) set.published = Boolean(body.published);
 
     const provider =
