@@ -56,6 +56,11 @@ const menuItems = [
         icon: <FaHome size={16} className='mr-2' />,
       },
       {
+        label: 'FILM6 TV',
+        link: '/film6tv',
+        icon: <FaHome size={16} className='mr-2' />,
+      },
+      {
         label: 'News',
         link: '/news',
         icon: <FaHome size={16} className='mr-2' />,

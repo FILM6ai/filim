@@ -50,7 +50,8 @@ const Navbar = () => {
   const linksStatic = [
     { name: 'Studio', link: '/studio' },
     { name: 'Production', link: '/production' },
-    { name: 'Festival', link: '/WAIMF/festival' }, 
+    { name: 'Festival', link: '/WAIMF/festival' },
+    { name: 'FILM6 TV', link: '/film6tv' },
     { name: 'News', link: '/news' },
     { name: 'Contact', link: '/contact' },
   ];
