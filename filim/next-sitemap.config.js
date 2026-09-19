@@ -38,7 +38,11 @@ module.exports = {
   trailingSlash: false,
   // /news/[title] is dynamic, so next-sitemap can't discover the articles on
   // its own - they're added by additionalPaths below.
-  exclude: ['/news/[title]'],
+  // /film6tv is built and working but deliberately not public yet - it is not
+  // in the menu, and it must not reach Google either until there is a real
+  // catalogue behind it. Listing it here would have been exactly how Google
+  // found it.
+  exclude: ['/news/[title]', '/film6tv'],
 
   transform: async (config, path) => {
     const { priority = 0.7, changefreq = 'weekly' } = STATIC_ROUTES[path] || {};
@@ -90,6 +94,9 @@ module.exports = {
   },
 
   robotsTxtOptions: {
-    policies: [{ userAgent: '*', allow: '/' }],
+    // Allow everything EXCEPT the pages that are not ready. Keeping the
+    // allow-all rule first matters: a bare disallow here would take the whole
+    // site out of Google.
+    policies: [{ userAgent: '*', allow: '/', disallow: ['/film6tv'] }],
   },
 };

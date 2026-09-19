@@ -51,7 +51,12 @@ const Navbar = () => {
     { name: 'Studio', link: '/studio' },
     { name: 'Production', link: '/production' },
     { name: 'Festival', link: '/WAIMF/festival' },
-    { name: 'FILM6 TV', link: '/film6tv' },
+    // FILM6 TV is deliberately NOT in the menu yet. The page exists and works at
+    // /film6tv, but Francois decided it should not be shown to anyone until
+    // there is a real catalogue behind it - an almost-empty TV page put in front
+    // of a film-maker is worse than no TV page. Put this line back when the
+    // festival selection is in.
+    // { name: 'FILM6 TV', link: '/film6tv' },
     { name: 'News', link: '/news' },
     { name: 'Contact', link: '/contact' },
   ];
