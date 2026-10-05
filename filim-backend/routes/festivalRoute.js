@@ -186,4 +186,15 @@ festivalRoute.get('/videosection2', getVideoSection(festivalSchema, 'videos2'));
 festivalRoute.put('/videosection2/:id', updateVideoSection(festivalSchema, 'videos2'));
 festivalRoute.delete('/videosection2/:id', deleteVideoSectionItem(festivalSchema, 'videos2'));
 
+// Blocks three and four: under Festival Selection and under A Celebration of
+// Human Talent & Technology. See the field map in modles/festival.js - the
+// numbers are build order, not page order.
+festivalRoute.get('/videosection3', getVideoSection(festivalSchema, 'videos3'));
+festivalRoute.put('/videosection3/:id', updateVideoSection(festivalSchema, 'videos3'));
+festivalRoute.delete('/videosection3/:id', deleteVideoSectionItem(festivalSchema, 'videos3'));
+
+festivalRoute.get('/videosection4', getVideoSection(festivalSchema, 'videos4'));
+festivalRoute.put('/videosection4/:id', updateVideoSection(festivalSchema, 'videos4'));
+festivalRoute.delete('/videosection4/:id', deleteVideoSectionItem(festivalSchema, 'videos4'));
+
 export default festivalRoute;

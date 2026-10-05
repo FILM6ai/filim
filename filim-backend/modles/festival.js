@@ -6,6 +6,18 @@ const FestivalPageSchema = new mongoose.Schema({
   // Second video block, lower down the page. Its own field rather than an
   // array, so nothing that already reads `videos` has to change.
   videos2: { ...videoSectionFields },
+  // Two more blocks, added after videos2 already held the bottom one.
+  //
+  // ⚠ The numbers are the order they were BUILT, not the order they appear on
+  // the page. Top to bottom the Festival page runs:
+  //   videos  -> above Festival Selection
+  //   videos3 -> under Festival Selection
+  //   videos4 -> under A Celebration of Human Talent & Technology
+  //   videos2 -> at the bottom, above Exploring the AI Revolution
+  // Renumbering them to match would mean moving content that is already live,
+  // so the mapping is written down here instead.
+  videos3: { ...videoSectionFields },
+  videos4: { ...videoSectionFields },
 
   hero: {
     bgImage: { type: String },

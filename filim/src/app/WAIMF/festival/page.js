@@ -32,6 +32,11 @@ const page = () => {
   const [video, setVideo] = useState({});
   // Second video block, lower down the page - see the render below.
   const [video2, setVideo2] = useState({});
+  // ⚠ The numbers are build order, not page order. Top to bottom this page runs
+  // video (above Festival Selection), video3 (under Festival Selection), video4
+  // (under A Celebration of Human Talent & Technology), video2 (at the bottom).
+  const [video3, setVideo3] = useState({});
+  const [video4, setVideo4] = useState({});
   useEffect(() => {
     const fetchHeroData = async () => {
       try {
@@ -51,6 +56,8 @@ const page = () => {
         setJurorsData(data.festival[0].jurors || {});
         setVideo(data.festival[0].videos || {});
         setVideo2(data.festival[0].videos2 || {});
+        setVideo3(data.festival[0].videos3 || {});
+        setVideo4(data.festival[0].videos4 || {});
 
         setLoading(false);
       } catch (error) {
@@ -116,6 +123,15 @@ const page = () => {
         popup={robot?.popup}
       />
 
+      {/* Under Festival Selection. Same rule as every other block here: with
+          nothing set it renders null and the page closes up. */}
+      <VideoPlayer
+        video={video3?.videoUrls}
+        title={video3?.title}
+        description={video3?.description}
+        youtubeUrl={video3?.youtubeUrl}
+      />
+
       <div>
         <TopListing
           title={competate?.title}
@@ -132,8 +148,22 @@ const page = () => {
           popup={competate?.popup}
         />
 
+        {/* Under A Celebration of Human Talent & Technology - and deliberately
+            ABOVE the grey band below, not after it. The band is this section's
+            tail, so putting the video after it left a dead strip of grey
+            between the section and its own video. Same rule as the others: with
+            nothing set it renders null and the page closes up exactly as it is
+            today. */}
+        <VideoPlayer
+          video={video4?.videoUrls}
+          title={video4?.title}
+          description={video4?.description}
+          youtubeUrl={video4?.youtubeUrl}
+        />
+
         <div className="bg-[#F8F8F8] max-md:mt-12 md:h-48 md:-mt-16 relative -z-50"></div>
       </div>
+
       <JurorPhotos
         mainTitle={jurorsData?.mainTitle}
         items={jurorsData?.items}
