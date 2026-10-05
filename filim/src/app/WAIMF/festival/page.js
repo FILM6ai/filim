@@ -180,9 +180,9 @@ const page = () => {
         images={galleryData?.images}
       />
 
-      {/* Second video block, sitting just above the last (Exploring the AI Revolution) section. Same
-          component and same rule as the first one: with nothing set it renders
-          null, so the page closes up as if it were not here. */}
+      {/* The bottom video block. Same component and same rule as the others:
+          with nothing set it renders null, so the page closes up as if it were
+          not here. */}
       <VideoPlayer
         video={video2?.videoUrls}
         title={video2?.title}
@@ -190,6 +190,11 @@ const page = () => {
         youtubeUrl={video2?.youtubeUrl}
       />
 
+      <Sheilds mainTitle={shieldMainTitle} cards={shieldCards} />
+
+      {/* "Exploring the AI Revolution" - the shark section. Francois asked for
+          it to go all the way down, so it now closes the page BELOW Festival
+          Awards rather than sitting above it. */}
       <Runway
         title={runway?.title}
         image={
@@ -202,7 +207,6 @@ const page = () => {
         link={runway?.link}
         popup={runway?.popup}
       />
-      <Sheilds mainTitle={shieldMainTitle} cards={shieldCards} />
     </div>
   );
 };

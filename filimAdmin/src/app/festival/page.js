@@ -21,7 +21,7 @@ const page = () => {
             1st  videosection   above Festival Selection
             2nd  videosection3  under Festival Selection
             3rd  videosection4  under A Celebration of Human Talent & Technology
-            4th  videosection2  at the bottom, above Exploring the AI Revolution
+            4th  videosection2  at the bottom, above Festival Awards
       */}
       <VideoSection
         resource='festival'
@@ -44,7 +44,7 @@ const page = () => {
         resource='festival'
         path='videosection2'
         pageName='Festival - fourth video'
-        intro='4th of four. At the bottom of the page, just above the last section, Exploring the AI Revolution. Leave it empty and it does not appear on the website at all.'
+        intro='4th of four. Near the bottom of the page, just above FESTIVAL AWARDS. Leave it empty and it does not appear on the website at all.'
       />
     </div>
   );
