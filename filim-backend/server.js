@@ -7,7 +7,6 @@ import connectDB from "./utils/db.js";
 import homeRouter from "./routes/homeRoute.js";
 import serviceRoute from "./routes/serviceRoute.js";
 import festivalRoute from "./routes/festivalRoute.js";
-import waimfRoute from "./routes/waimfRoute.js";
 import studioRoute from "./routes/studio.js";
 import contatcRoute from "./routes/contact.js";
 import formRoute from "./routes/form.js";
@@ -93,8 +92,6 @@ app.use("/api/auth", authRoute);
 app.use("/api/home", homeRouter);
 app.use("/api/service", serviceRoute);
 app.use("/api/festival", festivalRoute);
-// waimf.org runs on this same API - its own content, the same engine.
-app.use("/api/waimf", waimfRoute);
 app.use("/api/studio", studioRoute);
 app.use("/api/contact", contatcRoute);
 app.use("/api/form", formRoute);

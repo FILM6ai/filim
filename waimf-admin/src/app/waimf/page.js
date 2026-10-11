@@ -1,0 +1,311 @@
+'use client';
+
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { BACKEND_URL } from '@/utils/backend';
+import { Field, Area, Repeater, ImageList } from '@/component/mainComponents/waimf/Fields';
+
+// The whole of waimf.org, editable.
+//
+// SAVED SECTION BY SECTION, never as one big form. The backend writes only the
+// sections present in the request, so pressing Save under Winners cannot blank
+// the Jury. That is deliberate: the older page endpoints on this project
+// rebuild the entire document from whatever the form posts, which is how a
+// half-filled form once wiped a page header.
+
+const TABS = [
+  { key: 'hero', label: 'Header' },
+  { key: 'edition', label: 'Edition 2026' },
+  { key: 'filmmakers', label: 'Top Filmmakers' },
+  { key: 'selection', label: 'Official Selection' },
+  { key: 'awards', label: 'Awards' },
+  { key: 'jurors', label: 'Jury' },
+  { key: 'gallery', label: 'Gallery' },
+  { key: 'rules', label: 'Rules' },
+  { key: 'contact', label: 'Contact' },
+];
+
+export default function WaimfPage() {
+  const [doc, setDoc] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState('');
+  const [tab, setTab] = useState('hero');
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const { data } = await axios.get(`${BACKEND_URL}/api/waimf/getwaimf`);
+        setDoc(data?.waimf?.[0] || {});
+      } catch (error) {
+        console.error('Failed to load the WAIMF page:', error);
+        toast.error('Could not load the WAIMF page');
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
+
+  // Local edits only - nothing reaches the website until Save is pressed.
+  const set = (section, value) =>
+    setDoc((prev) => ({ ...prev, [section]: value }));
+
+  const setField = (section, key, value) =>
+    setDoc((prev) => ({ ...prev, [section]: { ...(prev[section] || {}), [key]: value } }));
+
+  const save = async (section) => {
+    setSaving(section);
+    try {
+      // ONE section per request. See the note at the top of this file.
+      const { data } = await axios.put(`${BACKEND_URL}/api/waimf/updatewaimf`, {
+        [section]: doc[section] || {},
+      });
+      if (data?.waimf) setDoc(data.waimf);
+      toast.success('Saved');
+    } catch (error) {
+      console.error('Save failed:', error);
+      toast.error(
+        error?.response?.status === 401
+          ? 'Your session has expired - sign in again'
+          : 'Save failed',
+      );
+    } finally {
+      setSaving('');
+    }
+  };
+
+  if (loading) return <div className='pt-24 px-8 text-gray-600'>Loading...</div>;
+
+  const SaveBar = ({ section }) => (
+    <div className='flex items-center gap-4 border-t border-gray-200 pt-4 mt-2'>
+      <button
+        type='button'
+        onClick={() => save(section)}
+        disabled={saving === section}
+        className='bg-black text-white px-6 py-2 disabled:opacity-50'
+      >
+        {saving === section ? 'Saving...' : 'Save this section'}
+      </button>
+      <span className='text-sm text-gray-500'>
+        Saves only this section. The rest of the page is untouched.
+      </span>
+    </div>
+  );
+
+  const hero = doc.hero || {};
+  const edition = doc.edition || {};
+  const filmmakers = doc.filmmakers || {};
+  const selection = doc.selection || {};
+  const awards = doc.awards || {};
+  const jurors = doc.jurors || {};
+  const gallery = doc.gallery || {};
+  const rules = doc.rules || {};
+  const contact = doc.contact || {};
+
+  return (
+    <div className='pt-12 px-6 pb-24 max-w-[1100px]'>
+      <ToastContainer position='top-right' autoClose={3000} />
+
+      <h1 className='text-2xl font-semibold text-black'>waimf.org</h1>
+      <p className='text-sm text-gray-600 mt-1 mb-6'>
+        Everything on the festival website. Each section saves on its own
+        button. A section left empty does not appear on the site at all.
+      </p>
+
+      <div className='flex flex-wrap gap-2 border-b border-gray-300 mb-8'>
+        {TABS.map((t) => (
+          <button
+            key={t.key}
+            type='button'
+            onClick={() => setTab(t.key)}
+            className={`px-4 py-2 text-sm border-b-2 -mb-px ${
+              tab === t.key
+                ? 'border-black text-black font-medium'
+                : 'border-transparent text-gray-500'
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {tab === 'hero' && (
+        <section>
+          <Field label='Title' value={hero.title} onChange={(v) => setField('hero', 'title', v)} />
+          <Field
+            label='Dates line'
+            hint='The ONLY place the dates appear on the whole site. Shown in gold above the title.'
+            value={hero.dateline}
+            onChange={(v) => setField('hero', 'dateline', v)}
+          />
+          <Area label='Sentence under the title' value={hero.description} rows={3}
+            onChange={(v) => setField('hero', 'description', v)} />
+          <Field label='Button text' value={hero.button} onChange={(v) => setField('hero', 'button', v)} />
+          <Field label='Button link' placeholder='/top-filmmakers' value={hero.link}
+            onChange={(v) => setField('hero', 'link', v)} />
+          <Field
+            label='Background image or video address'
+            hint='Paste a Cloudinary address. An .mp4 plays as video; anything else is shown as a picture.'
+            value={Array.isArray(hero.bgImage) ? hero.bgImage.at(-1) : hero.bgImage}
+            onChange={(v) => setField('hero', 'bgImage', v)}
+          />
+          <SaveBar section='hero' />
+        </section>
+      )}
+
+      {tab === 'edition' && (
+        <section>
+          <Field label='Heading' value={edition.title} onChange={(v) => setField('edition', 'title', v)} />
+          <Area label='Description' rows={10} value={edition.description}
+            onChange={(v) => setField('edition', 'description', v)} />
+          <Repeater
+            label='Festival schedule'
+            hint='Shown as a list beside the description.'
+            items={edition.schedule}
+            columns={[
+              { key: 'when', label: 'When', placeholder: '8 Oct, 7-9:30pm' },
+              { key: 'what', label: 'What', wide: true, placeholder: 'Ceremony and screening, Red Dog Cinema' },
+            ]}
+            newRow={{ when: '', what: '' }}
+            onChange={(v) => setField('edition', 'schedule', v)}
+          />
+          <SaveBar section='edition' />
+        </section>
+      )}
+
+      {tab === 'filmmakers' && (
+        <section>
+          <Field label='Heading' value={filmmakers.mainTitle}
+            onChange={(v) => setField('filmmakers', 'mainTitle', v)} />
+          <Area label='Intro line' rows={2} value={filmmakers.description}
+            onChange={(v) => setField('filmmakers', 'description', v)} />
+          <Repeater
+            label='Winners'
+            hint='One row per award. The order here is the order on the page.'
+            items={filmmakers.items}
+            columns={[
+              { key: 'award', label: 'Award', placeholder: 'Grand Prix' },
+              { key: 'film', label: 'Film', placeholder: 'Azul Cobalto' },
+              { key: 'filmmaker', label: 'Filmmaker', wide: true, placeholder: 'Tomas Pena' },
+            ]}
+            newRow={{ award: '', film: '', filmmaker: '' }}
+            onChange={(v) => setField('filmmakers', 'items', v)}
+          />
+          <SaveBar section='filmmakers' />
+        </section>
+      )}
+
+      {tab === 'selection' && (
+        <section>
+          <Field label='Heading' value={selection.mainTitle}
+            onChange={(v) => setField('selection', 'mainTitle', v)} />
+          <Area label='Intro line' rows={2} value={selection.description}
+            onChange={(v) => setField('selection', 'description', v)} />
+          <Repeater
+            label='Films'
+            hint='Paste the YouTube address and the poster appears on its own - no image needed.'
+            items={selection.items}
+            columns={[
+              { key: 'title', label: 'Title', wide: true },
+              { key: 'director', label: 'Director' },
+              { key: 'duration', label: 'Length', placeholder: '4 min' },
+              { key: 'youtubeUrl', label: 'YouTube address', wide: true },
+            ]}
+            newRow={{ title: '', director: '', duration: '', youtubeUrl: '' }}
+            onChange={(v) => setField('selection', 'items', v)}
+          />
+          <SaveBar section='selection' />
+        </section>
+      )}
+
+      {tab === 'awards' && (
+        <section>
+          <Field label='Heading' value={awards.mainTitle}
+            onChange={(v) => setField('awards', 'mainTitle', v)} />
+          <Area label='Intro line' rows={2} value={awards.description}
+            onChange={(v) => setField('awards', 'description', v)} />
+          <Repeater
+            label='Award categories'
+            items={awards.cards}
+            columns={[
+              { key: 'title', label: 'Award', wide: true },
+              { key: 'description', label: 'Description', area: true, wide: true },
+            ]}
+            newRow={{ title: '', description: '' }}
+            onChange={(v) => setField('awards', 'cards', v)}
+          />
+          <SaveBar section='awards' />
+        </section>
+      )}
+
+      {tab === 'jurors' && (
+        <section>
+          <Field label='Heading' value={jurors.mainTitle}
+            onChange={(v) => setField('jurors', 'mainTitle', v)} />
+          <Repeater
+            label='Jury'
+            hint='Photographs are resized automatically, so upload whatever you have.'
+            items={jurors.items}
+            columns={[
+              { key: 'name', label: 'Name', wide: true },
+              { key: 'role', label: 'Role', wide: true },
+              { key: 'image', label: 'Photo address', wide: true },
+            ]}
+            newRow={{ name: '', role: '', image: '' }}
+            onChange={(v) => setField('jurors', 'items', v)}
+          />
+          <SaveBar section='jurors' />
+        </section>
+      )}
+
+      {tab === 'gallery' && (
+        <section>
+          <Field label='Heading' value={gallery.mainTitle}
+            onChange={(v) => setField('gallery', 'mainTitle', v)} />
+          <ImageList
+            label='Photographs'
+            hint='Upload the ceremony pictures here. They go straight to Cloudinary, so there is no size limit to trip over.'
+            images={gallery.images}
+            onChange={(v) => setField('gallery', 'images', v)}
+          />
+          <SaveBar section='gallery' />
+        </section>
+      )}
+
+      {tab === 'rules' && (
+        <section>
+          <Field label='Heading' value={rules.mainTitle}
+            onChange={(v) => setField('rules', 'mainTitle', v)} />
+          <Field label='Line under the heading' value={rules.subtitle}
+            onChange={(v) => setField('rules', 'subtitle', v)} />
+          <Repeater
+            label='Rules'
+            hint='Each one becomes a column on the Rules page. Line breaks are kept.'
+            items={rules.items}
+            columns={[
+              { key: 'term', label: 'Heading', wide: true },
+              { key: 'definition', label: 'Text', area: true, wide: true },
+            ]}
+            newRow={{ term: '', definition: '' }}
+            onChange={(v) => setField('rules', 'items', v)}
+          />
+          <SaveBar section='rules' />
+        </section>
+      )}
+
+      {tab === 'contact' && (
+        <section>
+          <Field label='Heading' value={contact.mainTitle}
+            onChange={(v) => setField('contact', 'mainTitle', v)} />
+          <Area label='Line underneath' rows={2} value={contact.description}
+            onChange={(v) => setField('contact', 'description', v)} />
+          <Field label='Button text' value={contact.buttonText}
+            onChange={(v) => setField('contact', 'buttonText', v)} />
+          <SaveBar section='contact' />
+        </section>
+      )}
+    </div>
+  );
+}

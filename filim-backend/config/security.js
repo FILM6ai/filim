@@ -27,16 +27,7 @@ export const AUTH_ENFORCED =
 // Origins allowed to call the API from a browser. Server-side callers (the
 // public site's own data fetching, curl, anything without an Origin header)
 // are unaffected by CORS and are always allowed.
-export const ALLOWED_ORIGINS = [
-  'https://www.film6.ai',
-  'https://film6.ai',
-  // waimf.org is a second front end on this same API. Without these two the
-  // festival site would work on its *.vercel.app preview (matched by the
-  // pattern below) and then be CORS-blocked the moment it answers on its own
-  // domain - a failure that only appears in production.
-  'https://waimf.org',
-  'https://www.waimf.org',
-];
+export const ALLOWED_ORIGINS = ['https://www.film6.ai', 'https://film6.ai'];
 
 export const ALLOWED_ORIGIN_PATTERNS = [
   // Vercel gives every deployment and preview its own hostname, so the admin

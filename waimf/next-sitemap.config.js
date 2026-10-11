@@ -11,7 +11,7 @@ const slugify = require('slugify');
 const SITE_URL = 'https://waimf.org';
 
 const rawApi = (
-  process.env.NEXT_PUBLIC_BACKEND_URL || 'https://filim-six.vercel.app/api'
+  process.env.NEXT_PUBLIC_BACKEND_URL || 'https://waimf-backend.vercel.app/api'
 )
   .trim()
   .replace(/\/+$/, '');

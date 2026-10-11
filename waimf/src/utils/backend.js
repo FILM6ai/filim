@@ -9,7 +9,11 @@
 // The website calls paths like `${API_BASE_URL}/home/gethome`, so the base has
 // to include /api - it gets added if it is missing.
 
-const FALLBACK_API_BASE_URL = 'https://filim-six.vercel.app/api';
+// ⚠ MUST be the WAIMF backend, never FILM6's. Both APIs expose identically
+// shaped endpoints, so pointing this at filim-six would render FILM6's content
+// on waimf.org and look entirely normal while doing it.
+// NEXT_PUBLIC_BACKEND_URL in the Vercel project overrides this.
+const FALLBACK_API_BASE_URL = 'https://waimf-backend.vercel.app/api';
 
 const rawBackendUrl = (process.env.NEXT_PUBLIC_BACKEND_URL || '').trim();
 

@@ -1,5 +1,20 @@
 import waimfSchema from "../modles/waimf.js";
-import festivalSchema from "../modles/festival.js";
+import blogSchema from "../modles/blog.js";
+
+// The FILM6 festival page, read ONCE over its public API to seed this site.
+//
+// Deliberately an HTTP call and not a mongoose model: this backend has its own
+// database and must not be able to reach FILM6's. Importing a festival model
+// here would mean this "separate" backend held a live handle on FILM6's data,
+// which is the coupling that separating the two was meant to remove. Over the
+// wire, the copy happens once and then the two are genuinely independent.
+const FILM6_FESTIVAL_URL =
+  process.env.FILM6_FESTIVAL_URL ||
+  "https://filim-six.vercel.app/api/festival/getfestival";
+
+const FILM6_BLOG_URL =
+  process.env.FILM6_BLOG_URL ||
+  "https://filim-six.vercel.app/api/blog/getblog";
 
 // waimf.org content.
 //
@@ -149,7 +164,18 @@ export const seedWaimf = async (req, res) => {
       });
     }
 
-    const festival = await festivalSchema.findOne();
+    let festival = null;
+    try {
+      const response = await fetch(FILM6_FESTIVAL_URL);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const json = await response.json();
+      festival = Array.isArray(json?.festival) ? json.festival[0] : null;
+    } catch (error) {
+      return res.status(502).json({
+        success: false,
+        message: `Could not read the FILM6 festival page to seed from: ${error.message}`,
+      });
+    }
     if (!festival) {
       return res
         .status(404)
@@ -268,5 +294,92 @@ export const seedWaimf = async (req, res) => {
     return res
       .status(500)
       .json({ success: false, message: "Failed to seed the WAIMF page" });
+  }
+};
+
+
+// ---------------------------------------------------------------------------
+// Bring the WAIMF news articles across from FILM6.
+// ---------------------------------------------------------------------------
+//
+// The articles about the festival were written in the FILM6 panel and live in
+// FILM6's database. This site has its own, so they have to be COPIED - after
+// which the two are unrelated and editing one does nothing to the other.
+//
+// Matching is by title, and what it matched is REPORTED rather than assumed:
+// the response lists every article taken and every one left behind, so a wrong
+// filter is visible immediately instead of showing up as a thin news page
+// nobody can explain.
+const WAIMF_PATTERN = /waimf|world ai movie|festival|jury|juror|selection|laurel/i;
+
+export const seedNews = async (req, res) => {
+  try {
+    const all = req.query.all === "1";
+
+    let articles = [];
+    try {
+      const response = await fetch(FILM6_BLOG_URL);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const json = await response.json();
+      articles = Array.isArray(json?.blogs) ? json.blogs : [];
+    } catch (error) {
+      return res.status(502).json({
+        success: false,
+        message: `Could not read the FILM6 articles: ${error.message}`,
+      });
+    }
+
+    const wanted = [];
+    const left = [];
+    for (const article of articles) {
+      const text = `${article?.title || ""} ${article?.content || ""}`;
+      (all || WAIMF_PATTERN.test(text) ? wanted : left).push(article);
+    }
+
+    // Re-running must not produce duplicates, so an article already here by
+    // title is skipped rather than added again.
+    const existing = new Set(
+      (await blogSchema.find({}, { title: 1 })).map((b) =>
+        String(b.title || "").trim().toLowerCase(),
+      ),
+    );
+
+    const copied = [];
+    const alreadyHere = [];
+    for (const article of wanted) {
+      const key = String(article?.title || "").trim().toLowerCase();
+      if (!key) continue;
+      if (existing.has(key)) {
+        alreadyHere.push(article.title);
+        continue;
+      }
+      await blogSchema.create({
+        title: article.title,
+        alt: article.alt || "",
+        author: article.author || "",
+        content: article.content || "",
+        image: article.image || "",
+        date: article.date || "",
+        youtubeUrl: article.youtubeUrl || "",
+      });
+      existing.add(key);
+      copied.push(article.title);
+    }
+
+    return res.status(200).json({
+      success: true,
+      copied: copied.length,
+      copiedTitles: copied,
+      alreadyHere,
+      // The ones deliberately NOT taken. Read this - it is how a filter that
+      // is too narrow gets noticed.
+      notMatched: left.map((a) => a.title),
+      hint: "Pass all=1 to copy every FILM6 article regardless of subject.",
+    });
+  } catch (error) {
+    console.error("Error copying news:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Failed to copy the news articles" });
   }
 };
