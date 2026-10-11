@@ -39,10 +39,10 @@ export async function generateMetadata({ params }) {
   const name = String(article.title || '').trim();
 
   return buildMetadata({
-    title: `${name} | FILM6 News`,
+    title: `${name} | WAIMF News`,
     description:
       htmlToDescription(article.content, { stripPrefix: name }) ||
-      `${name} - news from FILM6 and the World AI Movie Festival.`,
+      `${name} - news from the World AI Movie Festival.`,
     path: `/news/${slug}`,
     image: typeof article.image === 'string' ? article.image : undefined,
     type: 'article',

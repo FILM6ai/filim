@@ -30,7 +30,7 @@ export default function ErrorPanel({ error, reset, standalone = false }) {
     <div className={wrap}>
       <div className='w-full max-w-xl text-center'>
         <p className='text-sm tracking-[0.3em] text-gray-500 uppercase mb-4'>
-          FILM6
+          WAIMF
         </p>
         <h1 className='text-3xl sm:text-4xl mb-4'>This page did not load</h1>
         <p className='text-gray-400 mb-8'>

@@ -33,6 +33,9 @@ const sendNotificationEmail = async (formData) => {
       phone: formData.phone || "N/A",
       topic: formData.topic,
       message: formData.message,
+      // Festival enquiries go to the FILM6 inbox on purpose - it is the
+      // address Francois actually reads, and the EmailJS template is already
+      // set up for it. Change it here if WAIMF ever gets its own.
       to_email: "contact@film6.ai",
       submitted_at: new Date().toLocaleString("en-GB", {
         timeZone: "Europe/Paris",

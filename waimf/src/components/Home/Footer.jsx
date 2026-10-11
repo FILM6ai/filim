@@ -264,7 +264,7 @@ const Footer = () => {
       </footer>
       <div className='bg-[#131313] text-white py-4'>
         <p className='text-sm text-center'>
-          © Film6. All rights reserved.
+          © WAIMF - World AI Movie Festival. All rights reserved.
         </p>
       </div>
       {/* Toast container to show notifications */}

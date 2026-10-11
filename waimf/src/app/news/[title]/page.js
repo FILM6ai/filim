@@ -33,12 +33,20 @@ const demoteInBodyHeadings = (html) =>
     .replace(/<h1(\s|>)/gi, "<h2$1")
     .replace(/<\/h1>/gi, "</h2>");
 
-const OWN_SITE = /^https?:\/\/(?:www\.)?film6\.ai/i;
+// ⚠ waimf.org, NOT film6.ai. This file was copied from the FILM6 site, where
+// "own site" meant film6.ai - and the articles themselves were written in the
+// FILM6 editor, so they are full of absolute film6.ai links.
+//
+// Left pointing at film6.ai, this would have stripped the domain off those
+// links and turned them into waimf.org paths: a link to film6.ai/studio would
+// become /studio on this site, which does not exist. film6.ai is a DIFFERENT
+// site from here, so its links must stay absolute and keep their new tab.
+const OWN_SITE = /^https?:\/\/(?:www\.)?waimf\.org/i;
 
-// Links pasted into the editor arrive as absolute film6.ai URLs carrying
+// Links pasted into the editor arrive as absolute URLs carrying
 // target="_blank", so following an in-article link - a jury member's name, say -
 // opened a whole new tab and reloaded the site in it. Read eight jury profiles
-// and you have eight tabs. Only links that leave film6.ai keep their new tab.
+// and you have eight tabs. Only links that leave this site keep their new tab.
 const keepInternalLinksInTab = (html) =>
   String(html || "").replace(/<a\s[^>]*>/gi, (tag) => {
     const href = (tag.match(/href\s*=\s*["']([^"']*)["']/i) || [])[1] || "";
