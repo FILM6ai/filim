@@ -24,7 +24,8 @@ export default function SelectionPage() {
         <section className='py-20 lg:py-28'>
           <Shell>
             <p className='text-neutral-500'>
-              The selected films are being added. Check back shortly.
+              The finalists and the official selection are being added. Check
+              back shortly.
             </p>
           </Shell>
         </section>

@@ -19,6 +19,27 @@ import { cdn, portrait, tile } from '@/utils/image';
 
 const GOLD = '#C8A24A';
 
+// "OFFICIAL SELECTION" sitting directly above the heading "Official Selection"
+// is the site saying the same thing twice, which Francois spotted. Rather than
+// deleting that eyebrow in one place and leaving the same fault on Gallery,
+// Rules and the rest, the rule lives here: an eyebrow that only repeats the
+// heading is dropped. Compared loosely so "Official Selection" and "OFFICIAL
+// SELECTION " count as the same words.
+const sameWords = (a, b) =>
+  String(a || '').trim().toLowerCase().replace(/\s+/g, ' ') ===
+  String(b || '').trim().toLowerCase().replace(/\s+/g, ' ');
+
+const showEyebrow = (eyebrow, title) =>
+  eyebrow && !sameWords(eyebrow, title) ? eyebrow : null;
+
+// Used by both film grids, so it is declared once, above both of them.
+const youtubeId = (url) => {
+  const m = String(url || '').match(
+    /(?:youtube\.com\/(?:embed\/|watch\?v=|shorts\/|live\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+  );
+  return m ? m[1] : '';
+};
+
 export const Shell = ({ children, className = '' }) => (
   <div className={`max-w-[1320px] mx-auto px-6 sm:px-10 lg:px-14 ${className}`}>
     {children}
@@ -28,12 +49,12 @@ export const Shell = ({ children, className = '' }) => (
 export const SectionHead = ({ eyebrow, title, sub, action }) => (
   <div className='flex flex-col md:flex-row md:justify-between md:items-end gap-8 mb-12'>
     <div className='max-w-[62ch]'>
-      {eyebrow && (
+      {showEyebrow(eyebrow, title) && (
         <div
           className='text-[10.5px] tracking-[0.34em] uppercase mb-4'
           style={{ color: GOLD }}
         >
-          {eyebrow}
+          {showEyebrow(eyebrow, title)}
         </div>
       )}
       {title && (
@@ -259,28 +280,94 @@ export const Winners = ({ filmmakers, action, bare = false }) => {
   );
 };
 
+/* ----------------------------------------------------- winning films -- */
+
+// The winners' films as a grid, for the Top Filmmakers page.
+//
+// Reuses the same tile as the selection grid so the two pages look like one
+// site, but reads `film`/`filmmaker` because that is how a winner is stored.
+// Renders nothing when no winner has a video yet, which keeps the page honest
+// while Francois is still pasting links in.
+export const WinningFilms = ({ filmmakers }) => {
+  const playable = (filmmakers?.items || []).filter(
+    (winner) => (winner.youtubeUrl || '').trim() || (winner.poster || '').trim(),
+  );
+  if (playable.length === 0) return null;
+
+  return (
+    <section className='py-20 lg:py-[104px]'>
+      <Shell>
+        <SectionHead
+          eyebrow='The films'
+          title='Watch the winners'
+          sub='The awarded films of the 2026 edition.'
+        />
+        <div className='grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-[30px]'>
+          {playable.map((winner, i) => {
+            const id = youtubeId(winner.youtubeUrl);
+            const poster =
+              winner.poster ||
+              (id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : '');
+            return (
+              <Link
+                key={i}
+                href={winner.youtubeUrl || '#'}
+                target={winner.youtubeUrl ? '_blank' : undefined}
+                rel={winner.youtubeUrl ? 'noopener noreferrer' : undefined}
+                className='group block'
+              >
+                <div className='relative bg-neutral-200 overflow-hidden'>
+                  {poster ? (
+                    <img
+                      src={cdn(poster)}
+                      alt={winner.film || ''}
+                      loading='lazy'
+                      className='w-full aspect-video object-cover transition-transform duration-300 group-hover:scale-[1.03]'
+                    />
+                  ) : (
+                    <div className='w-full aspect-video' />
+                  )}
+                  <span
+                    className='absolute bottom-2.5 left-2.5 text-[8.5px] tracking-[0.14em] uppercase font-semibold px-2.5 py-1.5'
+                    style={{ background: GOLD, color: '#000' }}
+                  >
+                    {winner.award} · WAIMF 2026
+                  </span>
+                </div>
+                <h4 className='font-serif text-[17px] sm:text-[18px] mt-4 font-normal'>
+                  {winner.film}
+                </h4>
+                {(winner.filmmaker || winner.duration) && (
+                  <p className='text-[13px] text-neutral-500 mt-1'>
+                    {[winner.filmmaker, winner.duration].filter(Boolean).join('  ·  ')}
+                  </p>
+                )}
+              </Link>
+            );
+          })}
+        </div>
+      </Shell>
+    </section>
+  );
+};
+
 /* ------------------------------------------------------------- selection -- */
 
 // A plain <img>, not next/image: posters arrive from YouTube, Cloudinary and
 // whatever else gets pasted in, and the optimiser only accepts hosts listed in
 // next.config. A new source must never silently stop posters rendering.
-const youtubeId = (url) => {
-  const m = String(url || '').match(
-    /(?:youtube\.com\/(?:embed\/|watch\?v=|shorts\/|live\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
-  );
-  return m ? m[1] : '';
-};
 
 export const Selection = ({ selection, action }) => {
   const items = selection?.items || [];
   if (items.length === 0) return null;
 
-  // Award winners first, in the order they were entered, then the rest of the
-  // selection. A stable sort, so films within each group keep the order set in
-  // the panel rather than being shuffled by the browser.
+  // Finalists first, then the wider selection. A stable sort, so films keep
+  // the order set in the panel within each group rather than being shuffled.
+  // The award winners are NOT here - they are on Top Filmmakers, so the films
+  // are spread across two pages instead of piled onto one.
   const ordered = [
-    ...items.filter((film) => (film.award || '').trim()),
-    ...items.filter((film) => !(film.award || '').trim()),
+    ...items.filter((film) => (film.category || '').trim()),
+    ...items.filter((film) => !(film.category || '').trim()),
   ];
 
   return (
@@ -319,13 +406,13 @@ export const Selection = ({ selection, action }) => {
                   <span
                     className='absolute bottom-2.5 left-2.5 text-[8.5px] tracking-[0.14em] uppercase font-semibold px-2.5 py-1.5'
                     style={
-                      film.award
+                      film.category
                         ? { background: GOLD, color: '#000' }
                         : { background: 'rgba(255,255,255,.95)', color: '#000' }
                     }
                   >
-                    {film.award
-                      ? `${film.award} · WAIMF 2026`
+                    {film.category
+                      ? `${film.category} · WAIMF 2026`
                       : 'Official Selection · WAIMF 2026'}
                   </span>
                 </div>
@@ -547,12 +634,12 @@ export const ContactBand = ({ contact }) => {
 export const PageHeader = ({ eyebrow, title, sub }) => (
   <header className='bg-[#0a0a0a] text-white pt-32 pb-16 lg:pt-40 lg:pb-20'>
     <Shell>
-      {eyebrow && (
+      {showEyebrow(eyebrow, title) && (
         <div
           className='text-[10.5px] tracking-[0.34em] uppercase mb-4'
           style={{ color: GOLD }}
         >
-          {eyebrow}
+          {showEyebrow(eyebrow, title)}
         </div>
       )}
       <h1 className='font-serif text-[36px] sm:text-[52px] lg:text-[62px] leading-[1.04] font-normal max-w-[16ch]'>

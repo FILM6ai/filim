@@ -183,14 +183,16 @@ export default function WaimfPage() {
             onChange={(v) => setField('filmmakers', 'description', v)} />
           <Repeater
             label='Winners'
-            hint='One row per award. The order here is the order on the page.'
+            hint='One row per award. The order here is the order on the page. Paste a YouTube link and the winning film also appears as a video further down this page - that is where the winners play, not on the Official Selection page.'
             items={filmmakers.items}
             columns={[
               { key: 'award', label: 'Award', placeholder: 'Grand Prix' },
               { key: 'film', label: 'Film', placeholder: 'Azul Cobalto' },
               { key: 'filmmaker', label: 'Filmmaker', wide: true, placeholder: 'Tomas Pena' },
+              { key: 'duration', label: 'Length', placeholder: '4 min' },
+              { key: 'youtubeUrl', label: 'YouTube address', wide: true },
             ]}
-            newRow={{ award: '', film: '', filmmaker: '' }}
+            newRow={{ award: '', film: '', filmmaker: '', duration: '', youtubeUrl: '' }}
             onChange={(v) => setField('filmmakers', 'items', v)}
           />
           <SaveBar section='filmmakers' />
@@ -205,16 +207,16 @@ export default function WaimfPage() {
             onChange={(v) => setField('selection', 'description', v)} />
           <Repeater
             label='Films'
-            hint='Paste the YouTube address and the poster appears on its own - no image needed. Fill in Award for a film that won: those move to the top of the page and get a gold laurel. Leave Award empty for the rest of the selection.'
+            hint='Finalists and the wider official selection. The award winners do NOT go here - they are on the Top Filmmakers tab, so the films are spread across two pages. Type Finalist in the Group column to lift a film to the top with a gold laurel; leave it empty for the rest of the selection. Paste the YouTube address and the poster appears on its own.'
             items={selection.items}
             columns={[
-              { key: 'award', label: 'Award (winners only)', placeholder: 'Grand Prix' },
+              { key: 'category', label: 'Group', placeholder: 'Finalist' },
               { key: 'title', label: 'Title', wide: true },
               { key: 'director', label: 'Director' },
               { key: 'duration', label: 'Length', placeholder: '4 min' },
               { key: 'youtubeUrl', label: 'YouTube address', wide: true },
             ]}
-            newRow={{ award: '', title: '', director: '', duration: '', youtubeUrl: '' }}
+            newRow={{ category: '', title: '', director: '', duration: '', youtubeUrl: '' }}
             onChange={(v) => setField('selection', 'items', v)}
           />
           <SaveBar section='selection' />

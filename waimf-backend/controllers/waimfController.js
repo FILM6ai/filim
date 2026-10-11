@@ -226,23 +226,11 @@ export const seedWaimf = async (req, res) => {
         mainTitle: "Official Selection",
         description:
           "Films chosen by the programming team and jury for the 2026 edition.",
-        // Francois: "we shall present the award winners movies on top, then
-        // some official selection". So the winning films ARE the selection to
-        // begin with, each carrying its award, which is what sorts them to the
-        // front and prints a gold laurel. He adds the rest underneath, and any
-        // film left without an award simply follows them.
-        //
-        // No YouTube links yet - those are his to paste, and a film without one
-        // shows a plain tile rather than a broken thumbnail.
-        items: winners.map((winner) => ({
-          award: winner.award,
-          title: winner.film,
-          director: winner.filmmaker,
-          duration: "",
-          youtubeUrl: "",
-          poster: "",
-          alt: "",
-        })),
+        // Deliberately EMPTY. The award winners live on Top Filmmakers, not
+        // here - Francois split them so the videos are spread across two
+        // pages instead of piled onto one. This page is for the finalists and
+        // the wider selection, which he adds in the panel.
+        items: [],
       },
       awards: {
         mainTitle: festival?.cardSection?.mainTitle || "Festival Awards",

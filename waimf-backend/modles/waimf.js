@@ -79,6 +79,14 @@ const WaimfPageSchema = new mongoose.Schema(
           filmmaker: { type: String },
           link: { type: String },
           image: { type: String },
+          // The winning film itself. Francois: "top filmmakers is more for
+          // AWARDS WINNERS, and OFFICIAL selection page for Finalists and
+          // official selection... to balance more the volume of videos".
+          // So the winners' films play HERE, and do not also appear on the
+          // selection page - one film, one home.
+          youtubeUrl: { type: String, default: "" },
+          poster: { type: String, default: "" },
+          duration: { type: String, default: "" },
         },
       ],
     },
@@ -95,12 +103,11 @@ const WaimfPageSchema = new mongoose.Schema(
           youtubeUrl: { type: String },
           poster: { type: String },
           alt: { type: String },
-          // The award this film won, if it won one. Francois: "we shall
-          // present the award winners movies on top, then some official
-          // selection". Filling this in is what lifts a film to the front of
-          // the grid and prints its laurel - so the order is content, not
-          // something that needs a developer.
-          award: { type: String, default: "" },
+          // Which group this film belongs to on the selection page -
+          // "Finalist" or, left empty, the wider Official Selection.
+          // Finalists sort first and print their own laurel. The award
+          // WINNERS are not here at all; they live on Top Filmmakers.
+          category: { type: String, default: "" },
         },
       ],
     },
