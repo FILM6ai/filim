@@ -95,6 +95,12 @@ const WaimfPageSchema = new mongoose.Schema(
           youtubeUrl: { type: String },
           poster: { type: String },
           alt: { type: String },
+          // The award this film won, if it won one. Francois: "we shall
+          // present the award winners movies on top, then some official
+          // selection". Filling this in is what lifts a film to the front of
+          // the grid and prints its laurel - so the order is content, not
+          // something that needs a developer.
+          award: { type: String, default: "" },
         },
       ],
     },

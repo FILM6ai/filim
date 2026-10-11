@@ -41,6 +41,40 @@ export const Area = ({ label, hint, value, onChange, rows = 5 }) => (
 //
 // One component for all six, because they differ only in their columns. Rows
 // can be added, removed and reordered; order is what the website shows.
+// The in-row version of ImageField: a thumbnail, a file picker and nothing
+// else, because a repeater row has no space for more.
+const RowImage = ({ value, onChange }) => {
+  const [busy, setBusy] = useState(false);
+  const input = useRef(null);
+
+  const pick = async (file) => {
+    if (!file) return;
+    setBusy(true);
+    try {
+      onChange(await uploadToCloudinary(file));
+    } catch (e) {
+      console.error('Upload failed:', e);
+    } finally {
+      setBusy(false);
+      if (input.current) input.current.value = '';
+    }
+  };
+
+  return (
+    <div className='mt-1 flex items-center gap-2'>
+      {value ? (
+        <img src={value} alt='' className='w-14 h-14 object-cover border border-gray-300 shrink-0' />
+      ) : (
+        <div className='w-14 h-14 border border-dashed border-gray-300 shrink-0' />
+      )}
+      <input ref={input} type='file' accept='image/*' disabled={busy}
+        onChange={(e) => pick(e.target.files?.[0])}
+        className='block text-[11px] w-full' />
+      {busy && <span className='text-[11px] text-gray-500'>...</span>}
+    </div>
+  );
+};
+
 export const Repeater = ({ label, hint, items, columns, onChange, newRow }) => {
   const rows = Array.isArray(items) ? items : [];
 
@@ -78,7 +112,12 @@ export const Repeater = ({ label, hint, items, columns, onChange, newRow }) => {
                 <span className='block text-[11px] uppercase tracking-wide text-gray-500'>
                   {col.label}
                 </span>
-                {col.area ? (
+                {col.image ? (
+                  <RowImage
+                    value={row[col.key]}
+                    onChange={(v) => update(index, col.key, v)}
+                  />
+                ) : col.area ? (
                   <textarea
                     rows={4}
                     value={row[col.key] || ''}
@@ -118,6 +157,75 @@ export const Repeater = ({ label, hint, items, columns, onChange, newRow }) => {
         className='text-sm px-4 py-2 border border-black mt-1'>
         Add
       </button>
+    </div>
+  );
+};
+
+// One picture, uploaded or pasted.
+//
+// Francois asked to be able to change the visuals from the panel, not just the
+// words. Pasting an address still works for anything already on Cloudinary,
+// but nobody should have to find an address to change a photograph.
+export const ImageField = ({ label, hint, value, onChange, accept = 'image/*,video/mp4' }) => {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const input = useRef(null);
+
+  const pick = async (file) => {
+    if (!file) return;
+    setBusy(true);
+    setError('');
+    try {
+      onChange(await uploadToCloudinary(file));
+    } catch (e) {
+      console.error('Upload failed:', e);
+      setError('Upload failed. Try again.');
+    } finally {
+      setBusy(false);
+      if (input.current) input.current.value = '';
+    }
+  };
+
+  const isVideo = /\.(mp4|webm|mov)(\?|$)/i.test(String(value || ''));
+
+  return (
+    <div className='mb-5'>
+      <span className='block text-sm font-medium text-black'>{label}</span>
+      {hint && <span className='block text-xs text-gray-500 mt-0.5'>{hint}</span>}
+
+      <div className='flex flex-wrap items-start gap-4 mt-2'>
+        {value ? (
+          isVideo ? (
+            <video src={value} muted className='w-44 h-28 object-cover border border-gray-300' />
+          ) : (
+            <img src={value} alt='' className='w-44 h-28 object-cover border border-gray-300' />
+          )
+        ) : (
+          <div className='w-44 h-28 border border-dashed border-gray-300 flex items-center justify-center text-xs text-gray-400'>
+            Nothing set
+          </div>
+        )}
+
+        <div className='flex-1 min-w-[260px]'>
+          <input ref={input} type='file' accept={accept} disabled={busy}
+            onChange={(e) => pick(e.target.files?.[0])}
+            className='block text-sm' />
+          {busy && <p className='text-sm text-gray-600 mt-1'>Uploading...</p>}
+          {error && <p className='text-sm text-red-600 mt-1'>{error}</p>}
+          <input
+            value={value || ''}
+            placeholder='...or paste an address'
+            onChange={(e) => onChange(e.target.value)}
+            className='border border-gray-400 px-2 py-1.5 mt-2 outline-0 w-full text-sm'
+          />
+          {value && (
+            <button type='button' onClick={() => onChange('')}
+              className='text-xs px-2 py-1 border border-red-400 text-red-600 mt-2'>
+              Remove
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

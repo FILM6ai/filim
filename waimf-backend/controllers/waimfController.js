@@ -226,7 +226,23 @@ export const seedWaimf = async (req, res) => {
         mainTitle: "Official Selection",
         description:
           "Films chosen by the programming team and jury for the 2026 edition.",
-        items: [],
+        // Francois: "we shall present the award winners movies on top, then
+        // some official selection". So the winning films ARE the selection to
+        // begin with, each carrying its award, which is what sorts them to the
+        // front and prints a gold laurel. He adds the rest underneath, and any
+        // film left without an award simply follows them.
+        //
+        // No YouTube links yet - those are his to paste, and a film without one
+        // shows a plain tile rather than a broken thumbnail.
+        items: winners.map((winner) => ({
+          award: winner.award,
+          title: winner.film,
+          director: winner.filmmaker,
+          duration: "",
+          youtubeUrl: "",
+          poster: "",
+          alt: "",
+        })),
       },
       awards: {
         mainTitle: festival?.cardSection?.mainTitle || "Festival Awards",
@@ -310,11 +326,38 @@ export const seedWaimf = async (req, res) => {
 // the response lists every article taken and every one left behind, so a wrong
 // filter is visible immediately instead of showing up as a thin news page
 // nobody can explain.
-const WAIMF_PATTERN = /waimf|world ai movie|festival|jury|juror|selection|laurel/i;
+// Francois: "take the news content from film6/news article from June 30 only".
+//
+// 30 June 2026 is the day the first WAIMF article was published - "Inaugural
+// Edition of the World AI Movie Festival". Everything before it is AI-model
+// news (Veo, Sora, Kling, Seedance) which belongs to FILM6, not the festival.
+// So the rule is a DATE, not a keyword: a subject filter would keep guessing
+// at which articles count, where the cutoff is exactly what he asked for.
+const DEFAULT_CUTOFF = "2026-06-30";
+
+// Articles carry an editorial `date` ("June 30, 2026") which is what a visitor
+// sees, and a createdAt which is when the record happened to be typed. The two
+// disagree on several articles, so the displayed date wins and createdAt is
+// only the fallback - otherwise an article would be filed by a date nobody can
+// see on the page.
+const articleDate = (article) => {
+  const shown = Date.parse(String(article?.date || "").trim());
+  if (!Number.isNaN(shown)) return new Date(shown);
+  const created = Date.parse(article?.createdAt || "");
+  return Number.isNaN(created) ? null : new Date(created);
+};
 
 export const seedNews = async (req, res) => {
   try {
     const all = req.query.all === "1";
+    // ?from=YYYY-MM-DD moves the cutoff without a redeploy.
+    const cutoff = new Date(`${req.query.from || DEFAULT_CUTOFF}T00:00:00Z`);
+    if (Number.isNaN(cutoff.getTime())) {
+      return res.status(400).json({
+        success: false,
+        message: "from must look like 2026-06-30",
+      });
+    }
 
     let articles = [];
     try {
@@ -331,9 +374,21 @@ export const seedNews = async (req, res) => {
 
     const wanted = [];
     const left = [];
+    const undated = [];
     for (const article of articles) {
-      const text = `${article?.title || ""} ${article?.content || ""}`;
-      (all || WAIMF_PATTERN.test(text) ? wanted : left).push(article);
+      if (all) {
+        wanted.push(article);
+        continue;
+      }
+      const when = articleDate(article);
+      if (!when) {
+        // Never silently dropped: an article with no readable date is listed
+        // back so it can be dealt with deliberately.
+        undated.push(article.title);
+        left.push(article);
+        continue;
+      }
+      (when >= cutoff ? wanted : left).push(article);
     }
 
     // Re-running must not produce duplicates, so an article already here by
@@ -373,8 +428,13 @@ export const seedNews = async (req, res) => {
       alreadyHere,
       // The ones deliberately NOT taken. Read this - it is how a filter that
       // is too narrow gets noticed.
-      notMatched: left.map((a) => a.title),
-      hint: "Pass all=1 to copy every FILM6 article regardless of subject.",
+      from: cutoff.toISOString().slice(0, 10),
+      // Left behind on purpose. Read this - it is how a wrong cutoff gets
+      // noticed instead of showing up later as a thin news page.
+      notCopied: left.map((a) => a.title),
+      // Had no readable date at all, so could not be judged either way.
+      undated,
+      hint: "?from=YYYY-MM-DD moves the cutoff. ?all=1 copies everything.",
     });
   } catch (error) {
     console.error("Error copying news:", error);

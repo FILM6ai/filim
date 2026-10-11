@@ -275,6 +275,14 @@ export const Selection = ({ selection, action }) => {
   const items = selection?.items || [];
   if (items.length === 0) return null;
 
+  // Award winners first, in the order they were entered, then the rest of the
+  // selection. A stable sort, so films within each group keep the order set in
+  // the panel rather than being shuffled by the browser.
+  const ordered = [
+    ...items.filter((film) => (film.award || '').trim()),
+    ...items.filter((film) => !(film.award || '').trim()),
+  ];
+
   return (
     <section className='py-20 lg:py-[104px]'>
       <Shell>
@@ -285,7 +293,7 @@ export const Selection = ({ selection, action }) => {
           action={action}
         />
         <div className='grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-[30px]'>
-          {items.map((film, i) => {
+          {ordered.map((film, i) => {
             const id = youtubeId(film.youtubeUrl);
             const poster =
               film.poster || (id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : '');
@@ -308,8 +316,17 @@ export const Selection = ({ selection, action }) => {
                   ) : (
                     <div className='w-full aspect-video' />
                   )}
-                  <span className='absolute bottom-2.5 left-2.5 bg-white/95 text-black text-[8.5px] tracking-[0.14em] uppercase font-semibold px-2.5 py-1.5'>
-                    Official Selection · WAIMF 2026
+                  <span
+                    className='absolute bottom-2.5 left-2.5 text-[8.5px] tracking-[0.14em] uppercase font-semibold px-2.5 py-1.5'
+                    style={
+                      film.award
+                        ? { background: GOLD, color: '#000' }
+                        : { background: 'rgba(255,255,255,.95)', color: '#000' }
+                    }
+                  >
+                    {film.award
+                      ? `${film.award} · WAIMF 2026`
+                      : 'Official Selection · WAIMF 2026'}
                   </span>
                 </div>
                 <h4 className='font-serif text-[17px] sm:text-[18px] mt-4 font-normal'>

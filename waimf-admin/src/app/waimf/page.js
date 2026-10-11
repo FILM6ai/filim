@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BACKEND_URL } from '@/utils/backend';
-import { Field, Area, Repeater, ImageList } from '@/component/mainComponents/waimf/Fields';
+import { Field, Area, Repeater, ImageList, ImageField } from '@/component/mainComponents/waimf/Fields';
 
 // The whole of waimf.org, editable.
 //
@@ -145,9 +145,9 @@ export default function WaimfPage() {
           <Field label='Button text' value={hero.button} onChange={(v) => setField('hero', 'button', v)} />
           <Field label='Button link' placeholder='/top-filmmakers' value={hero.link}
             onChange={(v) => setField('hero', 'link', v)} />
-          <Field
-            label='Background image or video address'
-            hint='Paste a Cloudinary address. An .mp4 plays as video; anything else is shown as a picture.'
+          <ImageField
+            label='Background picture or video'
+            hint='Upload a picture, or an .mp4 to have it play behind the title.'
             value={Array.isArray(hero.bgImage) ? hero.bgImage.at(-1) : hero.bgImage}
             onChange={(v) => setField('hero', 'bgImage', v)}
           />
@@ -205,15 +205,16 @@ export default function WaimfPage() {
             onChange={(v) => setField('selection', 'description', v)} />
           <Repeater
             label='Films'
-            hint='Paste the YouTube address and the poster appears on its own - no image needed.'
+            hint='Paste the YouTube address and the poster appears on its own - no image needed. Fill in Award for a film that won: those move to the top of the page and get a gold laurel. Leave Award empty for the rest of the selection.'
             items={selection.items}
             columns={[
+              { key: 'award', label: 'Award (winners only)', placeholder: 'Grand Prix' },
               { key: 'title', label: 'Title', wide: true },
               { key: 'director', label: 'Director' },
               { key: 'duration', label: 'Length', placeholder: '4 min' },
               { key: 'youtubeUrl', label: 'YouTube address', wide: true },
             ]}
-            newRow={{ title: '', director: '', duration: '', youtubeUrl: '' }}
+            newRow={{ award: '', title: '', director: '', duration: '', youtubeUrl: '' }}
             onChange={(v) => setField('selection', 'items', v)}
           />
           <SaveBar section='selection' />
@@ -251,7 +252,7 @@ export default function WaimfPage() {
             columns={[
               { key: 'name', label: 'Name', wide: true },
               { key: 'role', label: 'Role', wide: true },
-              { key: 'image', label: 'Photo address', wide: true },
+              { key: 'image', label: 'Photo', image: true, wide: true },
             ]}
             newRow={{ name: '', role: '', image: '' }}
             onChange={(v) => setField('jurors', 'items', v)}
