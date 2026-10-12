@@ -68,9 +68,7 @@ const Wrapper = ({ children }) => {
   }, [router]);
 
   useEffect(() => {
-    // /setup is for the very first run, when no account exists yet, so it
-    // cannot require one. Like /login it renders bare.
-    if (pathname === '/login' || pathname === '/setup') {
+    if (pathname === '/login') {
       setStatus('out');
       return;
     }
@@ -80,18 +78,13 @@ const Wrapper = ({ children }) => {
   // Someone who was given a temporary password cannot use the panel until they
   // have chosen their own, so the temporary one stops being a working key.
   useEffect(() => {
-    if (
-      user?.mustChangePassword &&
-      pathname !== '/account' &&
-      pathname !== '/login' &&
-      pathname !== '/setup'
-    ) {
+    if (user?.mustChangePassword && pathname !== '/account' && pathname !== '/login') {
       router.replace('/account');
     }
   }, [user, pathname, router]);
 
-  // Login and first-run setup render without the sidebar.
-  if (pathname === '/login' || pathname === '/setup') {
+  // If on the login page, render children without the sidebar.
+  if (pathname === '/login') {
     return <>{children}</>;
   }
 

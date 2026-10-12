@@ -1,7 +1,6 @@
 import express from 'express';
 import {
   login,
-  setup,
   me,
   changePassword,
   listUsers,
@@ -17,10 +16,9 @@ const authRoute = express.Router();
 
 authRoute.post('/login', login);
 
-// First run only - creates the one owner account in an empty database. It
-// refuses once any account exists AND requires SETUP_TOKEN. Delete this line
-// and the controller once the account is made.
-authRoute.post('/setup', setup);
+// The first-run setup route lived here. Francois's owner account exists, so
+// it is gone: a way to create an account without being signed in should not
+// outlive the moment it was needed. More people are added from People.
 
 authRoute.get('/me', requireAuth(), me);
 authRoute.post('/change-password', requireAuth(), changePassword);
