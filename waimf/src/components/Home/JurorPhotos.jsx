@@ -53,9 +53,9 @@ const JurorPhotos = ({ mainTitle, items }) => {
   };
 
   return (
-    <div className="w-full bg-black py-16 px-6 lg:px-20">
+    <div className="w-full bg-white py-16 px-6 lg:px-20">
       {mainTitle && (
-        <h2 className="text-center text-white text-4xl font-bold mb-12">
+        <h2 className="text-center text-black text-4xl font-bold mb-12">
           {mainTitle}
         </h2>
       )}

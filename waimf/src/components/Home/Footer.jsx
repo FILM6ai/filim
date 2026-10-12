@@ -7,7 +7,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import logo from '../../assets/images/logo.png';
 import { API_BASE_URL } from "@/utils/backend";
 
 const Footer = () => {
@@ -97,68 +96,41 @@ const Footer = () => {
     <div>
       <footer className='bg-black text-white py-6 px-4 sm:px-6 lg:px-20'>
         <div className='border-b pb-4 flex flex-wrap gap-6 justify-between items-center '>
-          <Link href={'/'}>
+          {/* WAIMF emblem + wordmark. The FILM6 copy fell back to the FILM6
+              logo whenever the footer record had no logo of its own - which on
+              a brand new database is always. A logo uploaded in the panel's
+              Footer screen still takes over. */}
+          <Link href={'/'} className='flex items-center gap-3'>
             <Image
-              src={footerData?.logo || logo}
-              alt='logo'
-              className='lg:w-28 md:w-44 sm:w-44 w-28'
-              width={300}
-              height={300}
+              src={footerData?.logo || '/waimf-emblem.png'}
+              alt='WAIMF'
+              className='w-12 h-12 object-contain'
+              width={96}
+              height={96}
             />
+            {!footerData?.logo && (
+              <span className='font-serif text-[22px] tracking-[0.22em]'>WAIMF</span>
+            )}
           </Link>
           <div className='flex flex-wrap justify-between items-center gap-6'>
             <div>
               <p className='text-[#797979]'>Connect</p>
             </div>
+            {/* X, Instagram and YouTube - the three Francois asked for, drawn
+                in code like the menu bar. The FILM6 copy used uploaded icon images
+                and fell back to the FILM6 LOGO when none was set, so a new,
+                empty footer record showed that logo four times over. */}
             <div className='flex items-center justify-end space-x-4'>
-              <Link
-                href={twitterSocialLink}
-                target='_blank'
-                aria-label='Twitter'
-              >
-                <Image
-                  src={footerData?.twitterIcon || logo}
-                  width={300}
-                  height={300}
-                  alt='Twitter'
-                  className='object-contain h-4 w-4'
-                />
-              </Link>
-              <Link
-                href={instagramSocialLink}
-                target='_blank'
-                aria-label='Instagram'
-              >
-                <Image
-                  src={footerData?.instaIcon || logo}
-                  width={300}
-                  height={300}
-                  alt='Instagram'
-                  className='object-contain h-4 w-4'
-                />
-              </Link>
-              <Link
-                href={youtubeSocialLink}
-                target='_blank'
-                aria-label='YouTube'
-              >
-                <Image
-                  src={footerData?.youtubeIcon || logo}
-                  width={300}
-                  height={300}
-                  alt='YouTube'
-                  className='object-contain h-4 w-4'
-                />
-              </Link>
-              <Link href={tiktokSocialLink} target='_blank' aria-label='TikTok'>
-                <Image
-                  src={footerData?.tiktokIcon || logo}
-                  width={300}
-                  height={300}
-                  alt='TikTok'
-                  className='object-contain h-4 w-4'
-                />
-              </Link>
+              {[
+                { label: 'X', href: twitterSocialLink, d: 'M18.9 1.2h3.7l-8.1 9.2 9.5 12.6h-7.4l-5.8-7.6-6.7 7.6H.4l8.6-9.9L.2 1.2h7.6l5.2 6.9ZM17.6 20.8h2L6.5 3.2H4.3Z' },
+                { label: 'Instagram', href: instagramSocialLink, d: 'M12 2.2c3.2 0 3.6 0 4.9.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.9.1s-3.6 0-4.8-.1c-3.3-.1-4.8-1.7-4.9-4.9C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8C2.4 3.9 4 2.4 7.2 2.3 8.4 2.2 8.8 2.2 12 2.2Zm0 4.6a5.2 5.2 0 1 0 0 10.4 5.2 5.2 0 0 0 0-10.4Zm0 8.5a3.3 3.3 0 1 1 0-6.6 3.3 3.3 0 0 1 0 6.6Zm5.4-9.9a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4Z' },
+                { label: 'YouTube', href: youtubeSocialLink, d: 'M23.5 6.5a3 3 0 0 0-2.1-2.1C19.5 3.9 12 3.9 12 3.9s-7.5 0-9.4.5A3 3 0 0 0 .5 6.5C0 8.4 0 12 0 12s0 3.6.5 5.5a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.5.5-5.5s0-3.6-.5-5.5ZM9.6 15.6V8.4l6.3 3.6Z' },
+              ].map((s) => (
+                <Link key={s.label} href={s.href} target='_blank' rel='noopener noreferrer' aria-label={s.label}
+                  className='h-4 w-4 text-gray-300 hover:text-white transition-colors'>
+                  <svg viewBox='0 0 24 24' fill='currentColor' className='h-full w-full'><path d={s.d} /></svg>
+                </Link>
+              ))}
             </div>
           </div>
         </div>
@@ -168,8 +140,10 @@ const Footer = () => {
             {/* Logo and Description */}
             <div className={columnSpans.about}>
               <p className='mb-4 max-w-[300px]'>
+                {/* The FILM6 copy fell back to Lorem ipsum, which is what a
+                    brand new database shows. Editable in the panel's Footer screen. */}
                 {footerData?.description ||
-                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.'}
+                  'The World AI Movie Festival celebrates the films and filmmakers shaping cinema made with artificial intelligence. Puerto Banús, Marbella.'}
               </p>
             </div>
 

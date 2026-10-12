@@ -37,6 +37,13 @@ const menuItems = [
     // The FILM6 pages are gone from this panel - this one runs waimf.org only.
     subMenu: [
       {
+        // The waimf.org front page: the same sections and editors as the FILM6
+        // festival page, on WAIMF's own copy of the content.
+        label: 'Landing page',
+        link: '/festival',
+        icon: <FaHome size={16} className='mr-2' />,
+      },
+      {
         label: 'WAIMF site',
         link: '/waimf',
         icon: <FaHome size={16} className='mr-2' />,

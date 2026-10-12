@@ -49,7 +49,7 @@ const Robot = ({ title, description, button, image, alt, link, youtubeUrl, popup
     (popupEmbedUrl && popupEmbedUrl.trim().length > 0);
 
   return (
-    <div className="overflow-hidden max-md:mt-14 grid grid-cols-[60%,40%] max-md:flex max-md:flex-col-reverse  bg-black text-white items-center ">
+    <div className="overflow-hidden max-md:mt-14 grid grid-cols-[60%,40%] max-md:flex max-md:flex-col-reverse  bg-white text-black items-center ">
       <motion.div
         initial={{ x: -100, opacity: 0 }}
         whileInView={{ x: 0, opacity: 1 }}
@@ -63,7 +63,7 @@ const Robot = ({ title, description, button, image, alt, link, youtubeUrl, popup
           {hasPopup ? (
             <button
               onClick={() => setShowPopup(true)}
-              className="px-10 rounded hover:border-[#00a4c2] py-2 duration-300 transition-all text-white border-2 border-white hover:bg-[#00a4c2] hover:scale-105"
+              className="px-10 rounded hover:border-[#00a4c2] py-2 duration-300 transition-all text-black border-2 border-black hover:text-white hover:bg-[#00a4c2] hover:scale-105"
             >
               {button}
             </button>

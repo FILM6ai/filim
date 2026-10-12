@@ -37,8 +37,8 @@ const Sheilds = ({mainTitle, cards}) => {
     console.log(cards, 'displayCards');
 
   return (
-    <div className='w-full min-h-screen bg-black flex flex-col  items-start justify-center gap-12 py-16 px-4 lg:px-20'>
-      <h2 className='text-white flex m-auto  md:text-[60px] text-2xl'>
+    <div className='w-full min-h-screen bg-white flex flex-col  items-start justify-center gap-12 py-16 px-4 lg:px-20'>
+      <h2 className='text-black flex m-auto  md:text-[60px] text-2xl'>
         {mainTitle}
       </h2>
       {displayCards.map((card, index) => (
@@ -48,7 +48,7 @@ const Sheilds = ({mainTitle, cards}) => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: index * 0.2 }}
           viewport={{ once: true }}
-          className='flex max-sm:flex-wrap items-center gap-6 p-4 rounded-xl border-2 border-white'
+          className='flex max-sm:flex-wrap items-center gap-6 p-4 rounded-xl border-2 border-gray-200'
         >
           <Image
             src={card.image}
@@ -57,7 +57,7 @@ const Sheilds = ({mainTitle, cards}) => {
             height={150}
             className='object-contain'
           />
-          <div className='text-white text-left'>
+          <div className='text-black text-left'>
             <h2 className='text-2xl  mb-1'>{card.title}</h2>
             <p className='text-[16px] leading-7 '>{card.description}</p>
           </div>

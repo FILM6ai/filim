@@ -77,12 +77,12 @@ const VideoPlayer = ({ video, title, description, youtubeUrl }) => {
   if (!embedUrl && !uploadedSrc) return null;
 
   return (
-    <div className='bg-black py-8 md:py-12 max-md:mt-12 px-4  md:px-20  '>
+    <div className='bg-white py-8 md:py-12 max-md:mt-12 px-4  md:px-20  '>
       {(title || description) && (
         <div className='  flex flex-col items-center justify-center text-center  '>
-          {title && <h2 className='text-xl sm:text-3xl  pb-3 text-white'>{title}</h2>}
+          {title && <h2 className='text-xl sm:text-3xl  pb-3 text-black'>{title}</h2>}
           {description && (
-            <p className='text-xs sm:text-lg text-white pb-6'>{description}</p>
+            <p className='text-xs sm:text-lg text-neutral-600 pb-6'>{description}</p>
           )}
         </div>
       )}
