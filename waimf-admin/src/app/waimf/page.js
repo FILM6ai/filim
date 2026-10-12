@@ -32,6 +32,7 @@ export default function WaimfPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState('');
   const [tab, setTab] = useState('hero');
+  const [importing, setImporting] = useState('');
 
   useEffect(() => {
     const load = async () => {
@@ -76,6 +77,51 @@ export default function WaimfPage() {
     }
   };
 
+  // Loading the content in from FILM6 has to happen from in here, not from a
+  // command I run: both endpoints require a signed-in account, and the panel
+  // already sends the token with every request. It also means Francois can
+  // re-run them himself whenever he likes.
+  const runImport = async (what) => {
+    setImporting(what);
+    try {
+      const url =
+        what === 'content'
+          ? `${BACKEND_URL}/api/waimf/seed`
+          : `${BACKEND_URL}/api/waimf/seed-news`;
+      const { data } = await axios.post(url);
+
+      if (what === 'content') {
+        if (data.seeded === false) {
+          toast.info('Content is already loaded - nothing changed.');
+        } else {
+          const c = data.counts || {};
+          toast.success(
+            `Loaded: ${c.winners} winners, ${c.awards} awards, ${c.jurors} jury, ${c.rules} rules.`,
+          );
+          // Show what arrived without needing a manual refresh.
+          const fresh = await axios.get(`${BACKEND_URL}/api/waimf/getwaimf`);
+          setDoc(fresh.data?.waimf?.[0] || {});
+        }
+      } else {
+        toast.success(
+          data.copied > 0
+            ? `${data.copied} articles copied. ${data.notCopied.length} left behind (film6 ones).`
+            : 'Nothing new - those articles are already here.',
+        );
+      }
+    } catch (error) {
+      console.error('Import failed:', error);
+      toast.error(
+        error?.response?.data?.message ||
+          (error?.response?.status === 401
+            ? 'Your session has expired - sign in again'
+            : 'That did not work'),
+      );
+    } finally {
+      setImporting('');
+    }
+  };
+
   if (loading) return <div className='pt-24 px-8 text-gray-600'>Loading...</div>;
 
   const SaveBar = ({ section }) => (
@@ -113,6 +159,34 @@ export default function WaimfPage() {
         Everything on the festival website. Each section saves on its own
         button. A section left empty does not appear on the site at all.
       </p>
+
+      {/* Shown always, because both are safe to press twice: the content one
+          refuses if a record already exists, and the news one skips articles
+          that are already here. */}
+      <div className='border border-gray-300 bg-gray-50 p-4 mb-8'>
+        <h2 className='text-sm font-semibold text-black'>Bring content over from FILM6</h2>
+        <p className='text-xs text-gray-600 mt-1 mb-3'>
+          One-off. Safe to press twice - neither will duplicate anything.
+        </p>
+        <div className='flex flex-wrap gap-3'>
+          <button
+            type='button'
+            onClick={() => runImport('content')}
+            disabled={Boolean(importing)}
+            className='text-sm px-4 py-2 border border-black disabled:opacity-50'
+          >
+            {importing === 'content' ? 'Loading...' : 'Load the festival content'}
+          </button>
+          <button
+            type='button'
+            onClick={() => runImport('news')}
+            disabled={Boolean(importing)}
+            className='text-sm px-4 py-2 border border-black disabled:opacity-50'
+          >
+            {importing === 'news' ? 'Copying...' : 'Copy the news articles'}
+          </button>
+        </div>
+      </div>
 
       <div className='flex flex-wrap gap-2 border-b border-gray-300 mb-8'>
         {TABS.map((t) => (
