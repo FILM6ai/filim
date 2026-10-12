@@ -36,7 +36,26 @@ app.use(
     origin: (origin, callback) => callback(null, isAllowedOrigin(origin)),
   }),
 );
-connectDB();
+// Start connecting as soon as the function loads, but never let a failure
+// here crash it - the middleware below is what makes requests wait for it.
+connectDB().catch(() => {});
+
+// Every request waits for the database. A connection that is still coming up
+// (a cold start) is simply awaited; one that failed is retried; and if Atlas
+// really is unreachable the visitor gets a 503 with a reason, instead of
+// Vercel's FUNCTION_INVOCATION_FAILED. The plain "/" health line does not need
+// the database, so it is let through.
+app.use(async (req, res, next) => {
+  if (req.path === "/") return next();
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    res
+      .status(503)
+      .json({ success: false, message: "Database unavailable, try again shortly." });
+  }
+});
 
 // ---------------------------------------------------------------------------
 // Who is allowed to call what
