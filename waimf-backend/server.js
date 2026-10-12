@@ -5,8 +5,6 @@ import cors from "cors";
 import "dotenv/config.js";
 import connectDB from "./utils/db.js";
 import waimfRoute from "./routes/waimfRoute.js";
-// The landing page: the same festival record FILM6 uses, in WAIMF's own database.
-import festivalRoute from "./routes/festivalRoute.js";
 import contatcRoute from "./routes/contact.js";
 import formRoute from "./routes/form.js";
 import blogRoute from "./routes/blogRoute.js";
@@ -107,7 +105,6 @@ app.use((req, res, next) => {
 app.use("/api/auth", authRoute);
 // waimf.org runs on this same API - its own content, the same engine.
 app.use("/api/waimf", waimfRoute);
-app.use("/api/festival", festivalRoute);
 app.use("/api/contact", contatcRoute);
 app.use("/api/form", formRoute);
 app.use("/api/blog", blogRoute);

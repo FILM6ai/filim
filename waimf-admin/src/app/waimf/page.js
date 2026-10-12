@@ -87,18 +87,10 @@ export default function WaimfPage() {
       const url =
         what === 'content'
           ? `${BACKEND_URL}/api/waimf/seed`
-          : what === 'landing'
-            ? `${BACKEND_URL}/api/festival/seed-from-film6`
-            : `${BACKEND_URL}/api/waimf/seed-news`;
+          : `${BACKEND_URL}/api/waimf/seed-news`;
       const { data } = await axios.post(url);
 
-      if (what === 'landing') {
-        toast[data.seeded === false ? 'info' : 'success'](
-          data.seeded === false
-            ? data.message
-            : `Landing page loaded: ${(data.sections || []).length} sections copied from FILM6.`,
-        );
-      } else if (what === 'content') {
+      if (what === 'content') {
         if (data.seeded === false) {
           toast.info('Content is already loaded - nothing changed.');
         } else {
@@ -177,14 +169,6 @@ export default function WaimfPage() {
           One-off. Safe to press twice - neither will duplicate anything.
         </p>
         <div className='flex flex-wrap gap-3'>
-          <button
-            type='button'
-            onClick={() => runImport('landing')}
-            disabled={Boolean(importing)}
-            className='text-sm px-4 py-2 border border-black disabled:opacity-50'
-          >
-            {importing === 'landing' ? 'Loading...' : 'Load the landing page'}
-          </button>
           <button
             type='button'
             onClick={() => runImport('content')}

@@ -164,7 +164,10 @@ export const Edition = ({ edition }) => {
   if (!edition?.description && !edition?.schedule?.length) return null;
 
   return (
-    <section className='py-20 lg:py-[104px]'>
+    <section className='pt-10 lg:pt-14 pb-20 lg:pb-[104px]'>
+      {/* Less space above than other sections: this one sits straight under
+          the hero, whose own bottom padding already separates them. Francois:
+          "reduce the space between header and the start of first section". */}
       <Shell>
         <SectionHead eyebrow='Edition 2026' title={edition.title} />
         <div className='grid lg:grid-cols-[1.05fr_.95fr] gap-12 lg:gap-[72px] items-start'>
@@ -225,7 +228,7 @@ export const Winners = ({ filmmakers, action, bare = false }) => {
         aria-hidden='true'
         width={460}
         height={444}
-        className='absolute -right-16 top-1/2 -translate-y-1/2 w-[460px] opacity-[0.07] pointer-events-none hidden md:block'
+        className='absolute -right-16 top-1/2 -translate-y-1/2 w-[460px] h-auto opacity-[0.07] pointer-events-none hidden md:block'
       />
       <Shell className='relative'>
         {!bare && (

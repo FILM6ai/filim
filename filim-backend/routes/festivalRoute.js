@@ -15,26 +15,31 @@ import {
 } from '../controllers/videoSectionController.js';
 import festivalSchema from '../modles/festival.js';
 
+
+// Award cards: one optional image each, posted as cardImage0, cardImage1, ...
+//
+// This used to be ten hard-coded names, so the ELEVENTH card - Best Hybrid,
+// added in October 2026 - was posted as cardImage10, which multer rejected with
+// LIMIT_UNEXPECTED_FILE. That failed the entire festival save, not just the
+// card, with nothing on the website to show why. Thirty leaves room to grow;
+// the limit is now one number in one place.
+const MAX_CARDS = 30;
+const cardImageFields = Array.from({ length: MAX_CARDS }, (_, i) => ({
+  name: `cardImage${i}`,
+  maxCount: 1,
+}));
+
 const festivalRoute = express.Router();
 
 festivalRoute.get("/getfestival", createGetFestival);
 festivalRoute.post(
   "/festivalRoute",
   upload.fields([
+    ...cardImageFields,
     {
       name: "heroImage",
       maxCount: 1,
     },
-    { name: "cardImage0", maxCount: 1 },
-    { name: "cardImage1", maxCount: 1 },
-    { name: "cardImage2", maxCount: 1 },
-    { name: "cardImage3", maxCount: 1 },
-    { name: "cardImage4", maxCount: 1 },
-    { name: "cardImage5", maxCount: 1 },
-    { name: "cardImage6", maxCount: 1 },
-    { name: "cardImage7", maxCount: 1 },
-    { name: "cardImage8", maxCount: 1 },
-    { name: "cardImage9", maxCount: 1 },
     {
       name: "advanceImage",
       maxCount: 1,
@@ -107,18 +112,9 @@ festivalRoute.post(
 festivalRoute.put(
   "/updatefestival/:id",
   upload.fields([
+    ...cardImageFields,
     { name: "heroImage", maxCount: 1 },
     { name: "advanceImage", maxCount: 1 },
-    { name: "cardImage0", maxCount: 1 },
-    { name: "cardImage1", maxCount: 1 },
-    { name: "cardImage2", maxCount: 1 },
-    { name: "cardImage3", maxCount: 1 },
-    { name: "cardImage4", maxCount: 1 },
-    { name: "cardImage5", maxCount: 1 },
-    { name: "cardImage6", maxCount: 1 },
-    { name: "cardImage7", maxCount: 1 },
-    { name: "cardImage8", maxCount: 1 },
-    { name: "cardImage9", maxCount: 1 },
     { name: "toplistImage", maxCount: 1 },
     { name: "robotImage", maxCount: 1 },
     { name: "competateImage", maxCount: 1 },

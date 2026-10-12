@@ -1,214 +1,60 @@
-"use client";
-import Hero from "@/components/Home/Hero";
-import React, { useEffect, useState } from "react";
-import Advancing from "@/components/Home/Advancing";
-import TopListing from "@/components/Home/TopListing";
+'use client';
 
-import Robot from "@/components/Home/Robot";
-import Runway from "@/components/Home/Runway";
-import axios from "axios";
-import Loading from "@/components/faq/Loading";
-import Sheilds from "@/components/Home/Sheilds";
-import Glossary from '@/components/Home/Glossary';
-import GalleryPhotos from '@/components/Home/GalleryPhotos';
-import JurorPhotos from '@/components/Home/JurorPhotos';
-import { API_BASE_URL } from "@/utils/backend";
-import VideoPlayer from "@/components/Home/VideoPlayer";
+import { useEffect, useState } from 'react';
+import Loading from '@/components/faq/Loading';
+import {
+  Hero,
+  Edition,
+  Winners,
+  Selection,
+  Awards,
+  Jury,
+  Gallery,
+  Rules,
+  ContactBand,
+  Pill,
+} from '@/components/Waimf/Sections';
+import { fetchWaimf } from '@/utils/waimf';
 
-const page = () => {
-  const [heroData, setHeroData] = useState({});
-  const [advanceData, setAdvanceData] = useState({});
-  const [toplist, setToplist] = useState({});
-  const [robot, setRobot] = useState({});
-  const [competate, setCompetate] = useState({});
-  const [runway, setRunway] = useState({});
-  const [shieldMainTitle, setShieldMainTitle] = useState("");
-  const [shieldCards, setShieldCards] = useState([]);
-  const [glossaryData, setGlossaryData] = useState({});
-  const [galleryData, setGalleryData] = useState({});
-  const [jurorsData, setJurorsData] = useState({});
-
+// waimf.org front page = the 2026 edition.
+//
+// It carries a condensed version of every section, each one linking through to
+// its own page. Sections render nothing when empty, so the page shortens itself
+// rather than showing headings with nothing underneath.
+export default function Home() {
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [video, setVideo] = useState({});
-  // Second video block, lower down the page - see the render below.
-  const [video2, setVideo2] = useState({});
-  // ⚠ The numbers are build order, not page order. Top to bottom this page runs
-  // video (above Festival Selection), video3 (under Festival Selection), video4
-  // (under A Celebration of Human Talent & Technology), video2 (at the bottom).
-  const [video3, setVideo3] = useState({});
-  const [video4, setVideo4] = useState({});
+
   useEffect(() => {
-    const fetchHeroData = async () => {
-      try {
-        const { data } = await axios.get(
-          `${API_BASE_URL}/festival/getfestival`,
-        );
-        setHeroData(data.festival[0].hero);
-        setAdvanceData(data.festival[0].advance);
-        setToplist(data.festival[0].toplist);
-        setRobot(data.festival[0].robot);
-        setCompetate(data.festival[0].competate);
-        setRunway(data.festival[0].runway);
-        setShieldMainTitle(data.festival[0].cardSection.mainTitle || "");
-        setShieldCards(data.festival[0].cardSection.cards || []);
-        setGlossaryData(data.festival[0].glossary || {});
-        setGalleryData(data.festival[0].gallery || {});
-        setJurorsData(data.festival[0].jurors || {});
-        setVideo(data.festival[0].videos || {});
-        setVideo2(data.festival[0].videos2 || {});
-        setVideo3(data.festival[0].videos3 || {});
-        setVideo4(data.festival[0].videos4 || {});
-
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-      }
-    };
-
-    fetchHeroData();
+    fetchWaimf()
+      .then(setData)
+      .catch((error) => console.error('Error loading WAIMF:', error))
+      .finally(() => setLoading(false));
   }, []);
 
   if (loading) return <Loading />;
 
   return (
     <div>
-      <Hero
-        image={[{ type: "video", value: heroData?.bgImage }]}
-        title1={heroData?.title}
-        alt={heroData?.alt}
-        description={heroData?.description}
-        buttonText={heroData?.button}
-        buttonLink={heroData?.link}
+      <Hero hero={data?.hero} />
+      <Edition edition={data?.edition} />
+      <Winners
+        filmmakers={data?.filmmakers}
+        action={<Pill href='/top-filmmakers' dark>All winners</Pill>}
       />
-      <Advancing
-        title1={advanceData?.title}
-        title2={advanceData?.title2}
-        description={advanceData?.description}
-        image={advanceData?.bgImage}
-        color="bg-[#F8F8F8]"
-        alt={advanceData?.alt}
+      <Selection
+        selection={data?.selection}
+        action={<Pill href='/selection'>See all films</Pill>}
       />
-      <TopListing
-        title={toplist?.title}
-        description={toplist?.description}
-        image={
-          Array.isArray(toplist?.bgImage) && toplist.bgImage.length > 0
-            ? toplist.bgImage[toplist.bgImage.length - 1]
-            : toplist?.bgImage
-        }
-        button={toplist?.button}
-        alt={toplist?.alt}
-        link={toplist?.link}
-        popup={toplist?.popup}
+      <Awards awards={data?.awards} />
+      <Jury jurors={data?.jurors} />
+      <Gallery
+        gallery={data?.gallery}
+        placeholders={8}
+        action={<Pill href='/gallery'>All photographs</Pill>}
       />
-
-      <VideoPlayer
-        video={video?.videoUrls}
-        title={video?.title}
-        description={video?.description}
-        youtubeUrl={video?.youtubeUrl}
-      />
-
-      <Robot
-        title={robot?.title}
-        description={robot?.description}
-        image={
-          Array.isArray(robot?.bgImage) && robot.bgImage.length > 0
-            ? robot.bgImage[robot.bgImage.length - 1]
-            : robot?.bgImage
-        }
-        button={robot?.button}
-        alt={robot?.alt}
-        link={robot?.link}
-        popup={robot?.popup}
-      />
-
-      {/* Under Festival Selection. Same rule as every other block here: with
-          nothing set it renders null and the page closes up. */}
-      <VideoPlayer
-        video={video3?.videoUrls}
-        title={video3?.title}
-        description={video3?.description}
-        youtubeUrl={video3?.youtubeUrl}
-      />
-
-      <div>
-        <TopListing
-          title={competate?.title}
-          description={competate?.description}
-          image={
-            Array.isArray(competate?.bgImage) && competate.bgImage.length > 0
-              ? competate.bgImage[competate.bgImage.length - 1]
-              : competate?.bgImage
-          }
-          button={competate?.button}
-          order="reverse"
-          alt={competate?.alt}
-          link={competate?.link}
-          popup={competate?.popup}
-        />
-
-        {/* Under A Celebration of Human Talent & Technology - and deliberately
-            ABOVE the grey band below, not after it. The band is this section's
-            tail, so putting the video after it left a dead strip of grey
-            between the section and its own video. Same rule as the others: with
-            nothing set it renders null and the page closes up exactly as it is
-            today. */}
-        <VideoPlayer
-          video={video4?.videoUrls}
-          title={video4?.title}
-          description={video4?.description}
-          youtubeUrl={video4?.youtubeUrl}
-        />
-
-        <div className="bg-[#F8F8F8] max-md:mt-12 md:h-48 md:-mt-16 relative -z-50"></div>
-      </div>
-
-      <JurorPhotos
-        mainTitle={jurorsData?.mainTitle}
-        items={jurorsData?.items}
-      />
-
-      <Glossary
-        mainTitle={glossaryData?.mainTitle}
-        subtitle={glossaryData?.subtitle}
-        items={glossaryData?.items}
-      />
-
-      <GalleryPhotos
-        mainTitle={galleryData?.mainTitle}
-        images={galleryData?.images}
-      />
-
-      {/* The bottom video block. Same component and same rule as the others:
-          with nothing set it renders null, so the page closes up as if it were
-          not here. */}
-      <VideoPlayer
-        video={video2?.videoUrls}
-        title={video2?.title}
-        description={video2?.description}
-        youtubeUrl={video2?.youtubeUrl}
-      />
-
-      <Sheilds mainTitle={shieldMainTitle} cards={shieldCards} />
-
-      {/* "Exploring the AI Revolution" - the shark section. Francois asked for
-          it to go all the way down, so it now closes the page BELOW Festival
-          Awards rather than sitting above it. */}
-      <Runway
-        title={runway?.title}
-        image={
-          Array.isArray(runway?.bgImage) && runway.bgImage.length > 0
-            ? runway.bgImage[runway.bgImage.length - 1]
-            : runway?.bgImage
-        }
-        button={runway?.button}
-        alt={runway?.alt}
-        link={runway?.link}
-        popup={runway?.popup}
-      />
+      <Rules rules={data?.rules} limit={3} />
+      <ContactBand contact={data?.contact} />
     </div>
   );
-};
-
-export default page;
+}
