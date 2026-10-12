@@ -17,7 +17,7 @@ export default function GalleryPage() {
       />
       {/* 12 placeholders while there are no photographs, so the page shows its
           shape instead of being blank. They disappear the moment one is added. */}
-      <Gallery gallery={data?.gallery} placeholders={12} />
+      <Gallery gallery={data?.gallery} placeholders={12} bare />
     </div>
   );
 }

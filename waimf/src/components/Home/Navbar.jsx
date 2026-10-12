@@ -88,10 +88,12 @@ const Navbar = () => {
       <div className='bg-black/70 backdrop-blur-md absolute left-0 right-0 px-4 sm:px-6 lg:px-12'>
         <div className='flex items-center gap-3 max-[1180px]:justify-start justify-between py-5 h-16 max-w-[1400px] mx-auto'>
           {/* Brand */}
+          {/* A thin gold frame around emblem + wordmark, after the framed
+              "WAIMF LOGO 1" artwork Francois sent. */}
           <Link
             href='/'
             onClick={() => setActiveNav('/')}
-            className='flex items-center gap-3 relative z-10 flex-shrink-0'
+            className='flex items-center gap-3 relative z-10 flex-shrink-0 border border-[#C8A24A]/80 px-2.5 py-1.5'
           >
             <Image
               src='/waimf-emblem.png'
@@ -99,10 +101,11 @@ const Navbar = () => {
               height={104}
               alt='WAIMF'
               priority
-              className='object-contain w-11 h-11 lg:w-[52px] lg:h-[52px] brightness-110'
+              className='object-contain w-9 h-9 lg:w-10 lg:h-10 brightness-110'
             />
-            <span className='font-serif text-[19px] lg:text-[23px] tracking-[0.22em] leading-none pt-[2px]'>
-              WAIMF
+            {/* Gold, except "AI" - the two letters the festival is about. */}
+            <span className='font-serif text-[19px] lg:text-[23px] tracking-[0.22em] leading-none pt-[2px] text-[#C8A24A]'>
+              W<span className='text-white'>AI</span>MF
             </span>
           </Link>
 

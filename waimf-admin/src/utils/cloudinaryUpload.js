@@ -4,9 +4,6 @@ import { BACKEND_URL } from "@/utils/backend";
 // issues. Going through the backend instead would put the file through multer,
 // which caps uploads at 20MB - too small for a video of any length.
 export const uploadToCloudinary = async (file) => {
-  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  if (!cloudName) throw new Error("Cloudinary cloud name is not configured");
-
   const signRes = await fetch(`${BACKEND_URL}/api/cloudinary/sign`, {
     method: "POST",
   });
@@ -16,6 +13,13 @@ export const uploadToCloudinary = async (file) => {
   }
 
   const { signature, timestamp, apiKey } = signJson;
+
+  // The cloud name the BACKEND signed for wins over the one baked into this
+  // panel's build: a signature is only valid for the cloud it was made for, so
+  // using the backend's answer makes a mismatched build variable harmless.
+  const cloudName =
+    signJson.cloudName || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  if (!cloudName) throw new Error("Cloudinary cloud name is not configured");
 
   const data = new FormData();
   data.append("file", file);

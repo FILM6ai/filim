@@ -54,6 +54,7 @@ const RowImage = ({ value, onChange }) => {
       onChange(await uploadToCloudinary(file));
     } catch (e) {
       console.error('Upload failed:', e);
+      alert(`Upload failed: ${e?.message || 'unknown error'}`);
     } finally {
       setBusy(false);
       if (input.current) input.current.value = '';
@@ -179,7 +180,7 @@ export const ImageField = ({ label, hint, value, onChange, accept = 'image/*,vid
       onChange(await uploadToCloudinary(file));
     } catch (e) {
       console.error('Upload failed:', e);
-      setError('Upload failed. Try again.');
+      setError(`Upload failed: ${e?.message || 'unknown error'}`);
     } finally {
       setBusy(false);
       if (input.current) input.current.value = '';
@@ -257,7 +258,9 @@ export const ImageList = ({ label, hint, images, onChange }) => {
       onChange([...list, ...uploaded]);
     } catch (e) {
       console.error('Upload failed:', e);
-      setError('Upload failed. Try again, or try fewer photos at once.');
+      // The real reason, not a generic line: "Cloudinary config missing on
+      // server" and "api_secret mismatch" need different fixes.
+      setError(`Upload failed: ${e?.message || 'unknown error'}`);
     } finally {
       setBusy(false);
       if (input.current) input.current.value = '';

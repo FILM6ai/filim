@@ -6,6 +6,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BACKEND_URL } from '@/utils/backend';
 import { Field, Area, Repeater, ImageList, ImageField } from '@/component/mainComponents/waimf/Fields';
+import BulkPaste from '@/component/mainComponents/waimf/BulkPaste';
 
 // The whole of waimf.org, editable.
 //
@@ -279,6 +280,11 @@ export default function WaimfPage() {
             onChange={(v) => setField('selection', 'mainTitle', v)} />
           <Area label='Intro line' rows={2} value={selection.description}
             onChange={(v) => setField('selection', 'description', v)} />
+          <BulkPaste
+            onAdd={(films) =>
+              setField('selection', 'items', [...(selection.items || []), ...films])
+            }
+          />
           <Repeater
             label='Films'
             hint='Finalists and the wider official selection. The award winners do NOT go here - they are on the Top Filmmakers tab, so the films are spread across two pages. Type Finalist in the Group column to lift a film to the top with a gold laurel; leave it empty for the rest of the selection. Paste the YouTube address and the poster appears on its own.'

@@ -30,7 +30,7 @@ export default function SelectionPage() {
           </Shell>
         </section>
       ) : (
-        <Selection selection={data.selection} />
+        <Selection selection={data.selection} bare />
       )}
       <Jury jurors={data?.jurors} />
     </div>

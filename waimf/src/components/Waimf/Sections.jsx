@@ -356,11 +356,15 @@ export const WinningFilms = ({ filmmakers }) => {
 
 /* ------------------------------------------------------------- selection -- */
 
+// Selection, Gallery and Rules each take `bare`: on their own pages the dark
+// PageHeader already carries the title, and printing it again on the section
+// underneath is the "WAIMF RULES & TERMS" twice Francois spotted.
+
 // A plain <img>, not next/image: posters arrive from YouTube, Cloudinary and
 // whatever else gets pasted in, and the optimiser only accepts hosts listed in
 // next.config. A new source must never silently stop posters rendering.
 
-export const Selection = ({ selection, action }) => {
+export const Selection = ({ selection, action, bare = false }) => {
   const items = selection?.items || [];
   if (items.length === 0) return null;
 
@@ -376,12 +380,14 @@ export const Selection = ({ selection, action }) => {
   return (
     <section className='py-20 lg:py-[104px]'>
       <Shell>
-        <SectionHead
+        {!bare && (
+          <SectionHead
           eyebrow='Official Selection'
           title={selection.mainTitle}
           sub={selection.description}
           action={action}
         />
+        )}
         <div className='grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-[30px]'>
           {ordered.map((film, i) => {
             const id = youtubeId(film.youtubeUrl);
@@ -515,7 +521,7 @@ export const Jury = ({ jurors, action }) => {
 
 /* --------------------------------------------------------------- gallery -- */
 
-export const Gallery = ({ gallery, action, placeholders = 0 }) => {
+export const Gallery = ({ gallery, action, placeholders = 0, bare = false }) => {
   const images = gallery?.images || [];
   // With no photographs and no placeholders asked for, the section is absent
   // rather than an empty grid.
@@ -524,7 +530,8 @@ export const Gallery = ({ gallery, action, placeholders = 0 }) => {
   return (
     <section className='py-20 lg:py-[104px]'>
       <Shell>
-        <SectionHead
+        {!bare && (
+          <SectionHead
           eyebrow='Gallery'
           title={gallery?.mainTitle || 'Gallery'}
           sub={
@@ -534,6 +541,7 @@ export const Gallery = ({ gallery, action, placeholders = 0 }) => {
           }
           action={action}
         />
+        )}
         <div className='grid grid-cols-2 lg:grid-cols-4 gap-3.5'>
           {images.length > 0
             ? images.map((src, i) => (
@@ -561,7 +569,7 @@ export const Gallery = ({ gallery, action, placeholders = 0 }) => {
 
 /* ----------------------------------------------------------------- rules -- */
 
-export const Rules = ({ rules, limit }) => {
+export const Rules = ({ rules, limit, bare = false }) => {
   const items = rules?.items || [];
   if (items.length === 0) return null;
   const shown = limit ? items.slice(0, limit) : items;
@@ -569,12 +577,14 @@ export const Rules = ({ rules, limit }) => {
   return (
     <section className='py-20 lg:py-[104px]'>
       <Shell>
-        <SectionHead
+        {!bare && (
+          <SectionHead
           eyebrow='Rules'
           title={rules.mainTitle || 'Rules'}
           sub={rules.subtitle}
           action={limit ? <Pill href='/rules'>Read in full</Pill> : null}
         />
+        )}
         <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-10 lg:gap-[46px]'>
           {shown.map((item, i) => (
             <div key={i}>

@@ -109,7 +109,9 @@ const Footer = () => {
               height={96}
             />
             {!footerData?.logo && (
-              <span className='font-serif text-[22px] tracking-[0.22em]'>WAIMF</span>
+              <span className='font-serif text-[22px] tracking-[0.22em] text-[#C8A24A]'>
+                W<span className='text-white'>AI</span>MF
+              </span>
             )}
           </Link>
           <div className='flex flex-wrap justify-between items-center gap-6'>

@@ -17,7 +17,7 @@ export default function RulesPage() {
         title={data?.rules?.mainTitle || 'Rules'}
         sub={data?.rules?.subtitle}
       />
-      <Rules rules={data?.rules} />
+      <Rules rules={data?.rules} bare />
     </div>
   );
 }
