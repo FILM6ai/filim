@@ -91,6 +91,9 @@ const Navbar = () => {
           {/* The thin gold frame goes round the emblem alone, like the
               square around the reel-and-brain in the "WAIMF LOGO 1" artwork;
               the wordmark sits outside it. */}
+          {/* Brand and socials both take an equal share of what is left, so
+              the menu between them sits in the true centre of the bar. */}
+          <div className='min-[1180px]:flex-1 min-[1180px]:basis-0 flex'>
           <Link
             href='/'
             onClick={() => setActiveNav('/')}
@@ -111,6 +114,7 @@ const Navbar = () => {
               W<span className='text-white'>AI</span>MF
             </span>
           </Link>
+          </div>
 
           {/* Hamburger (mobile) */}
           <div className='max-[1180px]:block hidden absolute right-4'>
@@ -129,7 +133,7 @@ const Navbar = () => {
               isOpen
                 ? 'translate-x-0 opacity-100 py-16'
                 : '-translate-x-full opacity-0'
-            } min-[1180px]:opacity-100 min-[1180px]:translate-x-0 min-[1180px]:h-auto min-[1180px]:static min-[1180px]:w-auto min-[1180px]:bg-transparent min-[1180px]:ml-auto`}
+            } min-[1180px]:opacity-100 min-[1180px]:translate-x-0 min-[1180px]:h-auto min-[1180px]:static min-[1180px]:w-auto min-[1180px]:bg-transparent min-[1180px]:mx-auto min-[1180px]:flex-none`}
           >
             <div className='flex flex-col min-[1180px]:flex-row items-center gap-5 min-[1180px]:gap-7 p-4 min-[1180px]:p-0'>
               {LINKS.map((item) => (
@@ -160,10 +164,12 @@ const Navbar = () => {
           </div>
 
           {/* Socials, desktop - where SUBMIT YOUR FILM used to be */}
-          <div className='flex items-center gap-4 max-[1180px]:hidden pl-8 ml-7 border-l border-white/20'>
+          <div className='min-[1180px]:flex-1 min-[1180px]:basis-0 flex justify-end max-[1180px]:hidden'>
+          <div className='flex items-center gap-4 pl-7 border-l border-white/20'>
             {socials.map((s) => (
               <Social key={s.label} {...s} />
             ))}
+          </div>
           </div>
         </div>
       </div>

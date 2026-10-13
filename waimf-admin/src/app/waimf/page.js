@@ -6,7 +6,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BACKEND_URL } from '@/utils/backend';
 import { Field, Area, Repeater, ImageList, ImageField } from '@/component/mainComponents/waimf/Fields';
-import BulkPaste from '@/component/mainComponents/waimf/BulkPaste';
+import TitleLists from '@/component/mainComponents/waimf/TitleLists';
 
 // The whole of waimf.org, editable.
 //
@@ -278,7 +278,7 @@ export default function WaimfPage() {
             onChange={(v) => setField('filmmakers', 'description', v)} />
           <Repeater
             label='Winners'
-            hint='One row per award. The order here is the order on the page. Paste a YouTube link and the winning film also appears as a video further down this page - that is where the winners play, not on the Official Selection page.'
+            hint='One row per award. The order here is the order on the page. Paste a YouTube link and the film plays right under the winners list, on the front page and on Top Filmmakers. Use Unlisted on YouTube, not Private - private videos will not play on the site.'
             items={filmmakers.items}
             columns={[
               { key: 'award', label: 'Award', placeholder: 'Grand Prix' },
@@ -300,23 +300,8 @@ export default function WaimfPage() {
             onChange={(v) => setField('selection', 'mainTitle', v)} />
           <Area label='Intro line' rows={2} value={selection.description}
             onChange={(v) => setField('selection', 'description', v)} />
-          <BulkPaste
-            onAdd={(films) =>
-              setField('selection', 'items', [...(selection.items || []), ...films])
-            }
-          />
-          <Repeater
-            label='Films'
-            hint='Finalists and the wider official selection. The award winners do NOT go here - they are on the Top Filmmakers tab, so the films are spread across two pages. Type Finalist in the Group column to lift a film to the top with a gold laurel; leave it empty for the rest of the selection. Paste the YouTube address and the poster appears on its own.'
+          <TitleLists
             items={selection.items}
-            columns={[
-              { key: 'category', label: 'Group', placeholder: 'Finalist' },
-              { key: 'title', label: 'Title', wide: true },
-              { key: 'director', label: 'Director' },
-              { key: 'duration', label: 'Length', placeholder: '4 min' },
-              { key: 'youtubeUrl', label: 'YouTube address', wide: true },
-            ]}
-            newRow={{ category: '', title: '', director: '', duration: '', youtubeUrl: '' }}
             onChange={(v) => setField('selection', 'items', v)}
           />
           <SaveBar section='selection' />

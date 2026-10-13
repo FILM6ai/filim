@@ -17,6 +17,8 @@ import { cdn, portrait, tile } from '@/utils/image';
 //  - dark bands for the hero, the winners and the contact strip; white for
 //    everything between, which is the contrast Francois asked for.
 
+import { playerSrc } from '@/utils/youtube';
+
 const GOLD = '#C8A24A';
 
 // "OFFICIAL SELECTION" sitting directly above the heading "Official Selection"
@@ -295,79 +297,57 @@ export const Winners = ({ filmmakers, action, bare = false }) => {
             </div>
           ))}
         </div>
+
+        <WinnerVideos items={items} />
       </Shell>
     </div>
   );
 };
 
-/* ----------------------------------------------------- winning films -- */
-
-// The winners' films as a grid, for the Top Filmmakers page.
-//
-// Reuses the same tile as the selection grid so the two pages look like one
-// site, but reads `film`/`filmmaker` because that is how a winner is stored.
-// Renders nothing when no winner has a video yet, which keeps the page honest
-// while Francois is still pasting links in.
-export const WinningFilms = ({ filmmakers }) => {
-  const playable = (filmmakers?.items || []).filter(
-    (winner) => (winner.youtubeUrl || '').trim() || (winner.poster || '').trim(),
-  );
-  if (playable.length === 0) return null;
+// The winners' films, playing right on the page. Francois: "we shall be able to
+// see the embedded films directly without the need to click on the button".
+// Only rows with a YouTube address show, so the block grows as links are
+// pasted in and is absent until the first one is. One film plays wide; two or
+// more sit in a grid.
+const WinnerVideos = ({ items }) => {
+  const films = (items || [])
+    .map((row) => ({ ...row, id: youtubeId(row.youtubeUrl) }))
+    .filter((row) => row.id);
+  if (films.length === 0) return null;
 
   return (
-    <section className='py-20 lg:py-[104px]'>
-      <Shell>
-        <SectionHead
-          eyebrow='The films'
-          title='Watch the winners'
-          sub='The awarded films of the 2026 edition.'
-        />
-        <div className='grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-[30px]'>
-          {playable.map((winner, i) => {
-            const id = youtubeId(winner.youtubeUrl);
-            const poster =
-              winner.poster ||
-              (id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : '');
-            return (
-              <Link
-                key={i}
-                href={winner.youtubeUrl || '#'}
-                target={winner.youtubeUrl ? '_blank' : undefined}
-                rel={winner.youtubeUrl ? 'noopener noreferrer' : undefined}
-                className='group block'
-              >
-                <div className='relative bg-neutral-200 overflow-hidden'>
-                  {poster ? (
-                    <img
-                      src={cdn(poster)}
-                      alt={winner.film || ''}
-                      loading='lazy'
-                      className='w-full aspect-video object-cover transition-transform duration-300 group-hover:scale-[1.03]'
-                    />
-                  ) : (
-                    <div className='w-full aspect-video' />
-                  )}
-                  <span
-                    className='absolute bottom-2.5 left-2.5 text-[8.5px] tracking-[0.14em] uppercase font-semibold px-2.5 py-1.5'
-                    style={{ background: GOLD, color: '#000' }}
-                  >
-                    {winner.award} · WAIMF 2026
-                  </span>
-                </div>
-                <h4 className='font-serif text-[17px] sm:text-[18px] mt-4 font-normal'>
-                  {winner.film}
-                </h4>
-                {(winner.filmmaker || winner.duration) && (
-                  <p className='text-[13px] text-neutral-500 mt-1'>
-                    {[winner.filmmaker, winner.duration].filter(Boolean).join('  ·  ')}
-                  </p>
-                )}
-              </Link>
-            );
-          })}
-        </div>
-      </Shell>
-    </section>
+    <div
+      className={`mt-14 lg:mt-16 grid gap-x-8 gap-y-12 ${
+        films.length === 1 ? 'max-w-[980px]' : 'md:grid-cols-2'
+      }`}
+    >
+      {films.map((film) => (
+        <figure key={film.id}>
+          <div className='relative w-full aspect-video bg-black border border-neutral-800'>
+            <iframe
+              src={playerSrc(`https://www.youtube.com/embed/${film.id}?rel=0`)}
+              title={film.film || film.award || 'WAIMF 2026'}
+              loading='lazy'
+              allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
+              allowFullScreen
+              className='absolute inset-0 w-full h-full'
+            />
+          </div>
+          <figcaption className='mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1'>
+            <em
+              className='not-italic text-[10.5px] tracking-[0.17em] uppercase'
+              style={{ color: GOLD }}
+            >
+              {film.award}
+            </em>
+            <span className='font-serif text-[18px]'>{film.film}</span>
+            {film.filmmaker && (
+              <span className='text-[13.5px] text-neutral-400'>{film.filmmaker}</span>
+            )}
+          </figcaption>
+        </figure>
+      ))}
+    </div>
   );
 };
 
@@ -377,83 +357,74 @@ export const WinningFilms = ({ filmmakers }) => {
 // PageHeader already carries the title, and printing it again on the section
 // underneath is the "WAIMF RULES & TERMS" twice Francois spotted.
 
-// A plain <img>, not next/image: posters arrive from YouTube, Cloudinary and
-// whatever else gets pasted in, and the optimiser only accepts hosts listed in
-// next.config. A new source must never silently stop posters rendering.
+// Titles only, no pictures: the selection runs to well over a hundred films
+// and nobody has posters for them. Francois: "the list shall appear without
+// images". Two lists, Finalists then the Official Selection, in the order they
+// were pasted. A film with a YouTube address gets its title linked.
+const FilmList = ({ heading, films, gold = false }) => {
+  if (films.length === 0) return null;
+  return (
+    <div className='mb-16 last:mb-0'>
+      <div className='flex items-baseline gap-4 border-b border-neutral-200 pb-4 mb-6'>
+        <h3
+          className='text-[12px] tracking-[0.3em] uppercase font-semibold'
+          style={{ color: gold ? GOLD : '#111' }}
+        >
+          {heading}
+        </h3>
+        <span className='text-[12px] text-neutral-400'>{films.length} films</span>
+      </div>
+      <ul className='columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-x-10'>
+        {films.map((film, i) => (
+          <li key={i} className='break-inside-avoid py-[7px] border-b border-neutral-100'>
+            {film.youtubeUrl ? (
+              <a
+                href={film.youtubeUrl}
+                target='_blank'
+                rel='noopener noreferrer'
+                className='font-serif text-[16.5px] leading-snug hover:underline'
+              >
+                {film.title}
+                <span className='ml-2 text-[11px] align-middle' style={{ color: GOLD }}>&#9654;</span>
+              </a>
+            ) : (
+              <span className='font-serif text-[16.5px] leading-snug'>{film.title}</span>
+            )}
+            {(film.director || film.duration) && (
+              <span className='block text-[12.5px] text-neutral-500 mt-0.5'>
+                {[film.director, film.duration].filter(Boolean).join('  ·  ')}
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
-export const Selection = ({ selection, action, bare = false }) => {
-  const items = selection?.items || [];
+// `finalistsOnly` is for the front page: the full selection is a long page of
+// its own, so the front shows the finalists and links through to the rest.
+export const Selection = ({ selection, action, bare = false, finalistsOnly = false }) => {
+  const items = (selection?.items || []).filter((film) => (film.title || '').trim());
   if (items.length === 0) return null;
 
-  // Finalists first, then the wider selection. A stable sort, so films keep
-  // the order set in the panel within each group rather than being shuffled.
-  // The award winners are NOT here - they are on Top Filmmakers, so the films
-  // are spread across two pages instead of piled onto one.
-  const ordered = [
-    ...items.filter((film) => (film.category || '').trim()),
-    ...items.filter((film) => !(film.category || '').trim()),
-  ];
+  const finalists = items.filter((film) => (film.category || '').trim());
+  const official = items.filter((film) => !(film.category || '').trim());
+  if (finalistsOnly && finalists.length === 0) return null;
 
   return (
     <section className='py-20 lg:py-[104px]'>
       <Shell>
         {!bare && (
           <SectionHead
-          eyebrow='Official Selection'
-          title={selection.mainTitle}
-          sub={selection.description}
-          action={action}
-        />
+            eyebrow='Official Selection'
+            title={selection.mainTitle}
+            sub={selection.description}
+            action={action}
+          />
         )}
-        <div className='grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-[30px]'>
-          {ordered.map((film, i) => {
-            const id = youtubeId(film.youtubeUrl);
-            const poster =
-              film.poster || (id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : '');
-            return (
-              <Link
-                key={i}
-                href={film.youtubeUrl || '#'}
-                target={film.youtubeUrl ? '_blank' : undefined}
-                rel={film.youtubeUrl ? 'noopener noreferrer' : undefined}
-                className='group block'
-              >
-                <div className='relative bg-neutral-200 overflow-hidden'>
-                  {poster ? (
-                    <img
-                      src={cdn(poster)}
-                      alt={film.alt || film.title || ''}
-                      loading='lazy'
-                      className='w-full aspect-video object-cover transition-transform duration-300 group-hover:scale-[1.03]'
-                    />
-                  ) : (
-                    <div className='w-full aspect-video' />
-                  )}
-                  <span
-                    className='absolute bottom-2.5 left-2.5 text-[8.5px] tracking-[0.14em] uppercase font-semibold px-2.5 py-1.5'
-                    style={
-                      film.category
-                        ? { background: GOLD, color: '#000' }
-                        : { background: 'rgba(255,255,255,.95)', color: '#000' }
-                    }
-                  >
-                    {film.category
-                      ? `${film.category} · WAIMF 2026`
-                      : 'Official Selection · WAIMF 2026'}
-                  </span>
-                </div>
-                <h4 className='font-serif text-[17px] sm:text-[18px] mt-4 font-normal'>
-                  {film.title}
-                </h4>
-                {(film.director || film.duration) && (
-                  <p className='text-[13px] text-neutral-500 mt-1'>
-                    {[film.director, film.duration].filter(Boolean).join('  ·  ')}
-                  </p>
-                )}
-              </Link>
-            );
-          })}
-        </div>
+        <FilmList heading='Finalists' films={finalists} gold />
+        {!finalistsOnly && <FilmList heading='Official Selection' films={official} />}
       </Shell>
     </section>
   );

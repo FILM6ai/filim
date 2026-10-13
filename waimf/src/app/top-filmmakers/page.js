@@ -1,7 +1,7 @@
 'use client';
 
 import Loading from '@/components/faq/Loading';
-import { PageHeader, Winners, WinningFilms, Awards } from '@/components/Waimf/Sections';
+import { PageHeader, Winners, Awards } from '@/components/Waimf/Sections';
 import { useWaimf } from '@/components/Waimf/usePage';
 
 // The award winners, in full, plus what each award is for.
@@ -17,9 +17,7 @@ export default function TopFilmmakers() {
         sub={data?.filmmakers?.description}
       />
       <Winners filmmakers={data?.filmmakers} bare />
-      {/* The winning films themselves. Francois moved the videos here so the
-          selection page carries the finalists instead of everything at once. */}
-      <WinningFilms filmmakers={data?.filmmakers} />
+      {/* The winning films play inside the Winners block above, as embeds. */}
       <Awards awards={data?.awards} />
     </div>
   );

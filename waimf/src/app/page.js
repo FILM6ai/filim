@@ -38,13 +38,12 @@ export default function Home() {
     <div>
       <Hero hero={data?.hero} />
       <Edition edition={data?.edition} />
-      <Winners
-        filmmakers={data?.filmmakers}
-        action={<Pill href='/top-filmmakers' dark>All winners</Pill>}
-      />
+      {/* No "All winners" button: the winning films play right here. */}
+      <Winners filmmakers={data?.filmmakers} />
       <Selection
         selection={data?.selection}
-        action={<Pill href='/selection'>See all films</Pill>}
+        finalistsOnly
+        action={<Pill href='/selection'>Full official selection</Pill>}
       />
       <Awards awards={data?.awards} />
       <Jury jurors={data?.jurors} />
