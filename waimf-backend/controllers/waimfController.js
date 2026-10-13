@@ -51,6 +51,7 @@ const SECTIONS = new Set([
   "rules",
   "contact",
   "advance",
+  "seo",
 ]);
 
 export const updateWaimf = async (req, res) => {

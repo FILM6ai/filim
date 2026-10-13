@@ -10,6 +10,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { validateBlogFile } from "@/utils/fileValidation";
 import { BACKEND_URL } from "@/utils/backend";
+import { shrinkImage, uploadErrorMessage } from "@/utils/shrinkImage";
 
 // Dynamically import React-Quill to disable SSR
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
@@ -38,8 +39,8 @@ const Blog = () => {
       formData.append("youtubeUrl", youtubeUrl);
       formData.append("content", value);
       if (image) {
-        formData.append("image", image);
-        console.log(image, "image");
+        // Phone photos are often over Vercel's 4.5 MB request limit.
+        formData.append("image", await shrinkImage(image));
       }
       console.log(BACKEND_URL);
       const response = await axios.post(
@@ -50,9 +51,9 @@ const Blog = () => {
         },
       );
       if (response.data.success) {
-        toast.success("Blog updated successfully!");
+        toast.success("Article published - it is on the News page now.");
       } else {
-        toast.error("Failed to update blog");
+        toast.error(response.data?.message || "Failed to publish the article");
       }
       console.log("Blog post created successfully:", response.data);
 
@@ -64,7 +65,7 @@ const Blog = () => {
       setYoutubeUrl("");
       setImage(null);
     } catch (error) {
-      toast.error("Failed to update blog");
+      toast.error(uploadErrorMessage(error, "Failed to publish the article"));
 
       console.error("Error creating blog post:", error);
     } finally {

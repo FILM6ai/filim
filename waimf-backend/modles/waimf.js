@@ -53,6 +53,9 @@ const WaimfPageSchema = new mongoose.Schema(
       link2: { type: String },
       // How dark the background picture is, 0-80. Empty = the site default.
       darkness: { type: Number, min: 0, max: 80 },
+      // Which part of the picture stays in view when the screen crops it:
+      // 0 = top edge, 100 = bottom edge. Empty = the site default.
+      focus: { type: Number, min: 0, max: 100 },
       // The dates print in exactly ONE place on the site. Francois asked for
       // the repetition to go, so this is the single source for them.
       dateline: { type: String },
@@ -115,6 +118,17 @@ const WaimfPageSchema = new mongoose.Schema(
           category: { type: String, default: "" },
         },
       ],
+      // Two optional video blocks on the Official Selection page: one just
+      // above the Official Selection list, one below it. One YouTube address
+      // per entry; empty = the block is not shown.
+      videosAbove: {
+        title: { type: String, default: "" },
+        urls: [{ type: String }],
+      },
+      videosBelow: {
+        title: { type: String, default: "" },
+        urls: [{ type: String }],
+      },
     },
 
     // --- Awards, jury, gallery ---------------------------------------------
@@ -167,6 +181,25 @@ const WaimfPageSchema = new mongoose.Schema(
 
     // Spare blocks matching the FILM6 festival page, so a section from there
     // can be dropped in without a schema change.
+    // --- Search engines and analytics --------------------------------------
+    // Page titles/descriptions for Google and link previews, the Google
+    // Analytics measurement ID (G-...) and the Search Console verification
+    // code. All three are public by nature: they end up in the page HTML.
+    seo: {
+      gaId: { type: String, default: "" },
+      googleVerification: { type: String, default: "" },
+      pages: {
+        home: { title: String, description: String },
+        filmmakers: { title: String, description: String },
+        selection: { title: String, description: String },
+        gallery: { title: String, description: String },
+        rules: { title: String, description: String },
+        news: { title: String, description: String },
+        contact: { title: String, description: String },
+        terms: { title: String, description: String },
+      },
+    },
+
     advance: { ...blockFields },
     videos: { ...videoSectionFields },
     videos2: { ...videoSectionFields },

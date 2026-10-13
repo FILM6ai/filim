@@ -92,6 +92,22 @@ const fetchCmsMetadata = async () => {
   }
 };
 
+// The SEO block of the waimf.org record (panel: WAIMF site > SEO & Analytics):
+// per-page titles and descriptions, the Google Analytics ID and the Search
+// Console verification code. Same 5-minute cache as above.
+export const fetchSeo = async () => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/waimf/getwaimf`, {
+      next: { revalidate: REVALIDATE_SECONDS },
+    });
+    if (!res.ok) return {};
+    const json = await res.json();
+    return json?.waimf?.[0]?.seo || {};
+  } catch {
+    return {};
+  }
+};
+
 const clean = (value) =>
   typeof value === 'string' ? value.replace(/\s+/g, ' ').trim() : '';
 
@@ -129,11 +145,15 @@ export const htmlToDescription = (html, { limit = 160, stripPrefix = '' } = {}) 
  * @param {string} path  route path, used for the canonical URL ('/' for home)
  */
 export const pageMetadata = async (key, path) => {
-  const cms = await fetchCmsMetadata();
+  const [seo, cms] = await Promise.all([fetchSeo(), fetchCmsMetadata()]);
   const fallback = FALLBACKS[key] || FALLBACKS.home;
+  const mine = seo?.pages?.[key] || {};
 
-  const title = clean(cms?.[key]?.title) || fallback.title;
-  const description = clean(cms?.[key]?.description) || fallback.description;
+  // The panel's SEO screen first, then the older metadata record, then the
+  // wording baked in above.
+  const title = clean(mine.title) || clean(cms?.[key]?.title) || fallback.title;
+  const description =
+    clean(mine.description) || clean(cms?.[key]?.description) || fallback.description;
 
   return buildMetadata({ title, description, path });
 };

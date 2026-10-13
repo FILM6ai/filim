@@ -26,6 +26,19 @@ const TABS = [
   { key: 'gallery', label: 'Gallery' },
   { key: 'rules', label: 'Rules' },
   { key: 'contact', label: 'Contact' },
+  { key: 'seo', label: 'SEO & Analytics' },
+];
+
+// The pages whose Google title and description can be set on the SEO tab.
+const SEO_PAGES = [
+  { key: 'home', label: 'Home (Edition 2026)' },
+  { key: 'filmmakers', label: 'Top Filmmakers' },
+  { key: 'selection', label: 'Official Selection' },
+  { key: 'gallery', label: 'Gallery' },
+  { key: 'rules', label: 'Rules' },
+  { key: 'news', label: 'News' },
+  { key: 'contact', label: 'Contact' },
+  { key: 'terms', label: 'Terms' },
 ];
 
 export default function WaimfPage() {
@@ -145,6 +158,7 @@ export default function WaimfPage() {
   const edition = doc.edition || {};
   const filmmakers = doc.filmmakers || {};
   const selection = doc.selection || {};
+  const seo = doc.seo || {};
   const awards = doc.awards || {};
   const jurors = doc.jurors || {};
   const gallery = doc.gallery || {};
@@ -240,6 +254,19 @@ export default function WaimfPage() {
               onChange={(e) => setField('hero', 'darkness', Number(e.target.value))}
               className='w-full max-w-md mt-2' />
           </label>
+          <label className='block mb-5'>
+            <span className='block text-sm font-medium text-black'>
+              Picture position: {hero.focus ?? 20}% from the top
+            </span>
+            <span className='block text-xs text-gray-500 mt-0.5'>
+              Screens crop the picture. Move left to keep more of the TOP in view
+              (faces), right to keep more of the bottom.
+            </span>
+            <input type='range' min={0} max={100} step={5}
+              value={hero.focus ?? 20}
+              onChange={(e) => setField('hero', 'focus', Number(e.target.value))}
+              className='w-full max-w-md mt-2' />
+          </label>
           <ImageField
             label='Background picture or video'
             hint='Upload a picture, or an .mp4 to have it play behind the title.'
@@ -304,6 +331,24 @@ export default function WaimfPage() {
             items={selection.items}
             onChange={(v) => setField('selection', 'items', v)}
           />
+          <div className='border border-gray-300 bg-gray-50 p-4 mb-6'>
+            <h3 className='text-base font-semibold text-black'>Videos ABOVE the Official Selection list</h3>
+            <p className='text-xs text-gray-500 mt-0.5 mb-3'>Shown on the Official Selection page, between the Finalists and the Official Selection list. Leave the addresses empty and the block does not appear.</p>
+            <Field label='Heading (optional)' value={selection.videosAbove?.title}
+              onChange={(v) => setField('selection', 'videosAbove', { ...(selection.videosAbove || {}), title: v })} />
+            <Area label='YouTube addresses, one per line' rows={3}
+              value={(selection.videosAbove?.urls || []).join('\n')}
+              onChange={(v) => setField('selection', 'videosAbove', { ...(selection.videosAbove || {}), urls: v.split('\n') })} />
+          </div>
+          <div className='border border-gray-300 bg-gray-50 p-4 mb-6'>
+            <h3 className='text-base font-semibold text-black'>Videos BELOW the Official Selection list</h3>
+            <p className='text-xs text-gray-500 mt-0.5 mb-3'>Shown on the Official Selection page, under the Official Selection list. Leave the addresses empty and the block does not appear.</p>
+            <Field label='Heading (optional)' value={selection.videosBelow?.title}
+              onChange={(v) => setField('selection', 'videosBelow', { ...(selection.videosBelow || {}), title: v })} />
+            <Area label='YouTube addresses, one per line' rows={3}
+              value={(selection.videosBelow?.urls || []).join('\n')}
+              onChange={(v) => setField('selection', 'videosBelow', { ...(selection.videosBelow || {}), urls: v.split('\n') })} />
+          </div>
           <SaveBar section='selection' />
         </section>
       )}
@@ -392,6 +437,54 @@ export default function WaimfPage() {
           <Field label='Button text' value={contact.buttonText}
             onChange={(v) => setField('contact', 'buttonText', v)} />
           <SaveBar section='contact' />
+        </section>
+      )}
+
+      {tab === 'seo' && (
+        <section>
+          <h3 className='text-base font-semibold text-black mb-1'>Google Analytics</h3>
+          <Field
+            label='Measurement ID'
+            hint='From analytics.google.com > Admin > Data streams > your waimf.org stream. It starts with G- (for example G-AB12CD34EF). Use a WAIMF property, not the FILM6 one.'
+            placeholder='G-XXXXXXXXXX'
+            value={seo.gaId}
+            onChange={(v) => setField('seo', 'gaId', v.trim())}
+          />
+          <h3 className='text-base font-semibold text-black mb-1 mt-6'>Google Search Console</h3>
+          <Field
+            label='Verification code (HTML tag method)'
+            hint='In Search Console: add property > URL prefix https://www.waimf.org > choose "HTML tag". Paste the whole tag or just the code, Save, wait 5 minutes, then press Verify in Search Console.'
+            placeholder='<meta name="google-site-verification" content="..." />'
+            value={seo.googleVerification}
+            onChange={(v) => setField('seo', 'googleVerification', v)}
+          />
+          <h3 className='text-base font-semibold text-black mb-1 mt-6'>Page titles and descriptions</h3>
+          <p className='text-xs text-gray-500 mb-4'>
+            What Google and link previews (WhatsApp, LinkedIn, X) show for each
+            page. Leave a box empty to keep the current wording. Titles around
+            60 characters, descriptions around 155.
+          </p>
+          {SEO_PAGES.map((page) => {
+            const current = seo.pages?.[page.key] || {};
+            const update = (key, value) =>
+              setField('seo', 'pages', {
+                ...(seo.pages || {}),
+                [page.key]: { ...current, [key]: value },
+              });
+            return (
+              <div key={page.key} className='border border-gray-300 p-4 mb-3'>
+                <h4 className='text-sm font-semibold text-black mb-2'>{page.label}</h4>
+                <Field label={`Title (${(current.title || '').length} characters)`}
+                  value={current.title} onChange={(v) => update('title', v)} />
+                <Area label={`Description (${(current.description || '').length} characters)`} rows={2}
+                  value={current.description} onChange={(v) => update('description', v)} />
+              </div>
+            );
+          })}
+          <SaveBar section='seo' />
+          <p className='text-xs text-gray-500 mt-3'>
+            Changes reach the website within 5 minutes.
+          </p>
         </section>
       )}
     </div>

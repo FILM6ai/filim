@@ -104,6 +104,16 @@ export const Hero = ({ hero }) => {
     ? Math.min(80, Math.max(0, raw))
     : 25;
 
+  // Which part of the picture survives the crop, 0 (top) to 100 (bottom).
+  // Default 20: the festival photos have their faces in the upper third, and
+  // centring cut the astronaut's face. Francois can move it in the panel.
+  const rawFocus = Number(hero.focus);
+  const focus =
+    hero.focus !== '' && hero.focus != null && Number.isFinite(rawFocus)
+      ? Math.min(100, Math.max(0, rawFocus))
+      : 20;
+  const objectPosition = `50% ${focus}%`;
+
   // Both buttons are optional and both are edited in the panel. The second
   // one used to be fixed text pointing at /selection, so empty keeps that
   // wording and a lone dash removes the button.
@@ -121,12 +131,14 @@ export const Hero = ({ hero }) => {
             loop
             playsInline
             className='absolute inset-0 w-full h-full object-cover'
+            style={{ objectPosition }}
           />
         ) : (
           <img
             src={cdn(bg, 'f_auto,q_auto,w_2000')}
             alt={hero.alt || ''}
             className='absolute inset-0 w-full h-full object-cover'
+            style={{ objectPosition }}
           />
         ))}
 
@@ -420,6 +432,39 @@ const FilmList = ({ heading, films: listed, gold = false }) => {
   );
 };
 
+// A row of YouTube films with an optional heading, set in the panel under
+// Official Selection ("Videos above / below the Official Selection list").
+// Renders nothing until at least one address is a real YouTube link.
+const VideoBlock = ({ block }) => {
+  const ids = (block?.urls || []).map(youtubeId).filter(Boolean);
+  if (ids.length === 0) return null;
+  return (
+    <div className='my-16'>
+      {(block.title || '').trim() && (
+        <h3 className='font-serif text-[26px] sm:text-[30px] leading-[1.15] mb-7'>
+          {block.title}
+        </h3>
+      )}
+      <div className={`grid gap-8 ${ids.length === 1 ? 'max-w-[980px]' : 'md:grid-cols-2'}`}>
+        {ids.map((id, i) => (
+          <div key={`${id}-${i}`} className='relative w-full aspect-video bg-black'>
+            {/* youtube.com, not youtube-nocookie: the site's frame-src
+                policy only allows youtube.com. */}
+            <iframe
+              src={playerSrc(`https://www.youtube.com/embed/${id}?rel=0`)}
+              title={block.title || 'WAIMF 2026'}
+              loading='lazy'
+              allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
+              allowFullScreen
+              className='absolute inset-0 w-full h-full'
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 // `finalistsOnly` is for the front page: the full selection is a long page of
 // its own, so the front shows the finalists and links through to the rest.
 export const Selection = ({ selection, action, bare = false, finalistsOnly = false }) => {
@@ -442,7 +487,13 @@ export const Selection = ({ selection, action, bare = false, finalistsOnly = fal
           />
         )}
         <FilmList heading='Finalists' films={finalists} gold />
-        {!finalistsOnly && <FilmList heading='Official Selection' films={official} />}
+        {!finalistsOnly && (
+          <>
+            <VideoBlock block={selection.videosAbove} />
+            <FilmList heading='Official Selection' films={official} />
+            <VideoBlock block={selection.videosBelow} />
+          </>
+        )}
       </Shell>
     </section>
   );

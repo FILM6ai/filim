@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "quill/dist/quill.snow.css";
 import { validateBlogFile } from "@/utils/fileValidation";
 import { BACKEND_URL } from "@/utils/backend";
+import { shrinkImage, uploadErrorMessage } from "@/utils/shrinkImage";
 
 
 // Dynamically import ReactQuill to avoid SSR issues
@@ -110,7 +111,7 @@ const Page = () => {
       formData.append("youtubeUrl", youtubeUrl);
       // Append new main image file if one is selected; otherwise, the backend should keep the old one.
       if (mainImageFile) {
-        formData.append("image", mainImageFile);
+        formData.append("image", await shrinkImage(mainImageFile));
       }
 
       const response = await axios.put(
@@ -126,7 +127,7 @@ const Page = () => {
       }
     } catch (error) {
       console.error("Error updating blog:", error);
-      toast.error("An error occurred while updating the blog");
+      toast.error(uploadErrorMessage(error, "An error occurred while updating the article"));
     } finally {
       setLoading(false);
     }
