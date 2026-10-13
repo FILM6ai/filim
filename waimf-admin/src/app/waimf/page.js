@@ -267,6 +267,31 @@ export default function WaimfPage() {
               onChange={(e) => setField('hero', 'focus', Number(e.target.value))}
               className='w-full max-w-md mt-2' />
           </label>
+          <label className='block mb-5'>
+            <span className='block text-sm font-medium text-black'>
+              Zoom: {hero.zoom ?? 115}%
+            </span>
+            <span className='block text-xs text-gray-500 mt-0.5'>
+              Zooming in crops the edges of the picture. 100% = no zoom.
+            </span>
+            <input type='range' min={100} max={150} step={5}
+              value={hero.zoom ?? 115}
+              onChange={(e) => setField('hero', 'zoom', Number(e.target.value))}
+              className='w-full max-w-md mt-2' />
+          </label>
+          <label className='block mb-5'>
+            <span className='block text-sm font-medium text-black'>
+              Slide the picture: {(hero.focusX ?? 100) >= 50 ? 'to the left' : 'to the right'} ({hero.focusX ?? 100})
+            </span>
+            <span className='block text-xs text-gray-500 mt-0.5'>
+              Works with Zoom above 100%. Right end = picture slides LEFT (hides its left edge);
+              left end = picture slides RIGHT (hides its right edge); middle = zooms in evenly.
+            </span>
+            <input type='range' min={0} max={100} step={5}
+              value={hero.focusX ?? 100}
+              onChange={(e) => setField('hero', 'focusX', Number(e.target.value))}
+              className='w-full max-w-md mt-2' />
+          </label>
           <ImageField
             label='Background picture or video'
             hint='Upload a picture, or an .mp4 to have it play behind the title.'

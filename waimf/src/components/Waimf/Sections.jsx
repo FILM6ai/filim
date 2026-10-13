@@ -114,6 +114,25 @@ export const Hero = ({ hero }) => {
       : 20;
   const objectPosition = `50% ${focus}%`;
 
+  // Zoom + which side the zoom keeps. The festival photo's left edge has a
+  // misspelt "OXYBEN SUPPLY" label; zooming 115% while keeping the RIGHT edge
+  // fixed slides it out of frame. A plain left/right object-position cannot
+  // do it: on a wide screen the photo is barely cropped sideways, so there is
+  // nothing to slide. Both are sliders in the panel (Header tab).
+  const num = (value, fallback, min, max) => {
+    const n = Number(value);
+    return value !== '' && value != null && Number.isFinite(n)
+      ? Math.min(max, Math.max(min, n))
+      : fallback;
+  };
+  const zoom = num(hero.zoom, 115, 100, 150);
+  const slide = num(hero.focusX, 100, 0, 100);
+  const mediaStyle = {
+    objectPosition,
+    transform: zoom > 100 ? `scale(${zoom / 100})` : undefined,
+    transformOrigin: `${slide}% ${focus}%`,
+  };
+
   // Both buttons are optional and both are edited in the panel. The second
   // one used to be fixed text pointing at /selection, so empty keeps that
   // wording and a lone dash removes the button.
@@ -131,14 +150,14 @@ export const Hero = ({ hero }) => {
             loop
             playsInline
             className='absolute inset-0 w-full h-full object-cover'
-            style={{ objectPosition }}
+            style={mediaStyle}
           />
         ) : (
           <img
             src={cdn(bg, 'f_auto,q_auto,w_2000')}
             alt={hero.alt || ''}
             className='absolute inset-0 w-full h-full object-cover'
-            style={{ objectPosition }}
+            style={mediaStyle}
           />
         ))}
 

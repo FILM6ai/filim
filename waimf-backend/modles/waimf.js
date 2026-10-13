@@ -56,6 +56,11 @@ const WaimfPageSchema = new mongoose.Schema(
       // Which part of the picture stays in view when the screen crops it:
       // 0 = top edge, 100 = bottom edge. Empty = the site default.
       focus: { type: Number, min: 0, max: 100 },
+      // Zoom (100-150%) and the horizontal point the zoom keeps fixed
+      // (0 = left edge stays, 100 = right edge stays, i.e. the picture slides
+      // left). Empty = the site defaults.
+      zoom: { type: Number, min: 100, max: 150 },
+      focusX: { type: Number, min: 0, max: 100 },
       // The dates print in exactly ONE place on the site. Francois asked for
       // the repetition to go, so this is the single source for them.
       dateline: { type: String },
