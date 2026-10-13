@@ -237,6 +237,14 @@ export const ImageField = ({ label, hint, value, onChange, accept = 'image/*,vid
 // about 4.5MB at the edge, before the server sees it, which is what used to
 // make photo uploads fail with no useful message. Going direct has no such
 // ceiling.
+// Takes the item at `from` out and puts it back at `to`.
+const moveTo = (list, from, to) => {
+  const next = [...list];
+  const [item] = next.splice(from, 1);
+  next.splice(to, 0, item);
+  return next;
+};
+
 export const ImageList = ({ label, hint, images, onChange }) => {
   const list = Array.isArray(images) ? images : [];
   const [busy, setBusy] = useState(false);
@@ -281,15 +289,46 @@ export const ImageList = ({ label, hint, images, onChange }) => {
       {busy && <p className='text-sm text-gray-600 mb-3'>Uploading...</p>}
       {error && <p className='text-sm text-red-600 mb-3'>{error}</p>}
 
+      {list.length > 1 && (
+        <p className='text-xs text-gray-500 mb-2'>
+          The order here is the order on the website. Use the arrows under a
+          picture to move it, then Save this section.
+        </p>
+      )}
       <div className='flex flex-wrap gap-3'>
         {list.map((src, i) => (
-          <div key={`${src}-${i}`} className='relative'>
+          <div key={`${src}-${i}`} className='relative w-32'>
             <img src={src} alt='' className='w-32 h-24 object-cover border border-gray-300' />
+            <span className='absolute top-0 left-0 bg-black/70 text-white text-[11px] px-1.5 py-0.5'>
+              {i + 1}
+            </span>
             <button type='button'
               onClick={() => onChange(list.filter((_, index) => index !== i))}
               className='absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-1'>
               X
             </button>
+            <div className='flex mt-1 gap-1'>
+              <button type='button' title='First' disabled={i === 0}
+                onClick={() => onChange(moveTo(list, i, 0))}
+                className='flex-1 text-xs py-0.5 border border-gray-400 disabled:opacity-30'>
+                &laquo;
+              </button>
+              <button type='button' title='Move left' disabled={i === 0}
+                onClick={() => onChange(moveTo(list, i, i - 1))}
+                className='flex-1 text-xs py-0.5 border border-gray-400 disabled:opacity-30'>
+                &lsaquo;
+              </button>
+              <button type='button' title='Move right' disabled={i === list.length - 1}
+                onClick={() => onChange(moveTo(list, i, i + 1))}
+                className='flex-1 text-xs py-0.5 border border-gray-400 disabled:opacity-30'>
+                &rsaquo;
+              </button>
+              <button type='button' title='Last' disabled={i === list.length - 1}
+                onClick={() => onChange(moveTo(list, i, list.length - 1))}
+                className='flex-1 text-xs py-0.5 border border-gray-400 disabled:opacity-30'>
+                &raquo;
+              </button>
+            </div>
           </div>
         ))}
       </div>

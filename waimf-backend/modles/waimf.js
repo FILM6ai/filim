@@ -48,6 +48,11 @@ const WaimfPageSchema = new mongoose.Schema(
       description: { type: String },
       button: { type: String },
       link: { type: String },
+      // The second, outlined button. Its text and address used to be fixed.
+      button2: { type: String },
+      link2: { type: String },
+      // How dark the background picture is, 0-80. Empty = the site default.
+      darkness: { type: Number, min: 0, max: 80 },
       // The dates print in exactly ONE place on the site. Francois asked for
       // the repetition to go, so this is the single source for them.
       dateline: { type: String },

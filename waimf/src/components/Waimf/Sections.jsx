@@ -93,6 +93,21 @@ export const Hero = ({ hero }) => {
   const bg = Array.isArray(hero.bgImage) ? hero.bgImage.at(-1) : hero.bgImage;
   const isVideo = /\.(mp4|webm|mov)(\?|$)/i.test(String(bg || ''));
 
+  // How dark the picture is, 0-80, set in the panel. Francois found the first
+  // version too heavy, so the default is lighter and the rest is his call.
+  // The text keeps its own shading at the bottom-left either way, so turning
+  // this right down never leaves the title unreadable.
+  const raw = Number(hero.darkness);
+  const darkness = Number.isFinite(raw) && hero.darkness !== '' && hero.darkness != null
+    ? Math.min(80, Math.max(0, raw))
+    : 25;
+
+  // Both buttons are optional and both are edited in the panel. The second
+  // one used to be fixed text pointing at /selection, so empty keeps that
+  // wording and a lone dash removes the button.
+  const typed = String(hero.button2 || '').trim();
+  const second = typed === '-' ? '' : typed || 'Watch the selection';
+
   return (
     <header className='relative min-h-[82vh] md:min-h-[88vh] flex items-end overflow-hidden bg-black'>
       {bg &&
@@ -103,36 +118,36 @@ export const Hero = ({ hero }) => {
             muted
             loop
             playsInline
-            className='absolute inset-0 w-full h-full object-cover opacity-50'
+            className='absolute inset-0 w-full h-full object-cover'
           />
         ) : (
           <img
             src={cdn(bg, 'f_auto,q_auto,w_2000')}
             alt={hero.alt || ''}
-            className='absolute inset-0 w-full h-full object-cover opacity-50'
+            className='absolute inset-0 w-full h-full object-cover'
           />
         ))}
 
-      {/* Two gradients: upward so the type has something to sit on, and
-          leftward so it stays readable over a busy right-hand side. */}
-      <div className='absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/30' />
-      <div className='absolute inset-0 bg-gradient-to-r from-black/75 via-black/10 to-transparent' />
+      <div className='absolute inset-0 bg-black' style={{ opacity: darkness / 100 }} />
+      {/* Shade only where the words are: bottom and left. */}
+      <div className='absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent' />
+      <div className='absolute inset-0 bg-gradient-to-r from-black/45 via-transparent to-transparent' />
 
       <Shell className='relative w-full pb-16 md:pb-20 text-white'>
         {/* The ONLY place the dates appear on the whole site. */}
         {hero.dateline && (
           <div
-            className='text-[11px] sm:text-[11.5px] tracking-[0.4em] uppercase mb-5'
+            className='text-[11px] sm:text-[11.5px] tracking-[0.4em] uppercase mb-5 [text-shadow:0_1px_8px_rgba(0,0,0,.6)]'
             style={{ color: GOLD }}
           >
             {hero.dateline}
           </div>
         )}
-        <h1 className='font-serif text-[44px] sm:text-[62px] lg:text-[76px] leading-[1.02] font-normal max-w-[13ch]'>
+        <h1 className='font-serif text-[44px] sm:text-[62px] lg:text-[76px] leading-[1.02] font-normal max-w-[13ch] [text-shadow:0_2px_18px_rgba(0,0,0,.45)]'>
           {hero.title}
         </h1>
         {hero.description && (
-          <p className='text-[15px] sm:text-base text-neutral-200 mt-5 max-w-[46ch] leading-[1.6]'>
+          <p className='text-[15px] sm:text-base text-neutral-100 mt-5 max-w-[46ch] leading-[1.6] [text-shadow:0_1px_10px_rgba(0,0,0,.6)]'>
             {hero.description}
           </p>
         )}
@@ -146,12 +161,14 @@ export const Hero = ({ hero }) => {
               {hero.button}
             </Link>
           )}
-          <Link
-            href='/selection'
-            className='px-7 py-[15px] text-[11.5px] tracking-[0.17em] uppercase border border-white/45 hover:bg-white/10 transition-colors'
-          >
-            Watch the selection
-          </Link>
+          {second && (
+            <Link
+              href={hero.link2 || '/selection'}
+              className='px-7 py-[15px] text-[11.5px] tracking-[0.17em] uppercase border border-white/60 bg-black/25 backdrop-blur-[2px] hover:bg-white/10 transition-colors'
+            >
+              {second}
+            </Link>
+          )}
         </div>
       </Shell>
     </header>

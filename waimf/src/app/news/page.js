@@ -52,7 +52,7 @@ const page = () => {
     <div>
       <Hero
         image={[{ type: "video", value: image }]}
-        title1={title}
+        title1={title || "News"}
         alt={alt}
         description={description}
       />

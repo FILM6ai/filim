@@ -220,6 +220,26 @@ export default function WaimfPage() {
           <Field label='Button text' value={hero.button} onChange={(v) => setField('hero', 'button', v)} />
           <Field label='Button link' placeholder='/top-filmmakers' value={hero.link}
             onChange={(v) => setField('hero', 'link', v)} />
+          <Field
+            label='Second button text'
+            hint='The outlined button. Leave empty to show "Watch the selection"; type a single dash (-) to hide it.'
+            value={hero.button2}
+            onChange={(v) => setField('hero', 'button2', v)}
+          />
+          <Field label='Second button link' placeholder='/selection' value={hero.link2}
+            onChange={(v) => setField('hero', 'link2', v)} />
+          <label className='block mb-5'>
+            <span className='block text-sm font-medium text-black'>
+              Darkness of the background: {hero.darkness ?? 25}%
+            </span>
+            <span className='block text-xs text-gray-500 mt-0.5'>
+              Lower = brighter picture. The title keeps its own shading, so it stays readable.
+            </span>
+            <input type='range' min={0} max={80} step={5}
+              value={hero.darkness ?? 25}
+              onChange={(e) => setField('hero', 'darkness', Number(e.target.value))}
+              className='w-full max-w-md mt-2' />
+          </label>
           <ImageField
             label='Background picture or video'
             hint='Upload a picture, or an .mp4 to have it play behind the title.'

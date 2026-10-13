@@ -12,6 +12,9 @@ import { API_BASE_URL } from "@/utils/backend";
 const Footer = () => {
   const [footerData, setFooterData] = useState(null);
   const [email, setEmail] = useState('');
+  // Terms are written in the panel. Until something is written there, the
+  // link stays out of the footer rather than opening "No terms available".
+  const [hasTerms, setHasTerms] = useState(false);
 
   useEffect(() => {
     const fetchFooter = async () => {
@@ -27,6 +30,17 @@ const Footer = () => {
       }
     };
     fetchFooter();
+
+    axios
+      .get(`${API_BASE_URL}/term/getterm`)
+      .then(({ data }) => {
+        const text = String(data?.termData?.[0]?.content || '')
+          .replace(/<[^>]*>/g, '')
+          .replace(/&nbsp;/g, ' ')
+          .trim();
+        setHasTerms(text.length > 0);
+      })
+      .catch(() => setHasTerms(false));
   }, []);
 
   // Social links fallback values
@@ -101,13 +115,15 @@ const Footer = () => {
               a brand new database is always. A logo uploaded in the panel's
               Footer screen still takes over. */}
           <Link href={'/'} className='flex items-center gap-3'>
-            <Image
-              src={footerData?.logo || '/waimf-emblem.png'}
-              alt='WAIMF'
-              className='w-12 h-12 object-contain'
-              width={96}
-              height={96}
-            />
+            <span className={footerData?.logo ? 'flex' : 'flex border border-[#C8A24A]/85 p-1.5'}>
+              <Image
+                src={footerData?.logo || '/waimf-emblem.png'}
+                alt='WAIMF'
+                className='w-11 h-11 object-contain'
+                width={96}
+                height={96}
+              />
+            </span>
             {!footerData?.logo && (
               <span className='font-serif text-[22px] tracking-[0.22em] text-[#C8A24A]'>
                 W<span className='text-white'>AI</span>MF
@@ -199,12 +215,14 @@ const Footer = () => {
                 >
                   Rules
                 </Link>
-                <Link
-                  href='/terms'
-                  className='block text-[#737373] hover:text-white transition-colors'
-                >
-                  Terms
-                </Link>
+                {hasTerms && (
+                  <Link
+                    href='/terms'
+                    className='block text-[#737373] hover:text-white transition-colors'
+                  >
+                    Terms
+                  </Link>
+                )}
               </nav>
             </div>
 

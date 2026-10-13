@@ -93,6 +93,31 @@ const Hero = ({
     }
   };
 
+  // A page whose header picture or video was never set used to open on a
+  // full screen of black. Without one, the header shrinks to a title band like
+  // Rules and Gallery have - or, with no title either, to just the room the
+  // menu bar needs.
+  const hasMedia = (image || []).some((img) =>
+    Array.isArray(img?.value) ? img.value.length > 0 : Boolean(img?.value),
+  );
+  if (!hasMedia) {
+    if (!title1 && !description) return <div className="h-16" aria-hidden />;
+    return (
+      <header className="bg-[#0a0a0a] text-white pt-32 pb-16 lg:pt-40 lg:pb-20">
+        <div className="max-w-[1320px] mx-auto px-6 sm:px-10 lg:px-14">
+          <Heading className="font-serif text-[36px] sm:text-[52px] lg:text-[62px] leading-[1.04] font-normal">
+            {title1}
+          </Heading>
+          {description && (
+            <p className="text-[15.5px] leading-[1.7] text-neutral-400 mt-5 max-w-[60ch]">
+              {description}
+            </p>
+          )}
+        </div>
+      </header>
+    );
+  }
+
   return (
     <div>
       <div className="bg-black text-white">
