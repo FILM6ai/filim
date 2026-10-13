@@ -40,13 +40,14 @@ export default function Home() {
       <Edition edition={data?.edition} />
       {/* No "All winners" button: the winning films play right here. */}
       <Winners filmmakers={data?.filmmakers} />
+      {/* Awards and Jury come before the films - Francois's order. */}
+      <Awards awards={data?.awards} />
+      <Jury jurors={data?.jurors} />
       <Selection
         selection={data?.selection}
         finalistsOnly
         action={<Pill href='/selection'>Full official selection</Pill>}
       />
-      <Awards awards={data?.awards} />
-      <Jury jurors={data?.jurors} />
       <Gallery
         gallery={data?.gallery}
         placeholders={8}

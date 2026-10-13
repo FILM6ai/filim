@@ -361,19 +361,25 @@ const WinnerVideos = ({ items }) => {
 // and nobody has posters for them. Francois: "the list shall appear without
 // images". Two lists, Finalists then the Official Selection, in the order they
 // were pasted. A film with a YouTube address gets its title linked.
-const FilmList = ({ heading, films, gold = false }) => {
+const FilmList = ({ heading, films: listed, gold = false }) => {
+  // The same title twice in one list is always a paste on top of a paste, never
+  // two films, so each title shows once.
+  const seen = new Set();
+  const films = listed.filter((film) => {
+    const k = film.title.trim().toLowerCase().replace(/\s+/g, ' ');
+    if (seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
   if (films.length === 0) return null;
   return (
     <div className='mb-16 last:mb-0'>
-      <div className='flex items-baseline gap-4 border-b border-neutral-200 pb-4 mb-6'>
-        <h3
-          className='text-[12px] tracking-[0.3em] uppercase font-semibold'
-          style={{ color: gold ? GOLD : '#111' }}
-        >
-          {heading}
-        </h3>
-        <span className='text-[12px] text-neutral-400'>{films.length} films</span>
-      </div>
+      <h3
+        className='font-serif text-[30px] sm:text-[36px] lg:text-[40px] leading-[1.1] uppercase tracking-[0.06em] border-b border-neutral-200 pb-5 mb-7'
+        style={{ color: gold ? GOLD : '#111' }}
+      >
+        {heading}
+      </h3>
       <ul className='columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-x-10'>
         {films.map((film, i) => (
           <li key={i} className='break-inside-avoid py-[7px] border-b border-neutral-100'>

@@ -67,6 +67,25 @@ const toFilms = (text, category, previous) => {
 
 const countLines = (text) => String(text || '').split(/\r?\n/).filter((l) => l.trim()).length;
 
+// Lines whose title already appeared higher up the same box. Pasting a list
+// into a box that still holds it doubles every film - this catches that.
+const dedupe = (text) => {
+  const seen = new Set();
+  const kept = [];
+  let dropped = 0;
+  for (const line of String(text || '').split(/\r?\n/)) {
+    if (!line.trim()) continue;
+    const k = key(line.replace(YT, ''));
+    if (seen.has(k)) {
+      dropped += 1;
+      continue;
+    }
+    seen.add(k);
+    kept.push(line.trim());
+  }
+  return { text: kept.join('\n'), dropped };
+};
+
 const TitleLists = ({ items, onChange }) => {
   const all = Array.isArray(items) ? items : [];
   const [previous] = useState(all);
@@ -92,9 +111,29 @@ const TitleLists = ({ items, onChange }) => {
     <label className='block'>
       <span className='flex items-baseline justify-between'>
         <span className='text-base font-semibold text-black'>{label}</span>
-        <span className='text-xs text-gray-500'>{countLines(value)} films</span>
+        <span className='text-xs text-gray-500'>
+          {countLines(value) - dedupe(value).dropped} films
+        </span>
       </span>
       <span className='block text-xs text-gray-500 mt-0.5 mb-2'>{hint}</span>
+      {dedupe(value).dropped > 0 && (
+        <span className='flex flex-wrap items-center gap-3 bg-amber-50 border border-amber-300 px-3 py-2 mb-2 text-xs text-amber-900'>
+          {dedupe(value).dropped} {dedupe(value).dropped === 1 ? 'title is' : 'titles are'} in this box twice
+          (usually a list pasted under itself).
+          <button
+            type='button'
+            onClick={() => {
+              const clean = dedupe(value).text;
+              set(clean);
+              if (first) push(clean, other);
+              else push(other, clean);
+            }}
+            className='px-2 py-1 border border-amber-500 bg-white text-amber-900'
+          >
+            Remove the repeats
+          </button>
+        </span>
+      )}
       <textarea
         rows={18}
         value={value}
@@ -113,8 +152,9 @@ const TitleLists = ({ items, onChange }) => {
   return (
     <div className='mb-8'>
       <p className='text-sm text-gray-700 mb-4'>
-        One film title per line. Paste a whole list in one go, or edit, add and
-        delete lines. The order here is the order on the website. To link a
+        One film title per line. To replace a list, click in the box, select all
+        (Cmd+A), then paste - pasting without selecting adds the list again
+        underneath. Edit, add and delete lines freely. The order here is the order on the website. To link a
         title to its film, put the YouTube address on the same line. Then press
         Save this section.
       </p>
