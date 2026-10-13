@@ -20,8 +20,10 @@ const page = () => {
           `${API_BASE_URL}/contact/getcontact`
         );
         
-        setHeroData(data.contact[0].hero);
-        setAdvanceData(data.contact[0].advance);
+        // No contact record yet on a fresh database: keep the page's defaults
+        // rather than throwing.
+        setHeroData(data?.contact?.[0]?.hero || {});
+        setAdvanceData(data?.contact?.[0]?.advance || {});
         setLoading(false);
 
       } catch (error) {
