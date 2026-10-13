@@ -363,14 +363,26 @@ const WinnerVideos = ({ items }) => {
 // were pasted. A film with a YouTube address gets its title linked.
 const FilmList = ({ heading, films: listed, gold = false }) => {
   // The same title twice in one list is always a paste on top of a paste, never
-  // two films, so each title shows once.
-  const seen = new Set();
-  const films = listed.filter((film) => {
-    const k = film.title.trim().toLowerCase().replace(/\s+/g, ' ');
-    if (seen.has(k)) return false;
-    seen.add(k);
-    return true;
-  });
+  // two films, so each title shows once. Compared on letters and digits only:
+  // "Sofisma - Rara", "Sofisma Rara" and the old split "Sofisma" + "Rara" are
+  // one film. Of the copies, the one typed as a single title wins (the split
+  // ones came from the old paste box), at the place the first copy was.
+  const norm = (film) =>
+    `${film.title || ''} ${film.director || ''}`.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
+  const best = new Map();
+  for (const film of listed) {
+    const k = norm(film);
+    const had = best.get(k);
+    if (!had || (had.director && !film.director)) best.set(k, film);
+  }
+  const shown = new Set();
+  const films = [];
+  for (const film of listed) {
+    const k = norm(film);
+    if (shown.has(k)) continue;
+    shown.add(k);
+    films.push(best.get(k));
+  }
   if (films.length === 0) return null;
   return (
     <div className='mb-16 last:mb-0'>

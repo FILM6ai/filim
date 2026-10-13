@@ -28,7 +28,9 @@ const toLine = (film) =>
     .filter(Boolean)
     .join('  ');
 
-const key = (title) => String(title || '').trim().toLowerCase().replace(/\s+/g, ' ');
+// Letters and digits only, so "Sofisma - Rara" and "Sofisma Rara" count as
+// the same title.
+const key = (title) => String(title || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, '');
 
 const toText = (films) => films.map(toLine).join('\n');
 
@@ -70,20 +72,31 @@ const countLines = (text) => String(text || '').split(/\r?\n/).filter((l) => l.t
 // Lines whose title already appeared higher up the same box. Pasting a list
 // into a box that still holds it doubles every film - this catches that.
 const dedupe = (text) => {
+  const lines = String(text || '').split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  // Of two spellings of one title, keep one with a YouTube link if there is
+  // one, otherwise the one without a " - " in it: those came from the old
+  // paste box splitting a title in two ("Sofisma - Rara").
+  const best = new Map();
+  for (const line of lines) {
+    const k = key(line.replace(YT, ''));
+    const had = best.get(k);
+    const dashed = (l) => /\s[-–—]\s/.test(l.replace(YT, ''));
+    // A copy carrying a YouTube link beats one without; then undashed wins.
+    const better =
+      !had ||
+      (YT.test(line) && !YT.test(had)) ||
+      (YT.test(line) === YT.test(had) && dashed(had) && !dashed(line));
+    if (better) best.set(k, line);
+  }
   const seen = new Set();
   const kept = [];
-  let dropped = 0;
-  for (const line of String(text || '').split(/\r?\n/)) {
-    if (!line.trim()) continue;
+  for (const line of lines) {
     const k = key(line.replace(YT, ''));
-    if (seen.has(k)) {
-      dropped += 1;
-      continue;
-    }
+    if (seen.has(k)) continue;
     seen.add(k);
-    kept.push(line.trim());
+    kept.push(best.get(k));
   }
-  return { text: kept.join('\n'), dropped };
+  return { text: kept.join('\n'), dropped: lines.length - kept.length };
 };
 
 const TitleLists = ({ items, onChange }) => {
