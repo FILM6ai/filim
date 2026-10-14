@@ -32,6 +32,9 @@ const cleanCode = (value) => {
   return /^[A-Za-z0-9_-]{10,100}$/.test(code) ? code : '';
 };
 
+// WAIMF's Google Analytics property (never FILM6's G-TPWW56VQRM).
+const WAIMF_GA_ID = 'G-46QCWE41XQ';
+
 // Only a real GA4 measurement ID is ever written into a script.
 const cleanGaId = (value) => {
   const id = String(value || '').trim().toUpperCase();
@@ -49,7 +52,9 @@ const geistMono = Geist_Mono({
 });
 
 export default async function RootLayout({ children }) {
-  const gaId = cleanGaId((await fetchSeo()).gaId);
+  // The panel's SEO tab wins; WAIMF's own property (sent by Francois on
+  // 14 Oct) is the default so the tag is on every page without a panel step.
+  const gaId = cleanGaId((await fetchSeo()).gaId) || WAIMF_GA_ID;
   return (
     <html lang='en'>
       <head>
