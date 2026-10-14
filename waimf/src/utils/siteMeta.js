@@ -16,7 +16,10 @@
 
 import { API_BASE_URL } from './backend';
 
-export const SITE_URL = 'https://waimf.org';
+// www is the address that answers: waimf.org redirects (308) to it in
+// Vercel. Canonical tags pointing at the redirecting host make Google file
+// every page as "Page with redirect" instead of indexing it.
+export const SITE_URL = 'https://www.waimf.org';
 export const SITE_NAME = 'WAIMF';
 
 // Cloudinary renders a still frame of the site header video on demand, so the

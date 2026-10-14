@@ -4,11 +4,12 @@ const slugify = require('slugify');
 
 // Must be the host that actually answers, not a host that redirects to it:
 // every URL Google fetches from a sitemap of redirects gets filed as "Page
-// with redirect" instead of being indexed. CHECK which of waimf.org and
-// www.waimf.org is canonical once DNS is pointed, and make this match.
+// with redirect" instead of being indexed. Checked after go-live (13 Oct):
+// waimf.org 308-redirects to www.waimf.org, so www is canonical. Keep in
+// step with SITE_URL in src/utils/siteMeta.js.
 // Hardcoded rather than read from an env var so a missing or stale Vercel
 // variable cannot quietly break indexing.
-const SITE_URL = 'https://waimf.org';
+const SITE_URL = 'https://www.waimf.org';
 
 const rawApi = (
   process.env.NEXT_PUBLIC_BACKEND_URL || 'https://waimf-backend.vercel.app/api'
@@ -39,7 +40,8 @@ module.exports = {
   trailingSlash: false,
   // /news/[title] is dynamic, so next-sitemap can't discover the articles on
   // its own - they're added by additionalPaths below.
-  exclude: ['/news/[title]'],
+  // The app-dir icons are files, not pages - they don't belong in a sitemap.
+  exclude: ['/news/[title]', '/icon.png', '/apple-icon.png'],
 
   transform: async (config, path) => {
     const { priority = 0.7, changefreq = 'weekly' } = STATIC_ROUTES[path] || {};
