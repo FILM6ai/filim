@@ -328,6 +328,10 @@ export default function WaimfPage() {
             onChange={(v) => setField('filmmakers', 'mainTitle', v)} />
           <Area label='Intro line' rows={2} value={filmmakers.description}
             onChange={(v) => setField('filmmakers', 'description', v)} />
+          <Area label='Longer text under the heading' rows={6}
+            hint='Optional. Shown under the heading on the website; leave empty and nothing appears. Use it to describe the section in more depth - good for Google too. Press Enter twice for a new paragraph.'
+            value={filmmakers.intro}
+            onChange={(v) => setField('filmmakers', 'intro', v)} />
           <Repeater
             label='Winners'
             hint='One row per award. The order here is the order on the page. Paste a YouTube link and the film plays right under the winners list, on the front page and on Top Filmmakers. Use Unlisted on YouTube, not Private - private videos will not play on the site.'
@@ -352,6 +356,15 @@ export default function WaimfPage() {
             onChange={(v) => setField('selection', 'mainTitle', v)} />
           <Area label='Intro line' rows={2} value={selection.description}
             onChange={(v) => setField('selection', 'description', v)} />
+
+          <Area label='Longer text under FINALISTS' rows={6}
+            hint='Optional. Shown under the heading on the website; leave empty and nothing appears. Use it to describe the section in more depth - good for Google too. Press Enter twice for a new paragraph.'
+            value={selection.finalistsIntro}
+            onChange={(v) => setField('selection', 'finalistsIntro', v)} />
+          <Area label='Longer text under OFFICIAL SELECTION' rows={6}
+            hint='Optional. Shown under the heading on the website; leave empty and nothing appears. Use it to describe the section in more depth - good for Google too. Press Enter twice for a new paragraph.'
+            value={selection.officialIntro}
+            onChange={(v) => setField('selection', 'officialIntro', v)} />
           <TitleLists
             items={selection.items}
             onChange={(v) => setField('selection', 'items', v)}
@@ -402,6 +415,10 @@ export default function WaimfPage() {
         <section>
           <Field label='Heading' value={jurors.mainTitle}
             onChange={(v) => setField('jurors', 'mainTitle', v)} />
+          <Area label='Longer text under WAIMF JURY' rows={6}
+            hint='Optional. Shown under the heading on the website; leave empty and nothing appears. Use it to describe the section in more depth - good for Google too. Press Enter twice for a new paragraph.'
+            value={jurors.intro}
+            onChange={(v) => setField('jurors', 'intro', v)} />
           <Repeater
             label='Jury'
             hint='Photographs are resized automatically, so upload whatever you have.'
@@ -422,6 +439,10 @@ export default function WaimfPage() {
         <section>
           <Field label='Heading' value={gallery.mainTitle}
             onChange={(v) => setField('gallery', 'mainTitle', v)} />
+          <Area label='Longer text under the Gallery heading' rows={6}
+            hint='Optional. Shown under the heading on the website; leave empty and nothing appears. Use it to describe the section in more depth - good for Google too. Press Enter twice for a new paragraph.'
+            value={gallery.intro}
+            onChange={(v) => setField('gallery', 'intro', v)} />
           <ImageList
             label='Photographs'
             hint='Upload the ceremony pictures here. They go straight to Cloudinary, so there is no size limit to trip over.'

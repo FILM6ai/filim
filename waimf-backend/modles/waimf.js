@@ -84,6 +84,9 @@ const WaimfPageSchema = new mongoose.Schema(
     // or extended without touching the page.
     filmmakers: {
       mainTitle: { type: String },
+      // Optional longer text under the heading, for depth and search engines.
+      // Empty = nothing shown.
+      intro: { type: String, default: "" },
       description: { type: String },
       items: [
         {
@@ -126,6 +129,10 @@ const WaimfPageSchema = new mongoose.Schema(
       // Two optional video blocks on the Official Selection page: one just
       // above the Official Selection list, one below it. One YouTube address
       // per entry; empty = the block is not shown.
+      // Optional longer text under the FINALISTS and OFFICIAL SELECTION
+      // list headings. Empty = nothing shown.
+      finalistsIntro: { type: String, default: "" },
+      officialIntro: { type: String, default: "" },
       videosAbove: {
         title: { type: String, default: "" },
         urls: [{ type: String }],
@@ -150,6 +157,9 @@ const WaimfPageSchema = new mongoose.Schema(
     },
     jurors: {
       mainTitle: { type: String },
+      // Optional longer text under the heading, for depth and search engines.
+      // Empty = nothing shown.
+      intro: { type: String, default: "" },
       items: [
         {
           name: { type: String },
@@ -162,6 +172,9 @@ const WaimfPageSchema = new mongoose.Schema(
     },
     gallery: {
       mainTitle: { type: String },
+      // Optional longer text under the heading, for depth and search engines.
+      // Empty = nothing shown.
+      intro: { type: String, default: "" },
       images: [{ type: String }],
     },
 

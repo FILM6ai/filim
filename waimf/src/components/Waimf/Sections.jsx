@@ -75,6 +75,23 @@ export const SectionHead = ({ eyebrow, title, sub, action }) => (
   </div>
 );
 
+// Optional longer text under a section heading, written in the panel to
+// describe the section in depth (and give search engines real words to read).
+// Renders nothing when empty. Paragraph breaks typed in the panel are kept.
+export const Intro = ({ text, dark = false, className = 'mb-10' }) => {
+  const body = String(text || '').trim();
+  if (!body) return null;
+  return (
+    <div
+      className={`whitespace-pre-line text-[15.5px] leading-[1.75] max-w-[80ch] ${
+        dark ? 'text-neutral-300' : 'text-neutral-600'
+      } ${className}`}
+    >
+      {body}
+    </div>
+  );
+};
+
 export const Pill = ({ href = '#', children, dark = false }) => (
   <Link
     href={href}
@@ -215,7 +232,7 @@ export const Edition = ({ edition }) => {
   if (!edition?.description && !edition?.schedule?.length) return null;
 
   return (
-    <section className='pt-10 lg:pt-14 pb-20 lg:pb-[104px]'>
+    <section className='pt-10 lg:pt-14 pb-14 lg:pb-[72px]'>
       {/* Less space above than other sections: this one sits straight under
           the hero, whose own bottom padding already separates them. Francois:
           "reduce the space between header and the start of first section". */}
@@ -268,8 +285,8 @@ export const Winners = ({ filmmakers, action, bare = false }) => {
 
   return (
     <div
-      className={`relative overflow-hidden bg-[#0a0a0a] text-white pb-20 lg:pb-[104px] ${
-        bare ? 'pt-0' : 'pt-20 lg:pt-[104px]'
+      className={`relative overflow-hidden bg-[#0a0a0a] text-white pb-14 lg:pb-[72px] ${
+        bare ? 'pt-0' : 'pt-14 lg:pt-[72px]'
       }`}
     >
       {/* The emblem again, barely there - a watermark, not a second logo. */}
@@ -304,6 +321,7 @@ export const Winners = ({ filmmakers, action, bare = false }) => {
           </div>
         )}
 
+        <Intro text={filmmakers.intro} dark className={bare ? 'mb-12' : '-mt-6 mb-12'} />
         <div className='grid md:grid-cols-2 gap-x-[70px]'>
           {items.map((row, i) => (
             <div
@@ -393,7 +411,7 @@ const WinnerVideos = ({ items }) => {
 // and nobody has posters for them. Francois: "the list shall appear without
 // images". Two lists, Finalists then the Official Selection, in the order they
 // were pasted. A film with a YouTube address gets its title linked.
-const FilmList = ({ heading, films: listed, gold = false }) => {
+const FilmList = ({ heading, films: listed, gold = false, intro = '' }) => {
   // The same title twice in one list is always a paste on top of a paste, never
   // two films, so each title shows once. Compared on letters and digits only:
   // "Sofisma - Rara", "Sofisma Rara" and the old split "Sofisma" + "Rara" are
@@ -424,6 +442,7 @@ const FilmList = ({ heading, films: listed, gold = false }) => {
       >
         {heading}
       </h3>
+      <Intro text={intro} />
       <ul className='columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-x-10'>
         {films.map((film, i) => (
           <li key={i} className='break-inside-avoid py-[7px] border-b border-neutral-100'>
@@ -496,7 +515,7 @@ export const Selection = ({ selection, action, bare = false, finalistsOnly = fal
   if (finalistsOnly && finalists.length === 0) return null;
 
   return (
-    <section className='py-20 lg:py-[104px]'>
+    <section className='py-14 lg:py-[72px]'>
       <Shell>
         {!bare && (
           <SectionHead
@@ -506,11 +525,11 @@ export const Selection = ({ selection, action, bare = false, finalistsOnly = fal
             action={action}
           />
         )}
-        <FilmList heading='Finalists' films={finalists} gold />
+        <FilmList heading='Finalists' films={finalists} gold intro={selection.finalistsIntro} />
         {!finalistsOnly && (
           <>
             <VideoBlock block={selection.videosAbove} />
-            <FilmList heading='Official Selection' films={official} />
+            <FilmList heading='Official Selection' films={official} intro={selection.officialIntro} />
             <VideoBlock block={selection.videosBelow} />
           </>
         )}
@@ -526,7 +545,7 @@ export const Awards = ({ awards }) => {
   if (cards.length === 0) return null;
 
   return (
-    <section className='py-20 lg:py-[104px]'>
+    <section className='py-14 lg:py-[72px]'>
       <Shell>
         <SectionHead
           eyebrow='Awards'
@@ -575,7 +594,7 @@ export const LatestNews = ({ articles, action, count = 3 }) => {
   if (latest.length === 0) return null;
 
   return (
-    <section className='py-20 lg:py-[104px] bg-neutral-50'>
+    <section className='py-14 lg:py-[72px] bg-neutral-50'>
       <Shell>
         <SectionHead eyebrow='Latest' title='WAIMF NEWS' action={action} />
         <div className='grid md:grid-cols-3 gap-8 lg:gap-[34px]'>
@@ -621,7 +640,7 @@ export const Jury = ({ jurors, action }) => {
   if (items.length === 0) return null;
 
   return (
-    <section className='py-20 lg:py-[104px]'>
+    <section className='py-14 lg:py-[72px]'>
       <Shell>
         <SectionHead
           eyebrow='The jury'
@@ -629,6 +648,7 @@ export const Jury = ({ jurors, action }) => {
           sub='Producers, directors, distributors and AI artists who judged the 2026 selection.'
           action={action}
         />
+        <Intro text={jurors.intro} className='-mt-6 mb-10' />
         <div className='grid grid-cols-2 lg:grid-cols-4 gap-7 lg:gap-[34px]'>
           {items.map((juror, i) => (
             <figure key={i}>
@@ -665,7 +685,7 @@ export const Gallery = ({ gallery, action, placeholders = 0, bare = false }) => 
   if (images.length === 0 && placeholders === 0) return null;
 
   return (
-    <section className='py-20 lg:py-[104px]'>
+    <section className='py-14 lg:py-[72px]'>
       <Shell>
         {!bare && (
           <SectionHead
@@ -679,6 +699,7 @@ export const Gallery = ({ gallery, action, placeholders = 0, bare = false }) => 
           action={action}
         />
         )}
+        <Intro text={gallery?.intro} className={bare ? 'mb-10' : '-mt-6 mb-10'} />
         <div className='grid grid-cols-2 lg:grid-cols-4 gap-3.5'>
           {images.length > 0
             ? images.map((src, i) => (
@@ -712,7 +733,7 @@ export const Rules = ({ rules, limit, bare = false }) => {
   const shown = limit ? items.slice(0, limit) : items;
 
   return (
-    <section className='py-20 lg:py-[104px]'>
+    <section className='py-14 lg:py-[72px]'>
       <Shell>
         {!bare && (
           <SectionHead

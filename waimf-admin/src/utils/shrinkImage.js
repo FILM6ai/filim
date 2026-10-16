@@ -44,7 +44,10 @@ export const uploadErrorMessage = (error, fallback) => {
     return 'Too big to send. Use a smaller cover picture, or fewer pictures inside the text.';
   }
   if (error?.response?.status === 401) return 'Your session has expired - sign in again';
-  return error?.response?.data?.message || fallback;
+  if (error?.response?.data?.message) return error.response.data.message;
+  // No server answer: the failure happened before sending, e.g. a picture
+  // inside the text that Cloudinary refused - its reason is in the message.
+  return error?.message ? `${fallback}: ${error.message}` : fallback;
 };
 
 export default shrinkImage;
