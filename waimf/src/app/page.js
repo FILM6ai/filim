@@ -13,7 +13,10 @@ import {
   Rules,
   ContactBand,
   Pill,
+  LatestNews,
 } from '@/components/Waimf/Sections';
+import axios from 'axios';
+import { API_BASE_URL } from '@/utils/backend';
 import { fetchWaimf } from '@/utils/waimf';
 
 // waimf.org front page = the 2026 edition.
@@ -24,8 +27,16 @@ import { fetchWaimf } from '@/utils/waimf';
 export default function Home() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [articles, setArticles] = useState([]);
 
   useEffect(() => {
+    // The news block is extra: if the articles fail to load, the rest of the
+    // page still shows, just without it.
+    axios
+      .get(`${API_BASE_URL}/blog/getblog`)
+      .then(({ data }) => setArticles(Array.isArray(data?.blogs) ? data.blogs : []))
+      .catch((error) => console.error('Error loading news:', error));
+
     fetchWaimf()
       .then(setData)
       .catch((error) => console.error('Error loading WAIMF:', error))
@@ -42,6 +53,8 @@ export default function Home() {
       <Winners filmmakers={data?.filmmakers} />
       {/* Awards and Jury come before the films - Francois's order. */}
       <Awards awards={data?.awards} />
+      {/* The three newest articles, just above the jury - Francois, 16 Oct. */}
+      <LatestNews articles={articles} action={<Pill href='/news'>All news</Pill>} />
       <Jury jurors={data?.jurors} />
       <Selection
         selection={data?.selection}

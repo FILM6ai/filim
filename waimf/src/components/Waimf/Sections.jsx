@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { cdn, portrait, tile } from '@/utils/image';
+import slugify from 'slugify';
 
 // The building blocks of waimf.org, in one file because they share a single
 // visual language and are meaningless apart. Each one takes its content as
@@ -554,6 +555,66 @@ export const Awards = ({ awards }) => {
 };
 
 /* ------------------------------------------------------------------ jury -- */
+
+/* ------------------------------------------------------------ latest news -- */
+
+// The three newest articles, for the front page above the jury. Sorted by the
+// date printed on the article (the one Francois types), falling back to when
+// it was created, so a back-dated import cannot jump to the top. Links use the
+// same slug rule as the News page and the sitemap.
+const articleTime = (article) => {
+  const shown = Date.parse(article?.date || '');
+  return Number.isFinite(shown) ? shown : Date.parse(article?.createdAt || '') || 0;
+};
+
+export const LatestNews = ({ articles, action, count = 3 }) => {
+  const latest = [...(articles || [])]
+    .filter((a) => (a?.title || '').trim())
+    .sort((a, b) => articleTime(b) - articleTime(a))
+    .slice(0, count);
+  if (latest.length === 0) return null;
+
+  return (
+    <section className='py-20 lg:py-[104px] bg-neutral-50'>
+      <Shell>
+        <SectionHead eyebrow='Latest' title='WAIMF NEWS' action={action} />
+        <div className='grid md:grid-cols-3 gap-8 lg:gap-[34px]'>
+          {latest.map((article) => (
+            <Link
+              key={article._id || article.title}
+              href={`/news/${slugify(article.title, { lower: true, strict: true })}`}
+              className='group block bg-white'
+            >
+              <div className='overflow-hidden bg-neutral-200'>
+                {article.image && (
+                  <img
+                    src={cdn(article.image, 'f_auto,q_auto,c_fill,g_auto,w_800,h_500')}
+                    alt={article.alt || article.title}
+                    loading='lazy'
+                    className='w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-[1.03]'
+                  />
+                )}
+              </div>
+              <div className='p-6'>
+                {article.date && (
+                  <div className='text-[10.5px] tracking-[0.28em] uppercase mb-3' style={{ color: GOLD }}>
+                    {article.date}
+                  </div>
+                )}
+                <h3 className='font-serif text-[20px] leading-[1.3] group-hover:underline underline-offset-4'>
+                  {article.title}
+                </h3>
+                <span className='inline-block mt-4 text-[11.5px] tracking-[0.17em] uppercase text-neutral-500'>
+                  Read more
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </Shell>
+    </section>
+  );
+};
 
 export const Jury = ({ jurors, action }) => {
   const items = jurors?.items || [];
