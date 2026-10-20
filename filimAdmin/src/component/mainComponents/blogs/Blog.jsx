@@ -10,6 +10,8 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { validateBlogFile } from "@/utils/fileValidation";
 import { BACKEND_URL } from "@/utils/backend";
+import { shrinkImage, uploadErrorMessage } from "@/utils/shrinkImage";
+import { hostInlineImages } from "@/utils/inlineImages";
 
 // Dynamically import React-Quill to disable SSR
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
@@ -36,9 +38,10 @@ const Blog = () => {
       formData.append("alt", alt);
       formData.append("date", date);
       formData.append("youtubeUrl", youtubeUrl);
-      formData.append("content", value);
+      // Pictures inside the text go to Cloudinary first - see inlineImages.js.
+      formData.append("content", await hostInlineImages(value));
       if (image) {
-        formData.append("image", image);
+        formData.append("image", await shrinkImage(image));
         console.log(image, "image");
       }
       console.log(BACKEND_URL);
@@ -64,7 +67,7 @@ const Blog = () => {
       setYoutubeUrl("");
       setImage(null);
     } catch (error) {
-      toast.error("Failed to update blog");
+      toast.error(uploadErrorMessage(error, "Failed to publish the article"));
 
       console.error("Error creating blog post:", error);
     } finally {

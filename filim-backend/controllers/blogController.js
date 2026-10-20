@@ -56,7 +56,9 @@ export const createBlog = async (req, res) => {
         try {
           const uploaded = await uploadOnCloudinary(dataUri);
           const newUrl = uploaded?.secure_url || uploaded?.url;
-          $(img).attr('src', newUrl);
+          // A failed upload returns null: keep the picture inline rather than
+          // writing src="undefined" and silently losing it.
+          if (newUrl) $(img).attr('src', newUrl);
           console.log(`Image ${index + 1} uploaded: ${newUrl}`);
         } catch (imgErr) {
           console.error(`Error uploading image ${index + 1}`, imgErr);
@@ -115,7 +117,14 @@ const { title, author, content: rawHtml, alt, date, youtubeUrl } = req.body;
     if (req.files?.image?.[0]?.path) {
       const imagePath = req.files.image[0].path;
       const uploadResponse = await uploadOnCloudinary(imagePath);
-      blogToUpdate.image = uploadResponse.secure_url || uploadResponse.url;
+      const coverUrl = uploadResponse?.secure_url || uploadResponse?.url;
+      if (!coverUrl) {
+        return res.status(502).json({
+          success: false,
+          message: 'The new cover picture could not be uploaded - nothing was changed. Try again or use a smaller picture.',
+        });
+      }
+      blogToUpdate.image = coverUrl;
     }
 
     // If new content is provided, handle embedded base64 image upload
@@ -127,7 +136,11 @@ const { title, author, content: rawHtml, alt, date, youtubeUrl } = req.body;
         imgTags.toArray().map(async (img) => {
           const dataUri = $(img).attr('src');
           const uploaded = await uploadOnCloudinary(dataUri);
-          $(img).attr('src', uploaded.secure_url || uploaded.url);
+          // uploadOnCloudinary returns null on failure; reading .secure_url
+          // off null threw and turned the whole save into "Failed to update".
+          // Keep the picture inline instead - the article still saves.
+          const url = uploaded?.secure_url || uploaded?.url;
+          if (url) $(img).attr('src', url);
         })
       );
 
