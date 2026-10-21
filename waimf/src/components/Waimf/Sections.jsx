@@ -388,10 +388,9 @@ export const LitePlayer = ({ id, title }) => {
             src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`}
             alt=''
             loading='lazy'
-            className='absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity'
+            className='absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]'
           />
-          <span className='absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors' />
-          <span className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[68px] h-[68px] rounded-full border border-white/80 bg-black/45 backdrop-blur-[2px] flex items-center justify-center group-hover:scale-105 transition-transform'>
+          <span className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[68px] h-[68px] rounded-full border border-white/90 bg-black/35 backdrop-blur-[2px] shadow-[0_2px_14px_rgba(0,0,0,.35)] flex items-center justify-center group-hover:scale-105 transition-transform'>
             <svg viewBox='0 0 24 24' className='w-7 h-7 ml-1' fill={GOLD} aria-hidden='true'>
               <path d='M7 4.5v15l13-7.5z' />
             </svg>
