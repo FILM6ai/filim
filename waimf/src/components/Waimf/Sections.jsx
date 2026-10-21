@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { cdn, portrait, tile } from '@/utils/image';
 import slugify from 'slugify';
+import { useState } from 'react';
 
 // The building blocks of waimf.org, in one file because they share a single
 // visual language and are meaningless apart. Each one takes its content as
@@ -359,44 +360,98 @@ export const Winners = ({ filmmakers, action, bare = false }) => {
 // Only rows with a YouTube address show, so the block grows as links are
 // pasted in and is absent until the first one is. One film plays wide; two or
 // more sit in a grid.
+// A YouTube film that costs nothing until it is played: the poster frame and a
+// play button, swapped for the real player (already playing) on click. Each
+// live YouTube player pulls in about a megabyte of scripts, so twenty of them
+// on Top Filmmakers made the page heavy - Francois, 21 Oct. Looks and behaves
+// like the embed, minus the weight.
+export const LitePlayer = ({ id, title }) => {
+  const [playing, setPlaying] = useState(false);
+  return (
+    <div className='relative w-full aspect-video bg-black border border-neutral-800 overflow-hidden'>
+      {playing ? (
+        <iframe
+          src={playerSrc(`https://www.youtube.com/embed/${id}?rel=0&autoplay=1`)}
+          title={title || 'WAIMF 2026'}
+          allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
+          allowFullScreen
+          className='absolute inset-0 w-full h-full'
+        />
+      ) : (
+        <button
+          type='button'
+          onClick={() => setPlaying(true)}
+          aria-label={`Play ${title || 'film'}`}
+          className='group absolute inset-0 w-full h-full'
+        >
+          <img
+            src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`}
+            alt=''
+            loading='lazy'
+            className='absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity'
+          />
+          <span className='absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors' />
+          <span className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[68px] h-[68px] rounded-full border border-white/80 bg-black/45 backdrop-blur-[2px] flex items-center justify-center group-hover:scale-105 transition-transform'>
+            <svg viewBox='0 0 24 24' className='w-7 h-7 ml-1' fill={GOLD} aria-hidden='true'>
+              <path d='M7 4.5v15l13-7.5z' />
+            </svg>
+          </span>
+        </button>
+      )}
+    </div>
+  );
+};
+
+// The winners' films, under the winners list. Ten at first, then "See more"
+// adds ten at a time, so a long list of winners never loads at once.
+const WINNER_PAGE = 10;
+
 const WinnerVideos = ({ items }) => {
+  const [shown, setShown] = useState(WINNER_PAGE);
   const films = (items || [])
     .map((row) => ({ ...row, id: youtubeId(row.youtubeUrl) }))
     .filter((row) => row.id);
   if (films.length === 0) return null;
+  const visible = films.slice(0, shown);
+  const left = films.length - visible.length;
 
   return (
-    <div
-      className={`mt-14 lg:mt-16 grid gap-x-8 gap-y-12 ${
-        films.length === 1 ? 'max-w-[980px]' : 'md:grid-cols-2'
-      }`}
-    >
-      {films.map((film) => (
-        <figure key={film.id}>
-          <div className='relative w-full aspect-video bg-black border border-neutral-800'>
-            <iframe
-              src={playerSrc(`https://www.youtube.com/embed/${film.id}?rel=0`)}
-              title={film.film || film.award || 'WAIMF 2026'}
-              loading='lazy'
-              allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
-              allowFullScreen
-              className='absolute inset-0 w-full h-full'
-            />
-          </div>
-          <figcaption className='mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1'>
-            <em
-              className='not-italic text-[10.5px] tracking-[0.17em] uppercase'
-              style={{ color: GOLD }}
-            >
-              {film.award}
-            </em>
-            <span className='font-serif text-[18px]'>{film.film}</span>
-            {film.filmmaker && (
-              <span className='text-[13.5px] text-neutral-400'>{film.filmmaker}</span>
-            )}
-          </figcaption>
-        </figure>
-      ))}
+    <div className='mt-14 lg:mt-16'>
+      <div
+        className={`grid gap-x-8 gap-y-12 ${
+          films.length === 1 ? 'max-w-[980px]' : 'md:grid-cols-2'
+        }`}
+      >
+        {visible.map((film, i) => (
+          <figure key={`${film.id}-${i}`}>
+            <LitePlayer id={film.id} title={film.film || film.award} />
+            <figcaption className='mt-4 flex flex-wrap items-baseline gap-x-4 gap-y-1'>
+              <em
+                className='not-italic text-[10.5px] tracking-[0.17em] uppercase'
+                style={{ color: GOLD }}
+              >
+                {film.award}
+              </em>
+              <span className='font-serif text-[18px]'>{film.film}</span>
+              {film.filmmaker && (
+                <span className='text-[13.5px] text-neutral-400'>{film.filmmaker}</span>
+              )}
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+      {left > 0 && (
+        <div className='mt-12 flex justify-center'>
+          <button
+            type='button'
+            onClick={() => setShown((n) => n + WINNER_PAGE)}
+            className='rounded-full px-8 py-3.5 text-[11px] tracking-[0.17em] uppercase border border-neutral-600 hover:border-neutral-400 transition-colors'
+            style={{ color: GOLD }}
+          >
+            See more films ({left})
+          </button>
+        </div>
+      )}
     </div>
   );
 };
@@ -486,18 +541,7 @@ const VideoBlock = ({ block }) => {
       )}
       <div className={`grid gap-8 ${ids.length === 1 ? 'max-w-[980px]' : 'md:grid-cols-2'}`}>
         {ids.map((id, i) => (
-          <div key={`${id}-${i}`} className='relative w-full aspect-video bg-black'>
-            {/* youtube.com, not youtube-nocookie: the site's frame-src
-                policy only allows youtube.com. */}
-            <iframe
-              src={playerSrc(`https://www.youtube.com/embed/${id}?rel=0`)}
-              title={block.title || 'WAIMF 2026'}
-              loading='lazy'
-              allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
-              allowFullScreen
-              className='absolute inset-0 w-full h-full'
-            />
-          </div>
+          <LitePlayer key={`${id}-${i}`} id={id} title={block.title} />
         ))}
       </div>
     </div>
