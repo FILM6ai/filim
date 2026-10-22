@@ -365,8 +365,20 @@ export const Winners = ({ filmmakers, action, bare = false }) => {
 // live YouTube player pulls in about a megabyte of scripts, so twenty of them
 // on Top Filmmakers made the page heavy - Francois, 21 Oct. Looks and behaves
 // like the embed, minus the weight.
+// YouTube's poster frames, sharpest first. hqdefault (480px) looked soft once
+// stretched across a 600px tile on a retina screen - Francois, 22 Oct. Not
+// every video has the 1280px one: YouTube then answers with a 120x90 grey
+// placeholder, so a picture that narrow means "try the next size".
+const POSTER_SIZES = ['maxresdefault', 'sddefault', 'hqdefault'];
+
 export const LitePlayer = ({ id, title }) => {
   const [playing, setPlaying] = useState(false);
+  const [poster, setPoster] = useState(0);
+  const nextPosterIfMissing = (e) => {
+    const img = e.currentTarget;
+    const missing = e.type === 'error' || img.naturalWidth <= 120;
+    if (missing && poster < POSTER_SIZES.length - 1) setPoster(poster + 1);
+  };
   return (
     <div className='relative w-full aspect-video bg-black border border-neutral-800 overflow-hidden'>
       {playing ? (
@@ -385,9 +397,11 @@ export const LitePlayer = ({ id, title }) => {
           className='group absolute inset-0 w-full h-full'
         >
           <img
-            src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`}
+            src={`https://i.ytimg.com/vi/${id}/${POSTER_SIZES[poster]}.jpg`}
             alt=''
             loading='lazy'
+            onLoad={nextPosterIfMissing}
+            onError={nextPosterIfMissing}
             className='absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]'
           />
           <span className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[68px] h-[68px] rounded-full border border-white/90 bg-black/35 backdrop-blur-[2px] shadow-[0_2px_14px_rgba(0,0,0,.35)] flex items-center justify-center group-hover:scale-105 transition-transform'>
