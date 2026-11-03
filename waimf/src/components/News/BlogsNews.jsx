@@ -84,7 +84,7 @@ const BlogsNews = ({ videoSlot = null, videoAfter = 6 }) => {
                       height={500}
                       src={article.image}
                       alt={article.title}
-                      className="w-full max-h-[160px] object-cover transition-transform duration-300 group-hover:scale-105"
+                      className="w-full aspect-video object-cover transition-opacity duration-300 group-hover:opacity-90"
                     />
                     <div className="absolute -bottom-4 z-50 right-6 bg-[#2D4A68] backdrop-blur-sm px-3 py-1 flex items-center gap-1">
                       <span className="text-sm text-white">{article.date}</span>

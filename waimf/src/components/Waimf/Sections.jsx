@@ -634,10 +634,12 @@ export const Awards = ({ awards }) => {
 
 /* ------------------------------------------------------------ latest news -- */
 
-// The three newest articles, for the front page above the jury. Sorted by the
-// date printed on the article (the one Francois types), falling back to when
-// it was created, so a back-dated import cannot jump to the top. Links use the
-// same slug rule as the News page and the sitemap.
+// The three newest articles, for the front page above the jury. Covers are
+// 16:9 with text on them, so they are shown whole in a 16:9 frame - a 16:10
+// crop centred on the face cut the words off the right (Francois, 3 Nov).
+// Sorted by the date printed on the article (the one Francois types), falling
+// back to when it was created, so a back-dated import cannot jump to the top.
+// Links use the same slug rule as the News page and the sitemap.
 const articleTime = (article) => {
   const shown = Date.parse(article?.date || '');
   return Number.isFinite(shown) ? shown : Date.parse(article?.createdAt || '') || 0;
@@ -664,10 +666,10 @@ export const LatestNews = ({ articles, action, count = 3 }) => {
               <div className='overflow-hidden bg-neutral-200'>
                 {article.image && (
                   <img
-                    src={cdn(article.image, 'f_auto,q_auto,c_fill,g_auto,w_800,h_500')}
+                    src={cdn(article.image, 'f_auto,q_auto,w_900')}
                     alt={article.alt || article.title}
                     loading='lazy'
-                    className='w-full aspect-[16/10] object-cover transition-transform duration-500 group-hover:scale-[1.03]'
+                    className='w-full aspect-video object-cover transition-opacity duration-300 group-hover:opacity-90'
                   />
                 )}
               </div>
