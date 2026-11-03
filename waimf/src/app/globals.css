@@ -270,3 +270,9 @@ h1,h2,h3,h4,h5,h6{
 .blog-content .ql-align-justify {
   text-align: justify;
 }
+/* Consecutive light sections on waimf.org are separated by a hairline rather
+   than by a wide empty gap - Francois, 4 Nov ("reduce the space between these
+   sections, maybe a discrete line"). */
+.waimf-band + .waimf-band {
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}

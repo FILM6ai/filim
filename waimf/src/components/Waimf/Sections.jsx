@@ -232,7 +232,7 @@ export const Edition = ({ edition }) => {
   if (!edition?.description && !edition?.schedule?.length) return null;
 
   return (
-    <section className='pt-10 lg:pt-14 pb-14 lg:pb-[72px]'>
+    <section className='waimf-band pt-10 lg:pt-14 pb-10 lg:pb-12'>
       {/* Less space above than other sections: this one sits straight under
           the hero, whose own bottom padding already separates them. Francois:
           "reduce the space between header and the start of first section". */}
@@ -286,7 +286,7 @@ export const Winners = ({ filmmakers, action, bare = false }) => {
   // Same look as the Festival Awards list - white, the same rows and type,
   // no numbers - Francois, 4 Nov (it was a dark band before).
   return (
-    <section className={`pb-14 lg:pb-[72px] ${bare ? 'pt-10 lg:pt-14' : 'pt-14 lg:pt-[72px]'}`}>
+    <section className={`waimf-band pb-10 lg:pb-12 ${bare ? 'pt-10 lg:pt-14' : 'pt-10 lg:pt-12'}`}>
       <Shell>
         {!bare && (
           <SectionHead
@@ -547,7 +547,7 @@ export const Selection = ({ selection, action, bare = false, finalistsOnly = fal
   if (finalistsOnly && finalists.length === 0) return null;
 
   return (
-    <section className='py-14 lg:py-[72px]'>
+    <section className='waimf-band py-10 lg:py-12'>
       <Shell>
         {!bare && (
           <SectionHead
@@ -577,7 +577,7 @@ export const Awards = ({ awards }) => {
   if (cards.length === 0) return null;
 
   return (
-    <section className='py-14 lg:py-[72px]'>
+    <section className='waimf-band py-10 lg:py-12'>
       <Shell>
         <SectionHead
           eyebrow='Awards'
@@ -634,7 +634,7 @@ export const LatestNews = ({ articles, action, count = 3 }) => {
   if (latest.length === 0) return null;
 
   return (
-    <section className='py-14 lg:py-[72px] bg-neutral-50'>
+    <section className='waimf-band py-10 lg:py-12 bg-neutral-50'>
       <Shell>
         <SectionHead eyebrow='Latest' title='WAIMF NEWS' action={action} />
         <div className='grid md:grid-cols-3 gap-8 lg:gap-[34px]'>
@@ -680,7 +680,7 @@ export const Jury = ({ jurors, action }) => {
   if (items.length === 0) return null;
 
   return (
-    <section className='py-14 lg:py-[72px]'>
+    <section className='waimf-band py-10 lg:py-12'>
       <Shell>
         <SectionHead
           eyebrow='The jury'
@@ -725,7 +725,7 @@ export const Gallery = ({ gallery, action, placeholders = 0, bare = false }) => 
   if (images.length === 0 && placeholders === 0) return null;
 
   return (
-    <section className='py-14 lg:py-[72px]'>
+    <section className='waimf-band py-10 lg:py-12'>
       <Shell>
         {!bare && (
           <SectionHead
@@ -773,7 +773,7 @@ export const Rules = ({ rules, limit, bare = false }) => {
   const shown = limit ? items.slice(0, limit) : items;
 
   return (
-    <section className='py-14 lg:py-[72px]'>
+    <section className='waimf-band py-10 lg:py-12'>
       <Shell>
         {!bare && (
           <SectionHead
