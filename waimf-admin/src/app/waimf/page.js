@@ -18,7 +18,7 @@ import TitleLists from '@/component/mainComponents/waimf/TitleLists';
 
 const TABS = [
   { key: 'hero', label: 'Header' },
-  { key: 'edition', label: 'Edition 2026' },
+  { key: 'edition', label: 'Edition' },
   { key: 'filmmakers', label: 'Top Filmmakers' },
   { key: 'selection', label: 'Official Selection' },
   { key: 'awards', label: 'Awards' },
@@ -31,7 +31,7 @@ const TABS = [
 
 // The pages whose Google title and description can be set on the SEO tab.
 const SEO_PAGES = [
-  { key: 'home', label: 'Home (Edition 2026)' },
+  { key: 'home', label: 'Home (Edition)' },
   { key: 'filmmakers', label: 'Top Filmmakers' },
   { key: 'selection', label: 'Official Selection' },
   { key: 'gallery', label: 'Gallery' },
