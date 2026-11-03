@@ -626,17 +626,19 @@ const articleTime = (article) => {
   return Number.isFinite(shown) ? shown : Date.parse(article?.createdAt || '') || 0;
 };
 
-export const LatestNews = ({ articles, action, count = 3 }) => {
+// `skip` lets the page show the newest three right under the edition text
+// and the next three further down (Francois, 4 Nov) from one sorted list.
+export const LatestNews = ({ articles, action, count = 3, skip = 0, eyebrow = 'Latest', title = 'WAIMF NEWS' }) => {
   const latest = [...(articles || [])]
     .filter((a) => (a?.title || '').trim())
     .sort((a, b) => articleTime(b) - articleTime(a))
-    .slice(0, count);
+    .slice(skip, skip + count);
   if (latest.length === 0) return null;
 
   return (
     <section className='waimf-band py-10 lg:py-12 bg-neutral-50'>
       <Shell>
-        <SectionHead eyebrow='Latest' title='WAIMF NEWS' action={action} />
+        <SectionHead eyebrow={eyebrow} title={title} action={action} />
         <div className='grid md:grid-cols-3 gap-8 lg:gap-[34px]'>
           {latest.map((article) => (
             <Link

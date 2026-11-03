@@ -48,12 +48,22 @@ export default function Home() {
     <div>
       <Hero hero={data?.hero} />
       <Edition edition={data?.edition} />
+      {/* The three newest articles straight after the edition text, so the
+          scroll goes text -> pictures -> lists rather than text -> lists
+          (Francois, 4 Nov). */}
+      <LatestNews articles={articles} count={3} action={<Pill href='/news'>All news</Pill>} />
       {/* No "All winners" button: the winning films play right here. */}
       <Winners filmmakers={data?.filmmakers} />
       {/* Awards and Jury come before the films - Francois's order. */}
       <Awards awards={data?.awards} />
-      {/* The three newest articles, just above the jury - Francois, 16 Oct. */}
-      <LatestNews articles={articles} count={6} action={<Pill href='/news'>All news</Pill>} />
+      {/* Articles 4-6, above the jury; 1-3 sit under the edition text. */}
+      <LatestNews
+        articles={articles}
+        skip={3}
+        eyebrow='News'
+        title='MORE WAIMF NEWS'
+        action={<Pill href='/news'>All news</Pill>}
+      />
       <Jury jurors={data?.jurors} />
       <Selection
         selection={data?.selection}
