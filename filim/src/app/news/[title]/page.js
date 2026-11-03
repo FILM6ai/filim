@@ -210,7 +210,7 @@ const icons = [
                 height={370}
                 src={singleBlog.image}
                 alt={singleBlog.title || "Blog image"}
-                className="w-full max-h-[370px] object-cover"
+                className="w-full h-auto"
               />
             </div>
           )}

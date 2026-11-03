@@ -19,20 +19,33 @@ const MAX_CHARS = 1000;
 // Loading it here, on submit, inside a try/catch, means a visitor whose browser
 // blocks storage still gets a working page and a message that reaches the
 // database — only the notification email is skipped.
+// The EmailJS account the FILM6 contact form already uses (Francois, 4 Nov:
+// WAIMF messages must reach contact@film6.ai too). These three values are
+// public by design - EmailJS runs in the browser and film6.ai ships the same
+// ones in its own page code - so they live here as defaults rather than as
+// Vercel settings nobody had filled in, which left WAIMF sending no email.
+const EMAILJS = {
+  service: "service_6mjzq7f",
+  template: "template_w6ti147",
+  publicKey: "n9fwg7GOkY40JGBni",
+};
+
 const sendNotificationEmail = async (formData) => {
   const mod = await import("@emailjs/browser");
   const emailjs = mod.default || mod;
 
   return emailjs.send(
-    process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
-    process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
+    process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || EMAILJS.service,
+    process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID || EMAILJS.template,
     {
       firstName: formData.firstName,
       lastName: formData.lastName,
       email: formData.email,
       phone: formData.phone || "N/A",
-      topic: formData.topic,
+      // Tagged so the shared FILM6 inbox shows which site it came from.
+      topic: `[WAIMF] ${formData.topic}`,
       message: formData.message,
+      site: "WAIMF (waimf.org)",
       // Festival enquiries go to the FILM6 inbox on purpose - it is the
       // address Francois actually reads, and the EmailJS template is already
       // set up for it. Change it here if WAIMF ever gets its own.
@@ -43,7 +56,7 @@ const sendNotificationEmail = async (formData) => {
         timeStyle: "short",
       }),
     },
-    process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY,
+    process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || EMAILJS.publicKey,
   );
 };
 

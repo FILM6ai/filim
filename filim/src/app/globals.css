@@ -155,10 +155,12 @@ h1,h2,h3,h4,h5,h6{
   text-align: justify;
 }
 
-/* Article ke andar images ka size fix */
+/* Pictures inside an article: the full width of the text, like the cover
+   and the video (were forced to 60% - Francois, 4 Nov). Height follows the
+   picture, nothing is cropped. */
 .ql-editor img {
-  max-width: 60% !important;
-  width: 60% !important;
+  max-width: 100% !important;
+  width: 100% !important;
   height: auto !important;
   display: block !important;
   margin: 1em auto !important;

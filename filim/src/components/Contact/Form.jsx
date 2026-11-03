@@ -31,8 +31,11 @@ const sendNotificationEmail = async (formData) => {
       lastName: formData.lastName,
       email: formData.email,
       phone: formData.phone || "N/A",
-      topic: formData.topic,
+      // Tagged so the shared inbox shows which site it came from (WAIMF's
+      // form sends to the same address).
+      topic: `[FILM6] ${formData.topic}`,
       message: formData.message,
+      site: "FILM6 (film6.ai)",
       to_email: "contact@film6.ai",
       submitted_at: new Date().toLocaleString("en-GB", {
         timeZone: "Europe/Paris",
