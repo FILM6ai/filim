@@ -18,14 +18,14 @@ import { API_BASE_URL } from '@/utils/backend';
 //  3. There is no home icon. Every item is a real page, and the emblem is the
 //     way back to the front.
 const LINKS = [
-  // The front page IS the 2026 edition, so this points home rather than at a
+  // The front page IS the current edition, so this points home rather than at a
   // second page repeating it.
-  { name: 'Edition 2026', link: '/' },
+  { name: 'Edition 2027', link: '/' },
   { name: 'Top Filmmakers', link: '/top-filmmakers' },
   { name: 'Official Selection', link: '/selection' },
+  { name: 'News', link: '/news' },
   { name: 'Gallery', link: '/gallery' },
   { name: 'Rules', link: '/rules' },
-  { name: 'News', link: '/news' },
   { name: 'Contact', link: '/contact' },
 ];
 

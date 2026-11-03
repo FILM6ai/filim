@@ -35,9 +35,9 @@ const FALLBACKS = {
       'The World AI Movie Festival: an international festival for AI-assisted and AI-generated film, held in Puerto Banus, Marbella.',
   },
   edition: {
-    title: 'Edition 2026 - WAIMF',
+    title: 'Edition 2027 - WAIMF',
     description:
-      'The first edition of the World AI Movie Festival, 7-8 October 2026 in Puerto Banus, Marbella.',
+      'The World AI Movie Festival 2027, 4-5 June 2027. Submissions reopening soon.',
   },
   filmmakers: {
     title: 'Top Filmmakers 2026 - WAIMF',

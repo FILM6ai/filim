@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { cdn, portrait, tile } from '@/utils/image';
 import slugify from 'slugify';
@@ -238,7 +237,7 @@ export const Edition = ({ edition }) => {
           the hero, whose own bottom padding already separates them. Francois:
           "reduce the space between header and the start of first section". */}
       <Shell>
-        <SectionHead eyebrow='Edition 2026' title={edition.title} />
+        <SectionHead eyebrow='Edition 2027' title={edition.title} />
         <div className='grid lg:grid-cols-[1.05fr_.95fr] gap-12 lg:gap-[72px] items-start'>
           <div className='text-[16px] leading-[1.78] text-neutral-700 whitespace-pre-line'>
             {edition.description}
@@ -284,74 +283,48 @@ export const Winners = ({ filmmakers, action, bare = false }) => {
   const items = filmmakers?.items || [];
   if (items.length === 0) return null;
 
+  // Same look as the Festival Awards list - white, the same rows and type,
+  // no numbers - Francois, 4 Nov (it was a dark band before).
   return (
-    <div
-      className={`relative overflow-hidden bg-[#0a0a0a] text-white pb-14 lg:pb-[72px] ${
-        bare ? 'pt-0' : 'pt-14 lg:pt-[72px]'
-      }`}
-    >
-      {/* The emblem again, barely there - a watermark, not a second logo. */}
-      <Image
-        src='/waimf-emblem.png'
-        alt=''
-        aria-hidden='true'
-        width={460}
-        height={444}
-        className='absolute -right-16 top-1/2 -translate-y-1/2 w-[460px] h-auto opacity-[0.07] pointer-events-none hidden md:block'
-      />
-      <Shell className='relative'>
+    <section className={`pb-14 lg:pb-[72px] ${bare ? 'pt-10 lg:pt-14' : 'pt-14 lg:pt-[72px]'}`}>
+      <Shell>
         {!bare && (
-          <div className='flex flex-col md:flex-row md:justify-between md:items-end gap-8 mb-12'>
-            <div className='max-w-[62ch]'>
-              <div
-                className='text-[10.5px] tracking-[0.34em] uppercase mb-4'
-                style={{ color: GOLD }}
-              >
-                Winners
-              </div>
-              <h2 className='font-serif text-[32px] sm:text-[40px] lg:text-[44px] leading-[1.08]'>
-                {filmmakers.mainTitle}
-              </h2>
-              {filmmakers.description && (
-                <p className='text-[15.5px] leading-[1.72] text-neutral-400 mt-4'>
-                  {filmmakers.description}
-                </p>
-              )}
-            </div>
-            {action}
-          </div>
+          <SectionHead
+            eyebrow='Winners'
+            title={filmmakers.mainTitle}
+            sub={filmmakers.description}
+            action={action}
+          />
         )}
 
-        <Intro text={filmmakers.intro} dark className={bare ? 'mb-12' : '-mt-6 mb-12'} />
-        <div className='grid md:grid-cols-2 gap-x-[70px]'>
+        <Intro text={filmmakers.intro} className={bare ? 'mb-10' : '-mt-6 mb-10'} />
+        <ul className='grid md:grid-cols-2 gap-x-[70px]'>
           {items.map((row, i) => (
-            <div
+            <li
               key={i}
-              className='grid grid-cols-[132px_1fr] sm:grid-cols-[200px_1fr] gap-5 py-[19px] border-t border-neutral-800 items-baseline'
+              className='border-t border-neutral-200 py-[21px] grid grid-cols-[132px_1fr] sm:grid-cols-[190px_1fr] gap-5 items-baseline'
             >
               <em
-                className='not-italic text-[10.5px] tracking-[0.17em] uppercase pt-1'
+                className='not-italic text-[10.5px] tracking-[0.17em] uppercase'
                 style={{ color: GOLD }}
               >
                 {row.award}
               </em>
               <div>
-                <b className='font-serif text-[18px] sm:text-[20px] font-normal block'>
-                  {row.film}
-                </b>
+                <b className='font-normal text-[17px] block'>{row.film}</b>
                 {row.filmmaker && (
-                  <span className='block text-[13.5px] text-neutral-400 mt-1'>
+                  <span className='block text-[13.5px] text-neutral-500 mt-1'>
                     {row.filmmaker}
                   </span>
                 )}
               </div>
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
 
         <WinnerVideos items={items} />
       </Shell>
-    </div>
+    </section>
   );
 };
 
@@ -380,7 +353,7 @@ export const LitePlayer = ({ id, title }) => {
     if (missing && poster < POSTER_SIZES.length - 1) setPoster(poster + 1);
   };
   return (
-    <div className='relative w-full aspect-video bg-black border border-neutral-800 overflow-hidden'>
+    <div className='relative w-full aspect-video bg-black overflow-hidden'>
       {playing ? (
         <iframe
           src={playerSrc(`https://www.youtube.com/embed/${id}?rel=0&autoplay=1`)}
@@ -447,7 +420,7 @@ const WinnerVideos = ({ items }) => {
               </em>
               <span className='font-serif text-[18px]'>{film.film}</span>
               {film.filmmaker && (
-                <span className='text-[13.5px] text-neutral-400'>{film.filmmaker}</span>
+                <span className='text-[13.5px] text-neutral-500'>{film.filmmaker}</span>
               )}
             </figcaption>
           </figure>
@@ -458,7 +431,7 @@ const WinnerVideos = ({ items }) => {
           <button
             type='button'
             onClick={() => setShown((n) => n + WINNER_PAGE)}
-            className='rounded-full px-8 py-3.5 text-[11px] tracking-[0.17em] uppercase border border-neutral-600 hover:border-neutral-400 transition-colors'
+            className='rounded-full px-8 py-3.5 text-[11px] tracking-[0.17em] uppercase border border-neutral-300 hover:border-neutral-500 transition-colors'
             style={{ color: GOLD }}
           >
             See more films ({left})
@@ -505,30 +478,32 @@ const FilmList = ({ heading, films: listed, gold = false, intro = '' }) => {
   return (
     <div className='mb-16 last:mb-0'>
       <h3
-        className='font-serif text-[30px] sm:text-[36px] lg:text-[40px] leading-[1.1] uppercase tracking-[0.06em] border-b border-neutral-200 pb-5 mb-7'
+        className='font-serif text-[30px] sm:text-[36px] lg:text-[40px] leading-[1.1] uppercase tracking-[0.06em] mb-6'
         style={{ color: gold ? GOLD : '#111' }}
       >
         {heading}
       </h3>
       <Intro text={intro} />
-      <ul className='columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-x-10'>
+      {/* Rows in the Festival Awards style - same rule lines, same type, no
+          numbers - Francois, 4 Nov. Columns read top to bottom. */}
+      <ul className='columns-1 md:columns-2 lg:columns-3 gap-x-[56px]'>
         {films.map((film, i) => (
-          <li key={i} className='break-inside-avoid py-[7px] border-b border-neutral-100'>
+          <li key={i} className='break-inside-avoid border-t border-neutral-200 py-[16px]'>
             {film.youtubeUrl ? (
               <a
                 href={film.youtubeUrl}
                 target='_blank'
                 rel='noopener noreferrer'
-                className='font-serif text-[16.5px] leading-snug hover:underline'
+                className='font-normal text-[17px] leading-snug hover:underline'
               >
                 {film.title}
                 <span className='ml-2 text-[11px] align-middle' style={{ color: GOLD }}>&#9654;</span>
               </a>
             ) : (
-              <span className='font-serif text-[16.5px] leading-snug'>{film.title}</span>
+              <b className='font-normal text-[17px] leading-snug'>{film.title}</b>
             )}
             {(film.director || film.duration) && (
-              <span className='block text-[12.5px] text-neutral-500 mt-0.5'>
+              <span className='block text-[13px] text-neutral-500 mt-1'>
                 {[film.director, film.duration].filter(Boolean).join('  ·  ')}
               </span>
             )}
@@ -609,7 +584,13 @@ export const Awards = ({ awards }) => {
           title={awards.mainTitle}
           sub={awards.description}
         />
-        <ul className='grid md:grid-cols-2 gap-x-[70px]'>
+        {/* Numbered down the first column, then the second (01-06 left,
+            07-11 right) - across-then-down read 01, 02 side by side, which
+            Francois found illogical (4 Nov). */}
+        <ul
+          className='grid md:grid-cols-2 md:grid-flow-col gap-x-[70px]'
+          style={{ gridTemplateRows: `repeat(${Math.ceil(cards.length / 2)}, auto)` }}
+        >
           {cards.map((card, i) => (
             <li
               key={i}

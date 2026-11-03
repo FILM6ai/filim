@@ -19,7 +19,7 @@ import axios from 'axios';
 import { API_BASE_URL } from '@/utils/backend';
 import { fetchWaimf } from '@/utils/waimf';
 
-// waimf.org front page = the 2026 edition.
+// waimf.org front page = the current edition (2027 since 4 Nov 2026).
 //
 // It carries a condensed version of every section, each one linking through to
 // its own page. Sections render nothing when empty, so the page shortens itself
@@ -54,7 +54,7 @@ export default function Home() {
       {/* Awards and Jury come before the films - Francois's order. */}
       <Awards awards={data?.awards} />
       {/* The three newest articles, just above the jury - Francois, 16 Oct. */}
-      <LatestNews articles={articles} action={<Pill href='/news'>All news</Pill>} />
+      <LatestNews articles={articles} count={6} action={<Pill href='/news'>All news</Pill>} />
       <Jury jurors={data?.jurors} />
       <Selection
         selection={data?.selection}

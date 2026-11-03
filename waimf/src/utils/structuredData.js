@@ -24,8 +24,8 @@ const SOCIAL_PROFILES = [];
 // what a visitor actually sees on the page.
 const FESTIVAL = {
   name: 'WAIMF - World AI Movie Festival',
-  startDate: '2026-10-07',
-  endDate: '2026-10-08',
+  startDate: '2027-06-04',
+  endDate: '2027-06-05',
   venue: 'Puerto Banús',
   city: 'Marbella',
   region: 'Andalusia',

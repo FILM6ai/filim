@@ -206,15 +206,8 @@ const Footer = () => {
             {/* Links Section */}
             <div className={columnSpans.links}>
               <nav className='space-y-3 flex flex-col'>
-                {/* Was FAQ -> /faq, a page that only exists on FILM6: a dead link
-                    in the footer of every WAIMF page. Rules is WAIMF's answer to
-                    the same questions. */}
-                <Link
-                  href='/rules'
-                  className='block text-[#737373] hover:text-white transition-colors'
-                >
-                  Rules
-                </Link>
+                {/* No Rules link here: it is in the menu bar, and Francois asked
+                    for it out of the footer (4 Nov). */}
                 {hasTerms && (
                   <Link
                     href='/terms'
