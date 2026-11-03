@@ -25,7 +25,7 @@ const TABS = [
   { key: 'jurors', label: 'Jury' },
   { key: 'gallery', label: 'Gallery' },
   { key: 'rules', label: 'Rules' },
-  { key: 'contact', label: 'Contact' },
+  // Contact tab removed: its band is no longer on the site (4 Nov).
   { key: 'seo', label: 'SEO & Analytics' },
 ];
 
@@ -37,7 +37,7 @@ const SEO_PAGES = [
   { key: 'gallery', label: 'Gallery' },
   { key: 'rules', label: 'Rules' },
   { key: 'news', label: 'News' },
-  { key: 'contact', label: 'Contact' },
+  // Contact tab removed: its band is no longer on the site (4 Nov).
   { key: 'terms', label: 'Terms' },
 ];
 

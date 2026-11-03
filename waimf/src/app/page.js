@@ -11,7 +11,6 @@ import {
   Jury,
   Gallery,
   Rules,
-  ContactBand,
   Pill,
   LatestNews,
 } from '@/components/Waimf/Sections';
@@ -67,7 +66,7 @@ export default function Home() {
         action={<Pill href='/gallery'>All photographs</Pill>}
       />
       <Rules rules={data?.rules} limit={3} />
-      <ContactBand contact={data?.contact} />
+      {/* No contact band here: Contact is in the menu and the footer (Francois, 4 Nov). */}
     </div>
   );
 }
