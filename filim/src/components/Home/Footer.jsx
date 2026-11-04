@@ -8,6 +8,12 @@ import Link from 'next/link';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import logo from '../../assets/images/logo.png';
+
+// The FILM6 logo Francois sent on 4 Nov (metal "FILM" + blue 6), cut out of
+// its black background so it sits on the see-through menu bar. Takes priority
+// over the logo stored in the panel's Footer record, which still points at the
+// old one on a retired Cloudinary account.
+const FILM6_LOGO = '/film6-logo.png';
 import { API_BASE_URL } from "@/utils/backend";
 
 const Footer = () => {
@@ -99,7 +105,7 @@ const Footer = () => {
         <div className='border-b pb-4 flex flex-wrap gap-6 justify-between items-center '>
           <Link href={'/'}>
             <Image
-              src={footerData?.logo || logo}
+              src={FILM6_LOGO}
               alt='logo'
               className='lg:w-28 md:w-44 sm:w-44 w-28'
               width={300}

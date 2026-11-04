@@ -4,7 +4,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { FaHome } from 'react-icons/fa';
-import logo from '../../assets/images/logo.png';
+
+// The FILM6 logo Francois sent on 4 Nov (metal "FILM" + blue 6), cut out of
+// its black background so it sits on the see-through menu bar. Takes priority
+// over the logo stored in the panel's Footer record, which still points at the
+// old one on a retired Cloudinary account.
+const FILM6_LOGO = '/film6-logo.png';
 import twit from '../../assets/images/twit.png';
 import tiktok from '../../assets/images/tiktok.png';
 import insta from '../../assets/images/insta.png';
@@ -80,7 +85,7 @@ const Navbar = () => {
               className='flex items-center space-x-2 relative z-10'
             >
               <Image
-                src={footerData?.logo || logo}
+                src={FILM6_LOGO}
                 width={200}
                 height={200}
                 alt='Logo'
