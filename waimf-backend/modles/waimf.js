@@ -176,6 +176,9 @@ const WaimfPageSchema = new mongoose.Schema(
     },
     gallery: {
       mainTitle: { type: String },
+      // The line under the Gallery page title. Never saved = the original
+      // sentence; saved empty = no line.
+      description: { type: String },
       // Optional longer text under the heading, for depth and search engines.
       // Empty = nothing shown.
       intro: { type: String, default: "" },

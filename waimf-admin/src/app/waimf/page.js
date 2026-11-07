@@ -16,6 +16,9 @@ import TitleLists from '@/component/mainComponents/waimf/TitleLists';
 // rebuild the entire document from whatever the form posts, which is how a
 // half-filled form once wiped a page header.
 
+// What the website shows under the Gallery title until a line is saved here.
+const GALLERY_LINE = 'Photographs from the two days in Marbella.';
+
 const TABS = [
   { key: 'hero', label: 'Header' },
   { key: 'edition', label: 'Edition' },
@@ -450,6 +453,10 @@ export default function WaimfPage() {
         <section>
           <Field label='Heading' value={gallery.mainTitle}
             onChange={(v) => setField('gallery', 'mainTitle', v)} />
+          <Area label='Intro line' rows={2}
+            hint='The line under the title on the Gallery page. Leave empty and no line is shown.'
+            value={gallery.description ?? GALLERY_LINE}
+            onChange={(v) => setField('gallery', 'description', v)} />
           <Area label='Longer text under the Gallery heading' rows={6}
             hint='Optional. Shown under the heading on the website; leave empty and nothing appears. Use it to describe the section in more depth - good for Google too. Press Enter twice for a new paragraph.'
             value={gallery.intro}
