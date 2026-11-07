@@ -242,7 +242,7 @@ export const Hero = ({ hero }) => {
             <Link
               href={hero.link || '/top-filmmakers'}
               {...outside(hero.link)}
-              className='px-7 py-[15px] text-[11.5px] tracking-[0.17em] uppercase font-bold text-black'
+              className='px-7 py-[15px] text-[11.5px] tracking-[0.17em] uppercase font-bold text-black border border-white'
               style={{ background: GOLD }}
             >
               {hero.button}
