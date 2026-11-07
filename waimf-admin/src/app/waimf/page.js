@@ -235,6 +235,16 @@ export default function WaimfPage() {
           <Field label='Button link' placeholder='/top-filmmakers' value={hero.link}
             onChange={(v) => setField('hero', 'link', v)} />
           <Field
+            label='"Submit your film" button text'
+            hint='Shown centred at the bottom of this header and on the Top Filmmakers and Official Selection headers. Leave empty for "Submit your film"; type a single dash (-) to hide it everywhere.'
+            value={hero.submitText}
+            onChange={(v) => setField('hero', 'submitText', v)}
+          />
+          <Field label='"Submit your film" button link' placeholder='https://filmfreeway.com/WAIMF'
+            hint='Leave empty for https://filmfreeway.com/WAIMF.'
+            value={hero.submitLink}
+            onChange={(v) => setField('hero', 'submitLink', v)} />
+          <Field
             label='Second button text'
             hint='The outlined button. Leave empty to show "Watch the selection"; type a single dash (-) to hide it.'
             value={hero.button2}

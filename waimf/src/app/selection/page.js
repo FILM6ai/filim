@@ -19,6 +19,7 @@ export default function SelectionPage() {
         eyebrow='Official Selection'
         title={data?.selection?.mainTitle || 'Official Selection'}
         sub={data?.selection?.description}
+        submit={data?.hero || {}}
       />
       {empty ? (
         <section className='py-20 lg:py-28'>

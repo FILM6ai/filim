@@ -48,6 +48,10 @@ const WaimfPageSchema = new mongoose.Schema(
       description: { type: String },
       button: { type: String },
       link: { type: String },
+      // "SUBMIT YOUR FILM" call (landing + Top Filmmakers + Official Selection
+      // headers). Empty = site default (FilmFreeWay); "-" hides it.
+      submitText: { type: String, default: "" },
+      submitLink: { type: String, default: "" },
       // The second, outlined button. Its text and address used to be fixed.
       button2: { type: String },
       link2: { type: String },

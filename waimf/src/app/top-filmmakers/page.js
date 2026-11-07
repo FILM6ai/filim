@@ -15,6 +15,7 @@ export default function TopFilmmakers() {
         eyebrow='Winners'
         title='Top Filmmakers 2026'
         sub={data?.filmmakers?.description}
+        submit={data?.hero || {}}
       />
       <Winners filmmakers={data?.filmmakers} bare />
       {/* The winning films play inside the Winners block above, as embeds. */}

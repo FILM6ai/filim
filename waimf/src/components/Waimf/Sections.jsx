@@ -108,6 +108,34 @@ export const Pill = ({ href = '#', children, dark = false }) => (
 
 /* ------------------------------------------------------------------ hero -- */
 
+// "SUBMIT YOUR FILM" - the call for WAIMF 2027 entries (Francois, 7 Nov), on
+// the landing header (centred at the bottom, like film6.ai/festival) and on
+// the Top Filmmakers and Official Selection headers. Text and link come from
+// the panel (Header tab); until set there they default to FilmFreeWay. A
+// single dash as the text hides it everywhere.
+export const SUBMIT_DEFAULT = { text: 'Submit your film', link: 'https://filmfreeway.com/WAIMF' };
+
+export const submitOf = (hero) => {
+  const text = String(hero?.submitText || '').trim() || SUBMIT_DEFAULT.text;
+  const link = String(hero?.submitLink || '').trim() || SUBMIT_DEFAULT.link;
+  return text === '-' ? null : { text, link };
+};
+
+export const SubmitButton = ({ hero, className = '' }) => {
+  const cta = submitOf(hero);
+  if (!cta) return null;
+  return (
+    <a
+      href={cta.link}
+      {...outside(cta.link)}
+      className={`inline-flex items-center justify-center px-9 py-[15px] text-[12px] tracking-[0.2em] uppercase font-semibold border bg-black/55 backdrop-blur-[2px] hover:bg-black/75 transition-colors ${className}`}
+      style={{ borderColor: GOLD, color: GOLD }}
+    >
+      {cta.text}
+    </a>
+  );
+};
+
 // A header button pointing off the site (FilmFreeWay for submissions) opens in
 // a new tab, so visitors keep waimf.org open behind it.
 const outside = (href) =>
@@ -162,7 +190,18 @@ export const Hero = ({ hero }) => {
   // one used to be fixed text pointing at /selection, so empty keeps that
   // wording and a lone dash removes the button.
   const typed = String(hero.button2 || '').trim();
-  const second = typed === '-' ? '' : typed || 'Watch the selection';
+  let second = typed === '-' ? '' : typed || 'Watch the selection';
+
+  // The centred "Submit your film" button is the submission call. If one of
+  // the row buttons was also pointed at the same submission link (Francois set
+  // the second one that way on 7 Nov while looking for where to add it), it
+  // is not shown twice.
+  const cta = submitOf(hero);
+  const same = (a, b) =>
+    String(a || '').trim().replace(/\/+$/, '').toLowerCase() ===
+    String(b || '').trim().replace(/\/+$/, '').toLowerCase();
+  const firstIsSubmit = cta && same(hero.link, cta.link);
+  if (cta && same(hero.link2, cta.link)) second = '';
 
   return (
     <header className='relative min-h-[82vh] md:min-h-[88vh] flex items-end overflow-hidden bg-black'>
@@ -210,7 +249,7 @@ export const Hero = ({ hero }) => {
           </p>
         )}
         <div className='flex flex-wrap gap-3.5 mt-9'>
-          {hero.button && (
+          {hero.button && !firstIsSubmit && (
             <Link
               href={hero.link || '/top-filmmakers'}
               {...outside(hero.link)}
@@ -230,6 +269,11 @@ export const Hero = ({ hero }) => {
             </Link>
           )}
         </div>
+        {/* Mobile: under the buttons. Desktop: centred at the bottom. */}
+        <SubmitButton
+          hero={hero}
+          className='mt-6 w-full md:w-auto md:mt-0 md:absolute md:left-1/2 md:-translate-x-1/2 md:bottom-5'
+        />
       </Shell>
     </header>
   );
@@ -853,7 +897,7 @@ export const ContactBand = ({ contact }) => {
 // Every inner page opens with this instead of the full hero, so the sticky
 // white-on-transparent navbar always has something dark behind it. Without it
 // the menu would be white type on a white page.
-export const PageHeader = ({ eyebrow, title, sub }) => (
+export const PageHeader = ({ eyebrow, title, sub, submit }) => (
   <header className='bg-[#0a0a0a] text-white pt-32 pb-16 lg:pt-40 lg:pb-20'>
     <Shell>
       {showEyebrow(eyebrow, title) && (
@@ -872,6 +916,7 @@ export const PageHeader = ({ eyebrow, title, sub }) => (
           {sub}
         </p>
       )}
+      {submit && <SubmitButton hero={submit} className='mt-8' />}
     </Shell>
   </header>
 );
