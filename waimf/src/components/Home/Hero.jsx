@@ -30,6 +30,8 @@ const Hero = ({
   // The banner headline is the page's <h1> everywhere except article pages,
   // where the article's own title is the subject and this is just a banner.
   headingLevel = 1,
+  // Extra header content under the description (the News page's Submit button).
+  children,
 }) => {
   const Heading = headingLevel === 1 ? 'h1' : 'h2';
   const swiperRef = useRef(null);
@@ -113,6 +115,7 @@ const Hero = ({
               {description}
             </p>
           )}
+          {children}
         </div>
       </header>
     );
@@ -208,6 +211,7 @@ const Hero = ({
                 <p className="text-lg max-sm:text-center sm:text-2xl text-gray-300 mb-8">
                   {description}
                 </p>
+                {children}
                 {button &&
                   (!showInput ? (
                     <button

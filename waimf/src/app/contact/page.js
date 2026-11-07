@@ -45,7 +45,7 @@ const page = () => {
         alt={heroData?.alt}
         description={heroData?.description}
       />
-      <Advancing title1={advanceData?.title || 'have a question?'} />
+      <Advancing title1={advanceData?.title || 'Have a question?'} />
       <ContactParah description={advanceData?.description} />
       <Form />
     </div>

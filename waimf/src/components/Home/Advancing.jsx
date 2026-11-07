@@ -28,7 +28,7 @@ const Advancing = ({ title1, title2, description, image, color, alt, youtubeUrl 
         viewport={{ once: true }}
       >
         <h2
-          className=" px-4 sm:px-6 lg:px-12  capitalize text-heading 
+          className=" px-4 sm:px-6 lg:px-12  text-heading 
        lg:text-6xl md:text-6xl text-3xl  text-center "
         >
           {title1}

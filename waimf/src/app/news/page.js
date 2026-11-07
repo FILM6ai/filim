@@ -6,6 +6,8 @@ import axios from "axios";
 import Loading from "@/components/faq/Loading";
 import { API_BASE_URL } from "@/utils/backend";
 import VideoPlayer from "@/components/Home/VideoPlayer";
+import { SubmitButton } from "@/components/Waimf/Sections";
+import { fetchWaimf } from "@/utils/waimf";
 
 const page = () => {
   const [title, setTitle] = useState("");
@@ -14,6 +16,15 @@ const page = () => {
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(true);
   const [video, setVideo] = useState({});
+  // The Submit button text and link live on the WAIMF Header tab; until they
+  // load (or if that fails) the button shows the defaults.
+  const [submit, setSubmit] = useState({});
+
+  useEffect(() => {
+    fetchWaimf()
+      .then((waimf) => setSubmit(waimf?.hero || {}))
+      .catch(() => {});
+  }, []);
 
   // Fetch existing news data
   useEffect(() => {
@@ -32,7 +43,7 @@ const page = () => {
         }
         setLoading(false);
       } catch (error) {
-        toast.error("Error fetching data");
+        console.error("Error fetching news header:", error);
         setLoading(false);
       }
     };
@@ -55,7 +66,9 @@ const page = () => {
         title1={title || "News"}
         alt={alt}
         description={description}
-      />
+      >
+        <SubmitButton hero={submit} className="mt-6" />
+      </Hero>
       {/* This page's header runs straight into the article grid, so the video
           goes after the first six articles rather than on top of the list. The
           slot is null when nothing is set, and the grid then renders as one
