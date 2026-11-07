@@ -335,6 +335,7 @@ export default function WaimfPage() {
       {tab === 'filmmakers' && (
         <section>
           <Field label='Heading' value={filmmakers.mainTitle}
+            hint='Shown on the front page and as the title of the Top Filmmakers page.'
             onChange={(v) => setField('filmmakers', 'mainTitle', v)} />
           <Area label='Intro line' rows={2} value={filmmakers.description}
             onChange={(v) => setField('filmmakers', 'description', v)} />

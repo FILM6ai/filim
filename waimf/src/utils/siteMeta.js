@@ -40,7 +40,7 @@ const FALLBACKS = {
       'The World AI Movie Festival 2027, 4-5 June 2027. Submissions reopening soon.',
   },
   filmmakers: {
-    title: 'Top Filmmakers 2026 - WAIMF',
+    title: 'Top Filmmakers - WAIMF',
     description:
       'The films and filmmakers awarded at the first World AI Movie Festival.',
   },

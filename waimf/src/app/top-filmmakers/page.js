@@ -13,7 +13,7 @@ export default function TopFilmmakers() {
     <div>
       <PageHeader
         eyebrow='Winners'
-        title='Top Filmmakers 2026'
+        title={data?.filmmakers?.mainTitle || 'Top Filmmakers'}
         sub={data?.filmmakers?.description}
         submit={data?.hero || {}}
       />
