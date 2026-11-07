@@ -5,6 +5,8 @@ import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import Advancing from "./Advancing";
 import { validateFile } from "@/utils/fileValidation";
+import { shrinkImage } from "@/utils/shrinkImage";
+import { isVideo, mediaSrc } from "@/utils/headerMedia";
 import { BACKEND_URL } from "@/utils/backend";
 
 const uploadToCloudinary = async (file) => {
@@ -157,12 +159,14 @@ const Contact = () => {
                 />
               </svg>
               <span className="text-gray-600 font-medium">Upload file</span>
-              <span className="text-xs text-gray-600">Max Size:20MB</span>
+              <span className="text-xs text-gray-600 text-center">Picture 5MB<br />Video 20MB</span>
             </label>
             <input
               // onChange={(e) => setImage(e.target.files[0])}
-              onChange={(e) => {
-                const file = e.target.files[0];
+              onChange={async (e) => {
+                // A phone photo is shrunk first, so it fits the 5 MB picture limit.
+                if (!e.target.files[0]) return;
+                const file = await shrinkImage(e.target.files[0]);
                 const result = validateFile(file);
                 if (!result.valid) {
                   alert(result.message);
@@ -172,20 +176,18 @@ const Contact = () => {
               }}
               id="upload2"
               type="file"
-              accept="video/*"
+              accept="image/*,video/*"
               className="hidden"
             />
           </div>
           {/* Image Preview */}
           {image && (
             <div className="mt-4">
-              <video
-                src={
-                  typeof image === "string" ? image : URL.createObjectURL(image)
-                }
-                controls
-                className="w-36 h-auto"
-              />
+              {isVideo(image) ? (
+                <video src={mediaSrc(image)} controls className="w-36 h-auto" />
+              ) : (
+                <img src={mediaSrc(image)} alt="" className="w-36 h-auto" />
+              )}
             </div>
           )}
           <div className="mt-8">

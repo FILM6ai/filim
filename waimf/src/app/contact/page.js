@@ -7,6 +7,7 @@ import ContactParah from '@/components/Home/ContactParah';
 import axios from 'axios';
 import Loading from '@/components/faq/Loading';
 import { API_BASE_URL } from "@/utils/backend";
+import { isVideo } from '@/utils/headerMedia';
 
 const page = () => {
   const [heroData, setHeroData] = useState({});
@@ -40,7 +41,7 @@ const page = () => {
   return (
     <div>
       <Hero
-        image={[{ type: 'video', value: heroData?.bgImage }]}
+        image={[{ type: isVideo(heroData?.bgImage) ? 'video' : 'image', value: heroData?.bgImage }]}
         title1={heroData?.title || 'Contact Us'}
         alt={heroData?.alt}
         description={heroData?.description}

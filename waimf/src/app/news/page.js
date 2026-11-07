@@ -8,6 +8,7 @@ import { API_BASE_URL } from "@/utils/backend";
 import VideoPlayer from "@/components/Home/VideoPlayer";
 import { SubmitButton } from "@/components/Waimf/Sections";
 import { fetchWaimf } from "@/utils/waimf";
+import { isVideo } from "@/utils/headerMedia";
 
 const page = () => {
   const [title, setTitle] = useState("");
@@ -62,7 +63,7 @@ const page = () => {
   return (
     <div>
       <Hero
-        image={[{ type: "video", value: image }]}
+        image={[{ type: isVideo(image) ? "video" : "image", value: image }]}
         title1={title || "News"}
         alt={alt}
         description={description}

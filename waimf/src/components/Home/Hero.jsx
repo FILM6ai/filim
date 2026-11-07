@@ -172,9 +172,10 @@ const Hero = ({
                   <Image
                     src={img.value}
                     alt={alt || "Hero Background"}
-                    layout="fill"
-                    objectFit="cover"
-                    className="absolute inset-0 w-full h-full object-cover"
+                    fill
+                    sizes="100vw"
+                    priority={idx === 0}
+                    className="object-cover"
                   />
                 )}
               </SwiperSlide>
