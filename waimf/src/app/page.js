@@ -70,12 +70,13 @@ export default function Home() {
         finalistsOnly
         action={<Pill href='/selection'>Full official selection</Pill>}
       />
+      {/* Rules before the gallery (Francois, 7 Nov). */}
+      <Rules rules={data?.rules} limit={3} />
       <Gallery
         gallery={data?.gallery}
         placeholders={8}
         action={<Pill href='/gallery'>All photographs</Pill>}
       />
-      <Rules rules={data?.rules} limit={3} />
       {/* No contact band here: Contact is in the menu and the footer (Francois, 4 Nov). */}
     </div>
   );

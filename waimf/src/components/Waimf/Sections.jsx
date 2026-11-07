@@ -128,7 +128,8 @@ export const SubmitButton = ({ hero, className = '' }) => {
     <a
       href={cta.link}
       {...outside(cta.link)}
-      className={`inline-flex items-center justify-center px-9 py-[15px] text-[12px] tracking-[0.2em] uppercase font-semibold text-white border border-white/70 bg-black/90 hover:bg-black transition-colors ${className}`}
+      className={`inline-flex items-center justify-center px-9 py-[15px] text-[12px] tracking-[0.2em] uppercase font-semibold text-white border bg-black/90 hover:bg-black transition-colors ${className}`}
+      style={{ borderColor: GOLD }}
     >
       {cta.text}
     </a>
@@ -251,7 +252,8 @@ export const Hero = ({ hero }) => {
             <Link
               href={hero.link2 || '/selection'}
               {...outside(hero.link2)}
-              className='px-7 py-[15px] text-[11.5px] tracking-[0.17em] uppercase text-white border border-white/70 bg-black/90 hover:bg-black transition-colors'
+              className='px-7 py-[15px] text-[11.5px] tracking-[0.17em] uppercase text-white border bg-black/90 hover:bg-black transition-colors'
+              style={{ borderColor: GOLD }}
             >
               {second}
             </Link>

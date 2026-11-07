@@ -16,6 +16,7 @@ export default function RulesPage() {
         eyebrow='Rules'
         title={data?.rules?.mainTitle || 'Rules'}
         sub={data?.rules?.subtitle}
+        submit={data?.hero || {}}
       />
       <Rules rules={data?.rules} bare />
     </div>

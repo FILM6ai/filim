@@ -24,8 +24,8 @@ const LINKS = [
   { name: 'Top Filmmakers', link: '/top-filmmakers' },
   { name: 'Official Selection', link: '/selection' },
   { name: 'News', link: '/news' },
-  { name: 'Gallery', link: '/gallery' },
   { name: 'Rules', link: '/rules' },
+  { name: 'Gallery', link: '/gallery' },
   { name: 'Contact', link: '/contact' },
 ];
 
