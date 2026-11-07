@@ -69,7 +69,12 @@ export const updateContactPage = async (req, res) => {
 
     if (req.body.hero) {
       let heroData = JSON.parse(req.body.hero);
-      heroData.bgImage = heroData.bgImage || existingContact.hero?.bgImage;
+      // "Remove" in the panel sends removeBgImage; otherwise an empty bgImage
+      // keeps the picture or video already saved.
+      heroData.bgImage = heroData.removeBgImage
+        ? ''
+        : heroData.bgImage || existingContact.hero?.bgImage;
+      delete heroData.removeBgImage;
       updates.hero = heroData;
     }
 

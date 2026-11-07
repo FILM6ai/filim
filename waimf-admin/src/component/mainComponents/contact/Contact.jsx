@@ -99,6 +99,8 @@ const Contact = () => {
         alt,
         description,
         bgImage: uploadedVideoUrl || (typeof image === "string" ? image : undefined),
+        // Removed in the panel: the header goes back to the plain title band.
+        removeBgImage: !image,
       };
       formData.append("hero", JSON.stringify(hero));
       formData.append("advance", JSON.stringify(advance));
@@ -188,6 +190,17 @@ const Contact = () => {
               ) : (
                 <img src={mediaSrc(image)} alt="" className="w-36 h-auto" />
               )}
+              <button
+                type="button"
+                onClick={() => {
+                  setImage("");
+                  const input = document.getElementById("upload2");
+                  if (input) input.value = "";
+                }}
+                className="block mt-2 text-sm text-red-600 underline"
+              >
+                Remove
+              </button>
             </div>
           )}
           <div className="mt-8">

@@ -91,6 +91,8 @@ const News = () => {
       } else if (typeof image === "string" && image) {
         formData.append("bgImage", image);
       }
+      // Removed in the panel: the header goes back to the plain title band.
+      if (!image) formData.append("removeBgImage", "true");
 
       let response;
       if (newsId) {
@@ -178,6 +180,17 @@ const News = () => {
               ) : (
                 <img src={mediaSrc(image)} alt="" className="w-36 h-auto" />
               )}
+              <button
+                type="button"
+                onClick={() => {
+                  setImage("");
+                  const input = document.getElementById("upload2");
+                  if (input) input.value = "";
+                }}
+                className="block mt-2 text-sm text-red-600 underline"
+              >
+                Remove
+              </button>
             </div>
           )}
           {/* Title Input */}

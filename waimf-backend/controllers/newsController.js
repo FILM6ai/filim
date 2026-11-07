@@ -61,7 +61,10 @@ export const updateNewsPage = async (req, res) => {
     if (alt) updateData.alt = alt;
     if (description !== undefined) updateData.description = description;
 
-    if (bgImage) updateData.bgImage = bgImage;
+    // "Remove" in the panel sends removeBgImage, which takes the header back
+    // to the plain title band. An empty bgImage on its own still means "keep".
+    if (req.body.removeBgImage === 'true') updateData.bgImage = '';
+    else if (bgImage) updateData.bgImage = bgImage;
 
     // Update news document and return the updated document
     const updatedNews = await newsSchema.findByIdAndUpdate(id, updateData, {
