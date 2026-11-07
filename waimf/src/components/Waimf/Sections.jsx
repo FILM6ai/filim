@@ -108,6 +108,13 @@ export const Pill = ({ href = '#', children, dark = false }) => (
 
 /* ------------------------------------------------------------------ hero -- */
 
+// A header button pointing off the site (FilmFreeWay for submissions) opens in
+// a new tab, so visitors keep waimf.org open behind it.
+const outside = (href) =>
+  /^https?:\/\//i.test(String(href || '').trim())
+    ? { target: '_blank', rel: 'noopener noreferrer' }
+    : {};
+
 export const Hero = ({ hero }) => {
   if (!hero) return null;
   const bg = Array.isArray(hero.bgImage) ? hero.bgImage.at(-1) : hero.bgImage;
@@ -206,6 +213,7 @@ export const Hero = ({ hero }) => {
           {hero.button && (
             <Link
               href={hero.link || '/top-filmmakers'}
+              {...outside(hero.link)}
               className='px-7 py-[15px] text-[11.5px] tracking-[0.17em] uppercase font-bold text-black'
               style={{ background: GOLD }}
             >
@@ -215,6 +223,7 @@ export const Hero = ({ hero }) => {
           {second && (
             <Link
               href={hero.link2 || '/selection'}
+              {...outside(hero.link2)}
               className='px-7 py-[15px] text-[11.5px] tracking-[0.17em] uppercase border border-white/60 bg-black/25 backdrop-blur-[2px] hover:bg-white/10 transition-colors'
             >
               {second}
