@@ -236,7 +236,7 @@ export default function WaimfPage() {
             onChange={(v) => setField('hero', 'link', v)} />
           <Field
             label='"Submit your film" button text'
-            hint='Shown centred at the bottom of this header and on the Top Filmmakers and Official Selection headers. Leave empty for "Submit your film"; type a single dash (-) to hide it everywhere.'
+            hint='Shown on the Top Filmmakers and Official Selection page headers (on this landing header, use the button fields above). Leave empty for "Submit your film"; type a single dash (-) to hide it.'
             value={hero.submitText}
             onChange={(v) => setField('hero', 'submitText', v)}
           />

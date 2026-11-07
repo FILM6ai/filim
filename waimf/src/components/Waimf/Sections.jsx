@@ -109,8 +109,8 @@ export const Pill = ({ href = '#', children, dark = false }) => (
 /* ------------------------------------------------------------------ hero -- */
 
 // "SUBMIT YOUR FILM" - the call for WAIMF 2027 entries (Francois, 7 Nov), on
-// the landing header (centred at the bottom, like film6.ai/festival) and on
-// the Top Filmmakers and Official Selection headers. Text and link come from
+// the Top Filmmakers and Official Selection headers. On the landing header he
+// keeps it as the second row button he set in the panel (white on black). Text and link come from
 // the panel (Header tab); until set there they default to FilmFreeWay. A
 // single dash as the text hides it everywhere.
 export const SUBMIT_DEFAULT = { text: 'Submit your film', link: 'https://filmfreeway.com/WAIMF' };
@@ -128,8 +128,7 @@ export const SubmitButton = ({ hero, className = '' }) => {
     <a
       href={cta.link}
       {...outside(cta.link)}
-      className={`inline-flex items-center justify-center px-9 py-[15px] text-[12px] tracking-[0.2em] uppercase font-semibold border bg-black/55 backdrop-blur-[2px] hover:bg-black/75 transition-colors ${className}`}
-      style={{ borderColor: GOLD, color: GOLD }}
+      className={`inline-flex items-center justify-center px-9 py-[15px] text-[12px] tracking-[0.2em] uppercase font-semibold text-white border border-white/70 bg-black/90 hover:bg-black transition-colors ${className}`}
     >
       {cta.text}
     </a>
@@ -190,18 +189,7 @@ export const Hero = ({ hero }) => {
   // one used to be fixed text pointing at /selection, so empty keeps that
   // wording and a lone dash removes the button.
   const typed = String(hero.button2 || '').trim();
-  let second = typed === '-' ? '' : typed || 'Watch the selection';
-
-  // The centred "Submit your film" button is the submission call. If one of
-  // the row buttons was also pointed at the same submission link (Francois set
-  // the second one that way on 7 Nov while looking for where to add it), it
-  // is not shown twice.
-  const cta = submitOf(hero);
-  const same = (a, b) =>
-    String(a || '').trim().replace(/\/+$/, '').toLowerCase() ===
-    String(b || '').trim().replace(/\/+$/, '').toLowerCase();
-  const firstIsSubmit = cta && same(hero.link, cta.link);
-  if (cta && same(hero.link2, cta.link)) second = '';
+  const second = typed === '-' ? '' : typed || 'Watch the selection';
 
   return (
     <header className='relative min-h-[82vh] md:min-h-[88vh] flex items-end overflow-hidden bg-black'>
@@ -249,7 +237,7 @@ export const Hero = ({ hero }) => {
           </p>
         )}
         <div className='flex flex-wrap gap-3.5 mt-9'>
-          {hero.button && !firstIsSubmit && (
+          {hero.button && (
             <Link
               href={hero.link || '/top-filmmakers'}
               {...outside(hero.link)}
@@ -263,17 +251,12 @@ export const Hero = ({ hero }) => {
             <Link
               href={hero.link2 || '/selection'}
               {...outside(hero.link2)}
-              className='px-7 py-[15px] text-[11.5px] tracking-[0.17em] uppercase border border-white/60 bg-black/25 backdrop-blur-[2px] hover:bg-white/10 transition-colors'
+              className='px-7 py-[15px] text-[11.5px] tracking-[0.17em] uppercase text-white border border-white/70 bg-black/90 hover:bg-black transition-colors'
             >
               {second}
             </Link>
           )}
         </div>
-        {/* Mobile: under the buttons. Desktop: centred at the bottom. */}
-        <SubmitButton
-          hero={hero}
-          className='mt-6 w-full md:w-auto md:mt-0 md:absolute md:left-1/2 md:-translate-x-1/2 md:bottom-5'
-        />
       </Shell>
     </header>
   );
