@@ -11,7 +11,7 @@ import Runway from "./Runway";
 import TopList2 from "./TopList2";
 import Competate3 from "./Competate3";
 import NewCards from "./NewCards";
-import { validateFile } from "@/utils/fileValidation";
+import { validateFile, DIRECT_VIDEO_MAX_SIZE } from "@/utils/fileValidation";
 import { BACKEND_URL } from "@/utils/backend";
 
 const uploadToCloudinary = async (file) => {
@@ -202,7 +202,7 @@ const [oldCompetateImage3, setOldCompetateImage3] = useState([]);
         const files = image.filter((v) => v instanceof File);
         if (files.length > 0) {
           for (const file of files) {
-            const result = validateFile(file);
+            const result = validateFile(file, { videoMax: DIRECT_VIDEO_MAX_SIZE });
             if (!result.valid) {
               toast.error(result.message);
               setLoading(false);
@@ -298,7 +298,7 @@ const [oldCompetateImage3, setOldCompetateImage3] = useState([]);
         const files = image.filter((v) => v instanceof File);
         if (files.length > 0) {
           for (const file of files) {
-            const result = validateFile(file);
+            const result = validateFile(file, { videoMax: DIRECT_VIDEO_MAX_SIZE });
             if (!result.valid) {
               toast.error(result.message);
               setLoading(false);
@@ -423,14 +423,14 @@ if (updatedStudio) {
                 />
               </svg>
               <span className="text-gray-600 font-medium">Upload file</span>
-              <span className="text-xs text-gray-600">Max Size:20MB</span>
+              <span className="text-xs text-gray-600">Max Size:100MB</span>
             </label>
             <input
               // onChange={(e) => setImage(Array.from(e.target.files))}
               onChange={(e) => {
                 const files = Array.from(e.target.files);
                 for (let file of files) {
-                  const result = validateFile(file);
+                  const result = validateFile(file, { videoMax: DIRECT_VIDEO_MAX_SIZE });
                   if (!result.valid) {
                     alert(result.message);
                     return;

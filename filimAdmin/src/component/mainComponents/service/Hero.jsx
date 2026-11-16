@@ -8,7 +8,7 @@ import TopListing from "./TopListing";
 import Robot from "./Robot";
 import Competition from "./Competition";
 import Runway from "./Runway";
-import { validateFile } from "@/utils/fileValidation";
+import { validateFile, DIRECT_VIDEO_MAX_SIZE } from "@/utils/fileValidation";
 import { BACKEND_URL } from "@/utils/backend";
 
 const uploadToCloudinary = async (file) => {
@@ -162,7 +162,7 @@ const Hero = () => {
     try {
       let uploadedHeroUrl = null;
       if (image && image instanceof File) {
-        const result = validateFile(image);
+        const result = validateFile(image, { videoMax: DIRECT_VIDEO_MAX_SIZE });
         if (!result.valid) {
           toast.error(result.message);
           setLoading(false);
@@ -281,13 +281,13 @@ const Hero = () => {
                 />
               </svg>
               <span className="text-gray-600 font-medium">Upload file</span>
-              <span className="text-xs text-gray-600">Max Size:20MB</span>
+              <span className="text-xs text-gray-600">Max Size:100MB</span>
             </label>
             <input
               // onChange={(e) => setImage(e.target.files[0])}
               onChange={(e) => {
                 const file = e.target.files[0];
-                const result = validateFile(file);
+                const result = validateFile(file, { videoMax: DIRECT_VIDEO_MAX_SIZE });
                 if (!result.valid) {
                   alert(result.message);
                   return;

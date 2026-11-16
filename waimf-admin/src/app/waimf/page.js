@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { BACKEND_URL } from '@/utils/backend';
 import { Field, Area, Repeater, ImageList, ImageField } from '@/component/mainComponents/waimf/Fields';
 import TitleLists from '@/component/mainComponents/waimf/TitleLists';
+import { isVideo } from '@/utils/headerMedia';
 
 // The whole of waimf.org, editable.
 //
@@ -158,6 +159,8 @@ export default function WaimfPage() {
   );
 
   const hero = doc.hero || {};
+  // Same default as the website: a header video is not zoomed unless set.
+  const heroZoomDefault = isVideo(Array.isArray(hero.bgImage) ? hero.bgImage.at(-1) : hero.bgImage) ? 100 : 115;
   const edition = doc.edition || {};
   const filmmakers = doc.filmmakers || {};
   const selection = doc.selection || {};
@@ -282,13 +285,13 @@ export default function WaimfPage() {
           </label>
           <label className='block mb-5'>
             <span className='block text-sm font-medium text-black'>
-              Zoom: {hero.zoom ?? 115}%
+              Zoom: {hero.zoom ?? heroZoomDefault}%
             </span>
             <span className='block text-xs text-gray-500 mt-0.5'>
               Zooming in crops the edges of the picture. 100% = no zoom.
             </span>
             <input type='range' min={100} max={150} step={5}
-              value={hero.zoom ?? 115}
+              value={hero.zoom ?? heroZoomDefault}
               onChange={(e) => setField('hero', 'zoom', Number(e.target.value))}
               className='w-full max-w-md mt-2' />
           </label>

@@ -1,6 +1,6 @@
 "use client";
 
-import { validateFile } from "@/utils/fileValidation";
+import { validateFile, DIRECT_VIDEO_MAX_SIZE } from "@/utils/fileValidation";
 import { shrinkImage } from "@/utils/shrinkImage";
 import { isVideo, mediaSrc } from "@/utils/headerMedia";
 import axios from "axios";
@@ -73,7 +73,7 @@ const News = () => {
     try {
       let uploadedUrl = null;
       if (image && typeof image !== "string") {
-        const result = validateFile(image);
+        const result = validateFile(image, { videoMax: DIRECT_VIDEO_MAX_SIZE });
         if (!result.valid) {
           toast.error(result.message);
           setLoading(false);
@@ -151,7 +151,7 @@ const News = () => {
                 />
               </svg>
               <span className="text-gray-600 font-medium">Upload file</span>
-              <span className="text-xs text-gray-600 text-center">Picture 5MB<br />Video 20MB</span>
+              <span className="text-xs text-gray-600 text-center">Picture 5MB<br />Video 100MB</span>
             </label>
             <input
               // onChange={(e) => setImage(e.target.files[0])}
@@ -159,7 +159,7 @@ const News = () => {
                 // A phone photo is shrunk first, so it fits the 5 MB picture limit.
                 if (!e.target.files[0]) return;
                 const file = await shrinkImage(e.target.files[0]);
-                const result = validateFile(file);
+                const result = validateFile(file, { videoMax: DIRECT_VIDEO_MAX_SIZE });
                 if (!result.valid) {
                   alert(result.message);
                   return;

@@ -178,7 +178,9 @@ export const Hero = ({ hero }) => {
       ? Math.min(max, Math.max(min, n))
       : fallback;
   };
-  const zoom = num(hero.zoom, 115, 100, 150);
+  // The 115% default was for that photo. A video is never zoomed unless the
+  // slider is set: magnifying a 720p clip on a large screen visibly softens it.
+  const zoom = num(hero.zoom, isVideo ? 100 : 115, 100, 150);
   const slide = num(hero.focusX, 100, 0, 100);
   const mediaStyle = {
     objectPosition,
