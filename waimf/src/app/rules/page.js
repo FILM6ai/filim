@@ -1,7 +1,7 @@
 'use client';
 
 import Loading from '@/components/faq/Loading';
-import { PageHeader, Rules } from '@/components/Waimf/Sections';
+import { PageHeader, Rules, Awards } from '@/components/Waimf/Sections';
 import { useWaimf } from '@/components/Waimf/usePage';
 
 // The full rules, terms and screening rights - no truncation here, this is the
@@ -19,6 +19,9 @@ export default function RulesPage() {
         submit={data?.hero || {}}
       />
       <Rules rules={data?.rules} bare />
+      {/* The award categories, so a filmmaker reading the rules sees what can
+          be won - Francois, 16 Nov. Same list as the front page. */}
+      <Awards awards={data?.awards} />
     </div>
   );
 }

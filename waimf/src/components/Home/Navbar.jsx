@@ -25,7 +25,7 @@ const LINKS = [
   { name: 'Official Selection', link: '/selection' },
   { name: 'News', link: '/news' },
   { name: 'Rules', link: '/rules' },
-  { name: 'Gallery', link: '/gallery' },
+  // Gallery is reached from its section on the front page only - Francois, 16 Nov.
   { name: 'Contact', link: '/contact' },
 ];
 
