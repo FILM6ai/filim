@@ -20,6 +20,7 @@ export default function SelectionPage() {
         title={data?.selection?.mainTitle || 'Official Selection'}
         sub={data?.selection?.description}
         submit={data?.hero || {}}
+        media={data?.selection?.headerMedia}
       />
       {empty ? (
         <section className='py-20 lg:py-28'>

@@ -884,9 +884,32 @@ export const ContactBand = ({ contact }) => {
 // Every inner page opens with this instead of the full hero, so the sticky
 // white-on-transparent navbar always has something dark behind it. Without it
 // the menu would be white type on a white page.
-export const PageHeader = ({ eyebrow, title, sub, submit }) => (
-  <header className='bg-[#0a0a0a] text-white pt-32 pb-16 lg:pt-40 lg:pb-20'>
-    <Shell>
+//
+// `media` (a picture or .mp4 set in the panel) fills the band behind the title,
+// darkened at the bottom-left so the white type always reads - Francois,
+// 16 Nov. Without it the band stays plain black.
+export const PageHeader = ({ eyebrow, title, sub, submit, media }) => {
+  const bg = String(media || '').trim();
+  const isVideo = /\/video\/upload\/|\.(mp4|webm|mov)(\?|$)/i.test(bg);
+  return (
+  <header
+    className={`relative overflow-hidden bg-[#0a0a0a] text-white ${
+      bg ? 'min-h-[62vh] md:min-h-[72vh] flex items-end pt-32 pb-14 lg:pb-20' : 'pt-32 pb-16 lg:pt-40 lg:pb-20'
+    }`}
+  >
+    {bg &&
+      (isVideo ? (
+        <video src={bg} autoPlay muted loop playsInline
+          className='absolute inset-0 w-full h-full object-cover' />
+      ) : (
+        <img src={cdn(bg, 'f_auto,q_auto,w_2000')} alt=''
+          className='absolute inset-0 w-full h-full object-cover' />
+      ))}
+    {bg && (
+      <div className='absolute inset-0 pointer-events-none'
+        style={{ background: 'linear-gradient(to top, rgba(0,0,0,.78) 0%, rgba(0,0,0,.35) 45%, rgba(0,0,0,.25) 100%), linear-gradient(to right, rgba(0,0,0,.45) 0%, rgba(0,0,0,0) 60%)' }} />
+    )}
+    <Shell className={bg ? 'relative w-full' : ''}>
       {showEyebrow(eyebrow, title) && (
         <div
           className='text-[10.5px] tracking-[0.34em] uppercase mb-4'
@@ -899,11 +922,12 @@ export const PageHeader = ({ eyebrow, title, sub, submit }) => (
         {title}
       </h1>
       {sub && (
-        <p className='text-[15.5px] leading-[1.7] text-neutral-400 mt-5 max-w-[60ch]'>
+        <p className={`text-[15.5px] leading-[1.7] mt-5 max-w-[60ch] ${bg ? 'text-neutral-200' : 'text-neutral-400'}`}>
           {sub}
         </p>
       )}
       {submit && <SubmitButton hero={submit} className='mt-8' />}
     </Shell>
   </header>
-);
+  );
+};

@@ -343,6 +343,12 @@ export default function WaimfPage() {
           <Field label='Heading' value={filmmakers.mainTitle}
             hint='Shown on the front page and as the title of the Top Filmmakers page.'
             onChange={(v) => setField('filmmakers', 'mainTitle', v)} />
+          <ImageField
+            label='Header picture or video'
+            hint='Shown behind the title at the top of the Top Filmmakers page. Remove it and the header goes back to plain black.'
+            value={filmmakers.headerMedia}
+            onChange={(v) => setField('filmmakers', 'headerMedia', v)}
+          />
           <Area label='Intro line' rows={2} value={filmmakers.description}
             onChange={(v) => setField('filmmakers', 'description', v)} />
           <Area label='Longer text under the heading' rows={6}
@@ -373,6 +379,12 @@ export default function WaimfPage() {
             onChange={(v) => setField('selection', 'mainTitle', v)} />
           <Area label='Intro line' rows={2} value={selection.description}
             onChange={(v) => setField('selection', 'description', v)} />
+          <ImageField
+            label='Header picture or video'
+            hint='Shown behind the title at the top of the Official Selection page. Remove it and the header goes back to plain black.'
+            value={selection.headerMedia}
+            onChange={(v) => setField('selection', 'headerMedia', v)}
+          />
 
           <Area label='Longer text under FINALISTS' rows={6}
             hint='Optional. Shown under the heading on the website; leave empty and nothing appears. Use it to describe the section in more depth - good for Google too. Press Enter twice for a new paragraph.'
@@ -480,6 +492,12 @@ export default function WaimfPage() {
             onChange={(v) => setField('rules', 'mainTitle', v)} />
           <Field label='Line under the heading' value={rules.subtitle}
             onChange={(v) => setField('rules', 'subtitle', v)} />
+          <ImageField
+            label='Header picture or video'
+            hint='Shown behind the title at the top of the Rules page. Remove it and the header goes back to plain black.'
+            value={rules.headerMedia}
+            onChange={(v) => setField('rules', 'headerMedia', v)}
+          />
           <Repeater
             label='Rules'
             hint='Each one becomes a column on the Rules page. Line breaks are kept.'

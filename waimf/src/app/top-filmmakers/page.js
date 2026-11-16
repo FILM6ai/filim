@@ -16,6 +16,7 @@ export default function TopFilmmakers() {
         title={data?.filmmakers?.mainTitle || 'Top Filmmakers'}
         sub={data?.filmmakers?.description}
         submit={data?.hero || {}}
+        media={data?.filmmakers?.headerMedia}
       />
       <Winners filmmakers={data?.filmmakers} bare />
       {/* The winning films play inside the Winners block above, as embeds. */}

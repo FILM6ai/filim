@@ -17,6 +17,7 @@ export default function RulesPage() {
         title={data?.rules?.mainTitle || 'Rules'}
         sub={data?.rules?.subtitle}
         submit={data?.hero || {}}
+        media={data?.rules?.headerMedia}
       />
       <Rules rules={data?.rules} bare />
       {/* The award categories, so a filmmaker reading the rules sees what can

@@ -88,6 +88,9 @@ const WaimfPageSchema = new mongoose.Schema(
     // or extended without touching the page.
     filmmakers: {
       mainTitle: { type: String },
+      // Picture or .mp4 behind this page's title band. Empty = the plain
+      // black band.
+      headerMedia: { type: String, default: "" },
       // Optional longer text under the heading, for depth and search engines.
       // Empty = nothing shown.
       intro: { type: String, default: "" },
@@ -114,6 +117,9 @@ const WaimfPageSchema = new mongoose.Schema(
     // --- Official Selection -------------------------------------------------
     selection: {
       mainTitle: { type: String },
+      // Picture or .mp4 behind this page's title band. Empty = the plain
+      // black band.
+      headerMedia: { type: String, default: "" },
       description: { type: String },
       items: [
         {
@@ -188,6 +194,9 @@ const WaimfPageSchema = new mongoose.Schema(
     // --- Rules --------------------------------------------------------------
     rules: {
       mainTitle: { type: String },
+      // Picture or .mp4 behind this page's title band. Empty = the plain
+      // black band.
+      headerMedia: { type: String, default: "" },
       subtitle: { type: String },
       items: [
         {
