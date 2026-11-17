@@ -17,6 +17,7 @@ import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import slugify from "slugify";
 import { API_BASE_URL } from "@/utils/backend";
 import { playerSrc } from "@/utils/youtube";
+import ListenBar from "@/components/News/ListenBar";
 
 const extractYouTubeId = (url) => {
   const match = url.match(
@@ -210,6 +211,13 @@ const icons = [
           >
             {singleBlog.title}
           </h1>
+
+          {/* The article read aloud - Francois, 17 Nov. */}
+          <ListenBar
+            title={singleBlog.title}
+            html={singleBlog.content}
+            accent="#C8A24A"
+          />
 
           {singleBlog.image && (
             <div className="mb-6">
