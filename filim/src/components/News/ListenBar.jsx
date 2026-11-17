@@ -79,25 +79,40 @@ const toPieces = (title, html) => {
   return pieces;
 };
 
-// The nicest English voice the device offers. Names vary by platform; the
-// "Natural"/"Enhanced"/"Premium" and Google voices are the human-sounding ones.
-const pickVoice = () => {
+// The nicest English voice the device offers, a woman's by default -
+// Francois, 17 Nov: "there is no woman voice?". On a Mac the best-scoring
+// voice used to be Daniel. Browsers do not say which voice is which, so it is
+// read off the voice names the platforms use.
+const FEMALE = /female|samantha|karen|serena|moira|tessa|fiona|victoria|allison|\bava\b|susan|zoe|kate|kathy|vicki|catherine|martha|flo\b|sandy|shelley|aria|jenny|sonia|libby|natasha|clara|emma|michelle|zira|hazel|joanna|salli|kendra|kimberly|\bivy\b|\bamy\b|google us english/i;
+const MALE = /\bmale|daniel|\balex\b|fred|arthur|oliver|\btom\b|aaron|gordon|rishi|\bguy\b|ryan|david|\bmark\b|george|james|reed|eddy|rocko|grandpa|ralph|junior|albert|bruce|\blee\b|thomas|brian|christopher|\beric\b|roger|william|liam/i;
+
+const genderOf = (v) =>
+  /female/i.test(v.name) ? "woman" : MALE.test(v.name) ? "man" : FEMALE.test(v.name) ? "woman" : "";
+
+const englishVoices = () => {
   const voices = window.speechSynthesis.getVoices() || [];
   const english = voices.filter((v) => /^en(-|_|$)/i.test(v.lang));
-  const pool = english.length ? english : voices;
+  return english.length ? english : voices;
+};
+
+const pickVoice = (gender = "woman") => {
   const score = (v) =>
+    (genderOf(v) === gender ? 10 : genderOf(v) ? -10 : 0) +
     (/natural|neural|enhanced|premium/i.test(v.name) ? 4 : 0) +
     (/google/i.test(v.name) ? 3 : 0) +
     (/samantha|daniel|karen|serena|moira|aria|jenny|guy/i.test(v.name) ? 2 : 0) +
     (/en-(gb|us)/i.test(v.lang) ? 1 : 0) +
     (v.localService ? 0 : 1);
-  return [...pool].sort((a, b) => score(b) - score(a))[0] || null;
+  return [...englishVoices()].sort((a, b) => score(b) - score(a))[0] || null;
 };
 
 const ListenBar = ({ title, html, accent = "#000000" }) => {
   const [supported, setSupported] = useState(false);
   const [state, setState] = useState("idle"); // idle | playing | paused
   const [speed, setSpeed] = useState(1);
+  const [gender, setGender] = useState("woman");
+  // The Woman/Man switch only appears when the device has both.
+  const [bothVoices, setBothVoices] = useState(false);
   const [index, setIndex] = useState(0);
   const indexRef = useRef(0);
   const runRef = useRef(0);
@@ -109,7 +124,17 @@ const ListenBar = ({ title, html, accent = "#000000" }) => {
   }, [pieces]);
 
   useEffect(() => {
-    setSupported(typeof window !== "undefined" && "speechSynthesis" in window);
+    const ok = typeof window !== "undefined" && "speechSynthesis" in window;
+    setSupported(ok);
+    if (!ok) return;
+    // Voices arrive late in Chrome; check again when they do.
+    const check = () => {
+      const kinds = new Set(englishVoices().map(genderOf));
+      setBothVoices(kinds.has("woman") && kinds.has("man"));
+    };
+    check();
+    window.speechSynthesis.addEventListener?.("voiceschanged", check);
+    return () => window.speechSynthesis.removeEventListener?.("voiceschanged", check);
   }, []);
 
   // A new article, or leaving the page: stop talking.
@@ -127,11 +152,11 @@ const ListenBar = ({ title, html, accent = "#000000" }) => {
 
   // Queue everything from `from` onwards in one go. Queuing inside the click
   // keeps iOS happy, which only lets speech start from a user gesture.
-  const speakFrom = (from, rate) => {
+  const speakFrom = (from, rate, who = gender) => {
     const synth = window.speechSynthesis;
     const run = ++runRef.current;
     synth.cancel();
-    const voice = pickVoice();
+    const voice = pickVoice(who);
     for (let i = from; i < pieces.length; i += 1) {
       const u = new SpeechSynthesisUtterance(pieces[i]);
       if (voice) {
@@ -173,6 +198,12 @@ const ListenBar = ({ title, html, accent = "#000000" }) => {
     const next = SPEEDS[(SPEEDS.indexOf(speed) + 1) % SPEEDS.length];
     setSpeed(next);
     if (state === "playing") speakFrom(indexRef.current, next);
+  };
+
+  const changeVoice = () => {
+    const next = gender === "woman" ? "man" : "woman";
+    setGender(next);
+    if (state === "playing") speakFrom(indexRef.current, speed, next);
   };
 
   const restart = () => {
@@ -234,6 +265,17 @@ const ListenBar = ({ title, html, accent = "#000000" }) => {
           title="Start again"
         >
           ↺
+        </button>
+      )}
+      {bothVoices && (
+        <button
+          type="button"
+          onClick={changeVoice}
+          className="shrink-0 text-[12px] font-sans font-semibold border border-[#E4E7E9] rounded-full px-2.5 py-1 text-[#191C1F] hover:border-black"
+          aria-label={`Voice: ${gender}. Switch voice`}
+          title="Switch voice"
+        >
+          {gender === "woman" ? "Woman" : "Man"}
         </button>
       )}
       <button
