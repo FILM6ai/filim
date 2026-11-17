@@ -15,6 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { IoSend } from "react-icons/io5";
 import { API_BASE_URL } from "@/utils/backend";
 import { playerSrc } from "@/utils/youtube";
+import { videoSources } from "@/utils/image";
 const Hero = ({
   title1,
   description,
@@ -153,7 +154,6 @@ const Hero = ({
                   <video
                     ref={(el) => (videoRefs.current[idx] = el)}
                     className="absolute inset-0 w-full h-full object-cover"
-                    src={img.value}
                     muted
                     playsInline
                     autoPlay
@@ -167,7 +167,9 @@ const Hero = ({
                         swiper.slideNext();
                       }
                     }}
-                  />
+                  >
+                    {videoSources(img.value).map((src) => <source key={src} src={src} />)}
+                  </video>
                 ) : (
                   <Image
                     src={img.value}

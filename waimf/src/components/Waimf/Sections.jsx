@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { cdn, portrait, tile } from '@/utils/image';
+import { cdn, portrait, tile, videoSources } from '@/utils/image';
 import slugify from 'slugify';
 import { useState } from 'react';
 
@@ -195,18 +195,19 @@ export const Hero = ({ hero }) => {
   const second = typed === '-' ? '' : typed || 'Watch the selection';
 
   return (
-    <header className='relative min-h-[82vh] md:min-h-[88vh] flex items-end overflow-hidden bg-black'>
+    <header className='relative min-h-[100vh] flex items-end overflow-hidden bg-black'>
       {bg &&
         (isVideo ? (
           <video
-            src={bg}
             autoPlay
             muted
             loop
             playsInline
             className='absolute inset-0 w-full h-full object-cover'
             style={mediaStyle}
-          />
+          >
+            {videoSources(bg).map((src) => <source key={src} src={src} />)}
+          </video>
         ) : (
           <img
             src={cdn(bg, 'f_auto,q_auto,w_2000')}
@@ -894,13 +895,15 @@ export const PageHeader = ({ eyebrow, title, sub, submit, media }) => {
   return (
   <header
     className={`relative overflow-hidden bg-[#0a0a0a] text-white ${
-      bg ? 'min-h-[62vh] md:min-h-[72vh] flex items-end pt-32 pb-14 lg:pb-20' : 'pt-32 pb-16 lg:pt-40 lg:pb-20'
+      bg ? 'min-h-[60vh] sm:min-h-[100vh] flex items-end pt-32 pb-14 lg:pb-20' : 'pt-32 pb-16 lg:pt-40 lg:pb-20'
     }`}
   >
     {bg &&
       (isVideo ? (
-        <video src={bg} autoPlay muted loop playsInline
-          className='absolute inset-0 w-full h-full object-cover' />
+        <video autoPlay muted loop playsInline
+          className='absolute inset-0 w-full h-full object-cover'>
+          {videoSources(bg).map((src) => <source key={src} src={src} />)}
+        </video>
       ) : (
         <img src={cdn(bg, 'f_auto,q_auto,w_2000')} alt=''
           className='absolute inset-0 w-full h-full object-cover' />
