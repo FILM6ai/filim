@@ -325,7 +325,7 @@ export default function WaimfPage() {
             onChange={(v) => setField('edition', 'description', v)} />
           <Repeater
             label='Festival schedule'
-            hint='Shown as a list beside the description.'
+            hint='The dates list shown on the right of the Edition section on the front page. Edit the dates here (one row per event), not in the Description above, or they appear twice.'
             items={edition.schedule}
             columns={[
               { key: 'when', label: 'When', placeholder: '8 Oct, 7-9:30pm' },
