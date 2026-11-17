@@ -204,13 +204,6 @@ const icons = [
             {singleBlog.title}
           </h1>
 
-          {/* The article read aloud - Francois, 17 Nov. */}
-          <ListenBar
-            title={singleBlog.title}
-            html={singleBlog.content}
-            accent="#000000"
-          />
-
           {singleBlog.image && (
             <div className="mb-6">
               <Image
@@ -258,6 +251,13 @@ const icons = [
           </div>
 
           <div className="pb-12 pt-6">
+            {/* The article read aloud - Francois, 17 Nov: under the picture
+                and date, just above where the text starts. */}
+            <ListenBar
+              title={singleBlog.title}
+              html={singleBlog.content}
+              accent="#000000"
+            />
             {singleBlog.youtubeUrl && singleBlog.youtubeUrl.trim() !== "" ? (
               (() => {
                 const { first, second } = splitContentInHalf(
