@@ -93,6 +93,9 @@ const [video, setVideo] = useState({})
         alt={toplist?.alt}
         link={toplist?.link}
       />
+      {/* The three newest articles, under "A New Era of Cinema" - Francois,
+          18 Nov, as on the waimf.org landing page. */}
+      <Blogs count={3} compact title='Latest News' />
       <VideoPlayer
         video={
           Array.isArray(video?.videoUrls)
@@ -144,7 +147,8 @@ const [video, setVideo] = useState({})
         link={runway?.link}
       />
 
-      <Blogs />
+      {/* Carries on from the fourth article, so none repeats. */}
+      <Blogs skip={3} title='More News & Articles' />
     </div>
   );
 }
