@@ -8,7 +8,6 @@ import TopListing from "./TopListing";
 import Robot from "./Robot";
 import Competition from "./Competition";
 import Runway from "./Runway";
-import FestivalCards from "./FestivalCards";
 import { validateFile, DIRECT_VIDEO_MAX_SIZE } from "@/utils/fileValidation";
 import GlossarySection from "./GlossarySection";
 import GallerySection from "./GallerySection";
@@ -547,21 +546,18 @@ const [heroLink, setHeroLink] = useState("");
         setPopupImageFile={setCompetatePopupImageFile}
       />
 
-      <FestivalCards
-        cards={cards}
-        setCards={setCards}
-        mainTitle={mainTitle}
-        setMainTitle={setMainTitle}
-        showCardPopup={showCardPopup}
-        setShowCardPopup={setShowCardPopup}
-        popupIndex={popupIndex}
-        setPopupIndex={setPopupIndex}
-        tempCard={tempCard}
-        setTempCard={setTempCard}
-        openCardPopup={openCardPopup}
-        saveCard={saveCard}
-        festivalId={festivalId}
-      />
+      {/* The FILM6 festival page no longer shows these cards: since 23 Nov it
+          shows the waimf.org FESTIVAL AWARDS table, read from the WAIMF back
+          end. The old cards are still loaded and saved back untouched, so
+          nothing is lost if they are ever wanted again. */}
+      <div className="my-10 border border-amber-300 bg-amber-50 px-5 py-4 text-sm text-amber-900">
+        <p className="font-semibold">Festival Awards</p>
+        <p className="mt-1">
+          The awards list on film6.ai/festival now comes from the WAIMF back end
+          (WAIMF site, Awards tab), the same list as on waimf.org. Edit it there
+          and both websites update.
+        </p>
+      </div>
       <Runway
         runway={runway}
         setRunway={setRunway}

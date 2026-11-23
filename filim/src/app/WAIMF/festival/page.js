@@ -8,7 +8,7 @@ import Robot from "@/components/Home/Robot";
 import Runway from "@/components/Home/Runway";
 import axios from "axios";
 import Loading from "@/components/faq/Loading";
-import Sheilds from "@/components/Home/Sheilds";
+import FestivalAwards from "@/components/Home/FestivalAwards";
 import Glossary from '@/components/Home/Glossary';
 import GalleryPhotos from '@/components/Home/GalleryPhotos';
 import JurorPhotos from '@/components/Home/JurorPhotos';
@@ -22,8 +22,6 @@ const page = () => {
   const [robot, setRobot] = useState({});
   const [competate, setCompetate] = useState({});
   const [runway, setRunway] = useState({});
-  const [shieldMainTitle, setShieldMainTitle] = useState("");
-  const [shieldCards, setShieldCards] = useState([]);
   const [glossaryData, setGlossaryData] = useState({});
   const [galleryData, setGalleryData] = useState({});
   const [jurorsData, setJurorsData] = useState({});
@@ -49,8 +47,6 @@ const page = () => {
         setRobot(data.festival[0].robot);
         setCompetate(data.festival[0].competate);
         setRunway(data.festival[0].runway);
-        setShieldMainTitle(data.festival[0].cardSection.mainTitle || "");
-        setShieldCards(data.festival[0].cardSection.cards || []);
         setGlossaryData(data.festival[0].glossary || {});
         setGalleryData(data.festival[0].gallery || {});
         setJurorsData(data.festival[0].jurors || {});
@@ -190,7 +186,9 @@ const page = () => {
         youtubeUrl={video2?.youtubeUrl}
       />
 
-      <Sheilds mainTitle={shieldMainTitle} cards={shieldCards} />
+      {/* Festival Awards: the waimf.org table, read from the WAIMF back end
+          (its Awards tab), replacing the old card list - Francois, 23 Nov. */}
+      <FestivalAwards />
 
       {/* "Exploring the AI Revolution" - the shark section. Francois asked for
           it to go all the way down, so it now closes the page BELOW Festival
