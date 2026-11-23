@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+// White since 23 Nov: on the festival page it now sits between the (black)
+// Festival Awards and the (black) Jury, so the sections alternate - Francois.
 const Glossary = ({ mainTitle, subtitle, items }) => {
     const [openIndex, setOpenIndex] = useState(null);
 
@@ -12,7 +14,7 @@ const Glossary = ({ mainTitle, subtitle, items }) => {
     };
 
     return (
-        <div className="w-full bg-[#0d0d0d] py-20 px-4 lg:px-20">
+        <div className="w-full bg-white py-20 px-4 lg:px-20">
             {/* {subtitle && (
                 <p className="text-center text-[#c9a84c] tracking-[0.3em] text-sm uppercase mb-3">
                     {subtitle}
@@ -25,7 +27,7 @@ const Glossary = ({ mainTitle, subtitle, items }) => {
                 </div>
             )} */}
             {mainTitle && (
-                <h2 className="text-center text-white text-4xl md:text-5xl font-serif mb-14">
+                <h2 className="text-center text-black text-4xl md:text-5xl font-serif mb-14">
                     {mainTitle}
                 </h2>
             )}
@@ -34,7 +36,7 @@ const Glossary = ({ mainTitle, subtitle, items }) => {
                 {items.map((item, index) => (
                     <div
                         key={index}
-                        className="border-b border-gray-700"
+                        className="border-b border-gray-200"
                     >
                         <button
                             type="button"
@@ -42,14 +44,14 @@ const Glossary = ({ mainTitle, subtitle, items }) => {
                             className="w-full flex items-center justify-between py-5 text-left group"
                         >
                             <div className="flex items-center gap-6">
-                                <span className="text-[#2ec3f5]  text-sm font-semibold w-8 shrink-0">
+                                <span className="text-[#0e88b3] text-sm font-semibold w-8 shrink-0">
                                     {String(index + 1).padStart(2, "0")}
                                 </span>
-                                <span className="text-white text-lg font-semibold group-hover:text-[#2ec3f5] transition-colors">
+                                <span className="text-black text-lg font-semibold group-hover:text-[#0e88b3] transition-colors">
                                     {item.term}
                                 </span>
                             </div>
-                            <span className="text-[#2ec3f5] text-2xl font-light ml-4 shrink-0">
+                            <span className="text-[#0e88b3] text-2xl font-light ml-4 shrink-0">
                                 {openIndex === index ? "−" : "+"}
                             </span>
                         </button>
@@ -63,7 +65,7 @@ const Glossary = ({ mainTitle, subtitle, items }) => {
                                     transition={{ duration: 0.3 }}
                                     className="overflow-hidden"
                                 >
-                                    <p className="text-gray-400 pl-14 pb-6 leading-relaxed">
+                                    <p className="text-gray-600 pl-14 pb-6 leading-relaxed">
                                         {item.definition}
                                     </p>
                                 </motion.div>

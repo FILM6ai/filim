@@ -157,13 +157,14 @@ const page = () => {
           youtubeUrl={video4?.youtubeUrl}
         />
 
-        <div className="bg-[#F8F8F8] max-md:mt-12 md:h-48 md:-mt-16 relative -z-50"></div>
+        {/* The grey band that used to close this section is gone: it left a
+            tall empty gap above Festival Awards - Francois, 23 Nov. */}
       </div>
 
       {/* Festival Awards, then Summary, then the Jury - Francois, 23 Nov. */}
       {/* Festival Awards: the waimf.org table, read from the WAIMF back end
           (its Awards tab), replacing the old card list - Francois, 23 Nov. */}
-      <FestivalAwards />
+      <FestivalAwards dark />
 
       <Glossary
         mainTitle={glossaryData?.mainTitle}

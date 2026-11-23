@@ -14,7 +14,9 @@ const WAIMF_API = 'https://waimf-backend.vercel.app/api/waimf/getwaimf';
 
 const GOLD = '#C8A24A';
 
-const FestivalAwards = () => {
+// `dark`: black band with white type (the FILM6 festival page alternates
+// black and white sections - Francois, 23 Nov).
+const FestivalAwards = ({ dark = false }) => {
   const [awards, setAwards] = useState(null);
 
   useEffect(() => {
@@ -35,7 +37,7 @@ const FestivalAwards = () => {
   if (cards.length === 0) return null;
 
   return (
-    <section className='bg-white py-14 lg:py-20'>
+    <section className={`${dark ? 'bg-black' : 'bg-white'} py-14 lg:py-20`}>
       <div className='max-w-[1320px] mx-auto px-6 sm:px-10 lg:px-14'>
         <div className='max-w-[62ch] mb-12'>
           <div
@@ -45,12 +47,12 @@ const FestivalAwards = () => {
             Awards
           </div>
           {awards.mainTitle && (
-            <h2 className='font-serif text-[32px] sm:text-[40px] lg:text-[44px] leading-[1.08] font-normal text-black'>
+            <h2 className={`font-serif text-[32px] sm:text-[40px] lg:text-[44px] leading-[1.08] font-normal ${dark ? 'text-white' : 'text-black'}`}>
               {awards.mainTitle}
             </h2>
           )}
           {awards.description && (
-            <p className='text-[15.5px] leading-[1.72] text-neutral-600 mt-4 max-w-[58ch] whitespace-pre-line'>
+            <p className={`text-[15.5px] leading-[1.72] mt-4 max-w-[58ch] whitespace-pre-line ${dark ? 'text-neutral-400' : 'text-neutral-600'}`}>
               {awards.description}
             </p>
           )}
@@ -64,7 +66,7 @@ const FestivalAwards = () => {
           {cards.map((card, i) => (
             <li
               key={card._id || i}
-              className='border-t border-neutral-200 py-[21px] flex gap-4 items-baseline'
+              className={`border-t py-[21px] flex gap-4 items-baseline ${dark ? 'border-neutral-800' : 'border-neutral-200'}`}
             >
               <i
                 className='not-italic font-serif text-[14px] w-7 shrink-0'
@@ -72,7 +74,7 @@ const FestivalAwards = () => {
               >
                 {String(i + 1).padStart(2, '0')}
               </i>
-              <b className='font-normal text-[17px] text-black'>{card.title}</b>
+              <b className={`font-normal text-[17px] ${dark ? 'text-white' : 'text-black'}`}>{card.title}</b>
             </li>
           ))}
         </ul>
